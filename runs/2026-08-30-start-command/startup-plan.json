@@ -1,0 +1,33 @@
+{
+  "command": "Start Veronica",
+  "planOnly": true,
+  "resourceCreationAttempted": false,
+  "durationMinutes": 60,
+  "maxHourlyUsd": 1.75,
+  "maximumHourlyUsd": 1.75,
+  "resourceCount": 1,
+  "gpuTypeId": "NVIDIA A100-SXM4-80GB",
+  "networkVolumeId": "v53gj9flzs",
+  "dataCenterId": "EUR-IS-1",
+  "modelRevision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+  "shutdownMode": "supervised-with-local-backup",
+  "platformDeadlineEnforced": false,
+  "currentAuthorizationRequired": true,
+  "runDir": null,
+  "stages": [
+    "validate-current-authorization-and-local-prerequisites",
+    "prepare-pinned-model-provenance",
+    "confirm-windows-sleep-prevention",
+    "check-price-stock-volume-and-create-one-pod",
+    "wait-for-ssh",
+    "validate-persistent-model-and-start-server",
+    "open-loopback-ssh-tunnel",
+    "wait-for-authenticated-model-alias",
+    "verify-real-provider-responses",
+    "capture-model-and-runtime-evidence",
+    "start-windows-chat-wrapper",
+    "verify-real-windows-wrapper-responses",
+    "report-chat-url-and-fixed-shutdown-deadline"
+  ],
+  "durationSelectionRequired": true
+}

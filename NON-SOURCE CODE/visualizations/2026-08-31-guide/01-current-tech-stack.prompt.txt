@@ -1,0 +1,15 @@
+Use case: infographic-diagram
+Asset type: future owner guide, landscape whiteboard image.
+Create a polished, very legible 16:9 whiteboard architecture image for Veronica.v4. A white board, charcoal hand-drawn connectors, tasteful teal local-layer accents and violet remote-GPU accents. Clean editorial type that feels handwritten but reads perfectly. Small sketch icons for browser, API gateway, secure tunnel, GPU rack and file archive; ample whitespace, not a dark dashboard.
+Exact title: "VERONICA / CURRENT TECH STACK"
+Exact small date line: "Verified implementation + recorded run evidence / 2026-08-31"
+Main left-to-right request path across two clear zones:
+Zone "LOCAL WINDOWS PC": node "Chat UI" with "HTML / CSS / JavaScript" and "Conversation in page memory"; arrow to node "Veronica Core" with "Python 3.12 • FastAPI • Uvicorn", "HTTPX → OpenAI-compatible API", "Stable alias: Veronica", "Persona + 4 prompt presets".
+Connect across the boundary through a small bridge labeled "Private SSH tunnel" and "localhost:18000 → pod:8000".
+Zone "SUPERVISED RUNPOD": node "vLLM 0.11.0" with "1 × A100 80 GB"; beneath it connected node "Candidate A" with "Huihui Qwen3-30B-A3B", "Instruct-2507 abliterated", "Untouched foundation weights".
+Separate small storage cylinder beside remote node: "Persistent model volume" with "Model files, not chat memory". Show mounting link only to remote runtime.
+Bottom left note group "LOCAL SUPPORT": "PowerShell launcher • uv / pytest", "Model registry + run evidence", "Offline eval suite: 60 cases / 69 turns".
+Bottom middle status note in amber "Real UI/API chat recorded; foundation qualification pending."
+Bottom right future-only dashed box "NOT IMPLEMENTED" with "Tool execution • scoped memory", "Agent orchestration • image/video generation".
+Footer exact: "Architecture view, not live service status. Prompt modes are not native thinking controls."
+Directional arrows must be unambiguous and connect intended nodes, not cross through text. Clearly distinguish app page memory from persistent model storage. Do not invent React, SQLite, Redis, Docker database, vector DB, agent frameworks, training, or an always-on service. This is a current implemented stack map; no current uptime claims. All exact labels must be correct and not clipped. Flat straight-on composition, no photo border or watermark.

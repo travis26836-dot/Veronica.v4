@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#050111" />
+    <title>VERONICA</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/assets/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/assets/favicon-192.png" />
+    <link rel="apple-touch-icon" href="/assets/assets/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <canvas id="starfield" aria-hidden="true"></canvas>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="/assets/assets/veronica-logo-mark.png" width="48" height="48" alt="Veronica celestial logo" />
+          <div><h1>VERONICA</h1><p>Core conversation</p></div>
+        </div>
+        <nav class="nav-list" aria-label="Primary workspace">
+          <button class="nav-item is-active" type="button" aria-current="page">Chat</button>
+          <button class="nav-item" type="button" disabled title="Studio Director follows core validation">Image &amp; Video Studio <small>Later</small></button>
+        </nav>
+        <section class="status-block" aria-label="Runtime status">
+          <p class="section-title">Runtime</p>
+          <div id="runtimeStatus" class="runtime-status">Checking Veronica Core…</div>
+          <button id="refreshStatus" class="secondary-button" type="button">Refresh status</button>
+        </section>
+      </aside>
+      <main class="main-area">
+        <section class="view is-active" aria-labelledby="chatTitle">
+          <header class="view-header">
+            <div><p class="section-title">VERONICA.V4</p><h2 id="chatTitle">Chat Workspace</h2><p>Talk with Veronica through the configured text-model backend.</p></div>
+            <div class="header-right"><span id="chatBackendPill" class="pill">Checking backend</span><button id="newConversation" class="secondary-button" type="button">New conversation</button></div>
+          </header>
+          <section class="project-bar" aria-label="Core status">
+            <div class="project-summary"><p class="section-title">Active Core</p><strong>Veronica</strong><span id="providerSummary">Wrapper ready; checking the model server.</span></div>
+            <div class="mode-control"><label for="mode">Conversation mode</label><select id="mode"><option value="chat">Chat</option><option value="deep-reasoning">Deep Reasoning</option><option value="creative">Creative</option><option value="coding">Coding</option></select></div>
+          </section>
+          <section id="conversation" class="chat-log" aria-live="polite">
+            <article class="message system"><span>SYSTEM</span><p>Veronica’s interface is ready. Connect the text model to begin. No model-generated response has been produced yet.</p></article>
+          </section>
+          <form id="composer" class="prompt-row">
+            <label class="sr-only" for="prompt">Message Veronica</label>
+            <textarea id="prompt" rows="3" placeholder="Ask VERONICA anything…" required></textarea>
+            <div class="composer-actions"><span id="notice">Model alias: Veronica</span><button id="sendChat" class="primary-button" type="submit">Send</button></div>
+          </form>
+        </section>
+      </main>
+      <aside class="right-rail" aria-label="Live core activity">
+        <section class="rail-panel current-task-panel"><p class="section-title">CORE STATUS</p><strong id="coreState">Checking connection</strong><p id="coreDetail">Verifying the wrapper and model provider.</p><div class="task-progress"><span></span></div></section>
+        <section class="rail-panel"><p class="section-title">LIVE ACTIVITY</p><ol id="activityList" class="activity-list" aria-live="polite"></ol></section>
+        <section class="rail-panel compact-panel"><p class="section-title">SESSION</p><dl class="stat-list"><div><dt>Alias</dt><dd>Veronica</dd></div><div><dt>Provider</dt><dd id="providerState">Checking…</dd></div><div><dt>Updates</dt><dd>Live health polling</dd></div><div><dt>Local time</dt><dd id="clock">—</dd></div></dl></section>
+      </aside>
+    </div>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>

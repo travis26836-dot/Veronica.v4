@@ -1,0 +1,17 @@
+{
+  "checkedAtUtc": "2026-08-30T22:35:28.722452+00:00",
+  "cliVersion": "runpodctl 2.12.0-51ca7f0",
+  "volumeId": "v53gj9flzs",
+  "dataCenterId": "EUR-IS-1",
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "listedHourlyUsd": 1.59,
+  "stock": "Low",
+  "requestedLimitUsd": 1.6,
+  "requestedDurationMinutes": 120,
+  "approvalIsReusable": false,
+  "podCount": 0,
+  "blockers": [
+    "Automatic termination is unverified/unavailable (runpodctl#330); paid creation is blocked"
+  ],
+  "safeToCreate": false
+}

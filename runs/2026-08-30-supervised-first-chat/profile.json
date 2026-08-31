@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "publicAlias": "Veronica",
+  "model": {
+    "repository": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
+    "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+    "controlRepository": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+    "controlRevision": "0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe",
+    "directory": "/workspace/veronica-core/models/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated/e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+    "existingCopyDirectory": "/workspace/models/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated"
+  },
+  "pod": {
+    "namePrefix": "veronica-core-",
+    "networkVolumeId": "v53gj9flzs",
+    "dataCenterId": "EUR-IS-1",
+    "gpuTypeId": "NVIDIA A100-SXM4-80GB",
+    "gpuCount": 1,
+    "cloudType": "SECURE",
+    "containerDiskInGb": 30,
+    "ports": [
+      "22/tcp"
+    ],
+    "volumeMountPath": "/workspace",
+    "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "imageSourceTag": "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404"
+  },
+  "runtime": {
+    "vllmVersion": "0.11.0",
+    "transformersVersion": "4.57.1",
+    "hfCliVersion": "1.29.0",
+    "maxModelLen": 8192,
+    "maxNumSeqs": 1,
+    "gpuMemoryUtilization": 0.92,
+    "dtype": "bfloat16",
+    "host": "127.0.0.1",
+    "port": 8000,
+    "localTunnelPort": 18000,
+    "qualification": "pending_live_test"
+  },
+  "safety": {
+    "terminationGuard": "unavailable",
+    "terminationEvidence": "https://github.com/runpod/runpodctl/pull/330",
+    "requirePerRunApproval": true,
+    "allowAutomaticReplacementPod": false
+  }
+}

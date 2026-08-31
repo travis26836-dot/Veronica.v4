@@ -1,0 +1,28 @@
+{
+  "atUtc": "2026-08-30T23:08:22.756214+00:00",
+  "request": {
+    "model": "Veronica",
+    "messages": [
+      {
+        "role": "user",
+        "content": "In about 100 words, explain how a lighthouse helps ships navigate."
+      }
+    ],
+    "max_tokens": 160,
+    "temperature": 0,
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    }
+  },
+  "responseText": "A lighthouse helps ships navigate by providing a visible, reliable light source, especially at night or in poor visibility. Positioned on coastal cliffs, headlands, or offshore islands, lighthouses emit bright, focused beams that guide ships safely toward harbors and warn them of dangers like rocky shores, reefs, or shallow waters. The light\u2019s unique pattern\u2014such as flashing, revolving, or fixed\u2014helps mariners identify specific lighthouses and their locations. Many lighthouses also use foghorns to signal ships during dense fog. By marking key points along a coastline, lighthouses allow sailors to determine their position, avoid hazards, and safely enter or exit ports. Their consistent, powerful light has been a vital aid in maritime travel for centuries.",
+  "timeToFirstContentSeconds": 1.167,
+  "totalSeconds": 8.229,
+  "usage": {
+    "prompt_tokens": 25,
+    "total_tokens": 179,
+    "completion_tokens": 154
+  },
+  "completionTokensPerTotalSecond": 18.71,
+  "note": "Single-request observed provider timing over SSH; not a formal throughput benchmark or wrapper streaming support."
+}

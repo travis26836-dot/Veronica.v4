@@ -1,0 +1,14 @@
+{
+  "id": "wosedisslfwffs",
+  "name": "veronica-core-20260831-034105-b2935700",
+  "desiredStatus": "RUNNING",
+  "runtimeStatus": "running",
+  "costPerHr": 1.59,
+  "publicIp": null,
+  "portMappings": null,
+  "deadlineUtc": "2026-08-31T04:41:05.562649+00:00",
+  "watchdog": {
+    "atUtc": "2026-08-31T04:11:31.506435+00:00",
+    "pid": 15802
+  }
+}

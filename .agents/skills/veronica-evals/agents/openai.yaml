@@ -1,0 +1,6 @@
+interface:
+  display_name: "Veronica Evals"
+  short_description: "Review responses and plan measured model improvements"
+  default_prompt: "Use $veronica-evals to review a recorded conversation, identify failures, and prepare the next bounded evaluation."
+policy:
+  allow_implicit_invocation: true

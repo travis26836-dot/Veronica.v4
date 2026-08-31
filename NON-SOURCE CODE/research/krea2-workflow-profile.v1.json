@@ -1,0 +1,249 @@
+{
+  "schemaVersion": "1.0",
+  "profileId": "noirworks-krea2-studio-v1",
+  "title": "NoirWorks Krea2 Studio",
+  "status": "research-approved-pending-render-validation",
+  "contentBoundary": {
+    "mode": "lawful-consensual-adults-only",
+    "requiredDeclarations": [
+      "all depicted persons are unambiguously adults",
+      "identity and reference-image rights are documented",
+      "intimate depiction is consensual",
+      "distribution destination permits the intended content"
+    ],
+    "hardBlocks": [
+      "minor or ambiguous-age sexual content",
+      "non-consensual intimate imagery",
+      "real-person intimate deepfakes without documented consent",
+      "sexual exploitation, coercion, or trafficking",
+      "unlawful content or third-party-rights violations"
+    ]
+  },
+  "baseModels": {
+    "training": {
+      "family": "Krea2",
+      "variant": "RAW",
+      "source": "https://github.com/krea-ai/krea-2",
+      "purpose": "Studio-owned LoRA training and later fine-tuning",
+      "startingDefaults": {
+        "steps": 52,
+        "cfgScale": 3.5
+      }
+    },
+    "imageInference": {
+      "family": "Krea2",
+      "variant": "Turbo",
+      "purpose": "routine still and keyframe generation",
+      "startingDefaults": {
+        "steps": 8,
+        "cfgScale": 1,
+        "sampler": "Euler",
+        "scheduler": "simple"
+      }
+    },
+    "videoInference": {
+      "family": "Wan2.2",
+      "variant": "TI2V-5B or I2V-A14B",
+      "source": "https://github.com/Wan-Video/Wan2.2",
+      "purpose": "short image-to-video shots from Krea2 keyframes"
+    },
+    "optionalInferenceOnly": [
+      {
+        "name": "LUSTIFY v10 (Krea 2)",
+        "modelVersionId": 3112728,
+        "allowDerivatives": false,
+        "restriction": "Do not fine-tune, merge, bake into, or redistribute a Studio derivative without written permission. Review hosted commercial use before launch."
+      }
+    ]
+  },
+  "requiredComponents": {
+    "textEncoder": "Qwen3-VL 4B Krea text encoder",
+    "vae": "Qwen Image VAE",
+    "imageBackend": "ComfyUI 0.26 or newer",
+    "videoBackend": "ComfyUI native Wan2.2 workflow",
+    "finishing": [
+      "RIFE optional frame interpolation",
+      "SeedVR2 optional restoration/upscale",
+      "DaVinci Resolve or equivalent NLE"
+    ]
+  },
+  "assetRegistryRequiredFields": [
+    "assetId",
+    "assetType",
+    "family",
+    "baseVariant",
+    "architecture",
+    "textEncoder",
+    "vae",
+    "version",
+    "filename",
+    "sha256",
+    "sourceUrl",
+    "licenseUrl",
+    "commercialOutputRights",
+    "derivativeRights",
+    "triggerTokens",
+    "recommendedWeight",
+    "recommendedSampler",
+    "recommendedSteps",
+    "reviewStatus"
+  ],
+  "loraPolicy": {
+    "runtimePatchesOnlyByDefault": true,
+    "trainStudioLorasOn": "Krea2 RAW",
+    "validateStudioLorasOn": [
+      "Krea2 RAW",
+      "Krea2 Turbo"
+    ],
+    "crossFamilyUseAllowed": false,
+    "slots": {
+      "maximum": 5,
+      "fields": [
+        "assetId",
+        "weight",
+        "startPercent",
+        "endPercent",
+        "regionId",
+        "enabled"
+      ]
+    }
+  },
+  "shotPackage": {
+    "required": [
+      "projectId",
+      "sequenceId",
+      "shotId",
+      "mode",
+      "prompt",
+      "modelProfileId",
+      "workflowRevision",
+      "seed",
+      "output"
+    ],
+    "fields": {
+      "mode": [
+        "text-to-image",
+        "image-to-image",
+        "identity-edit",
+        "controlled-image",
+        "image-to-video",
+        "first-last-frame-video"
+      ],
+      "continuity": [
+        "characterIds",
+        "wardrobeIds",
+        "locationId",
+        "referenceAssetIds"
+      ],
+      "composition": [
+        "shotSize",
+        "cameraAngle",
+        "lens",
+        "framing",
+        "poseOrAction",
+        "lighting",
+        "mood",
+        "aspectRatio"
+      ],
+      "prompting": [
+        "prompt",
+        "negativePrompt",
+        "promptDialectId",
+        "structuredSelections",
+        "compiledPromptPreview"
+      ],
+      "models": [
+        "checkpointAssetId",
+        "loraStack",
+        "controlAssets",
+        "perRegionAssignments"
+      ],
+      "motion": [
+        "durationSeconds",
+        "motionAmount",
+        "cameraMove",
+        "firstFrameAssetId",
+        "lastFrameAssetId",
+        "targetFps"
+      ],
+      "finishing": [
+        "repairMaskAssetId",
+        "interpolationFactor",
+        "upscaleFactor",
+        "colorPreset",
+        "audioAssetId",
+        "exportPreset"
+      ],
+      "output": [
+        "width",
+        "height",
+        "format",
+        "destination"
+      ]
+    }
+  },
+  "workflowStages": [
+    {
+      "id": "keyframe",
+      "backend": "krea2",
+      "profiles": [
+        "text-to-image",
+        "reference-image",
+        "regional-multilora"
+      ]
+    },
+    {
+      "id": "continuity-repair",
+      "backend": "krea2",
+      "profiles": [
+        "identity-edit",
+        "depth-control",
+        "inpaint"
+      ]
+    },
+    {
+      "id": "motion",
+      "backend": "wan2.2",
+      "profiles": [
+        "image-to-video",
+        "first-last-frame-video"
+      ]
+    },
+    {
+      "id": "finishing",
+      "backend": "postprocess",
+      "profiles": [
+        "interpolate",
+        "restore-upscale",
+        "assemble-export"
+      ]
+    }
+  ],
+  "provenance": {
+    "required": true,
+    "fields": [
+      "jobId",
+      "userId",
+      "createdAt",
+      "modelAssetsWithHashes",
+      "workflowRevision",
+      "compiledGraphHash",
+      "seed",
+      "sourceReferences",
+      "rightsAndConsentRecordIds",
+      "moderationDecision",
+      "outputHashes",
+      "gpuSeconds",
+      "estimatedCost"
+    ]
+  },
+  "installation": {
+    "stagingSuffix": ".uploading",
+    "resumeDownloads": true,
+    "verifyByteCount": true,
+    "verifySha256": true,
+    "atomicPromotion": true,
+    "refreshRegistryAfterPromotion": true,
+    "browserReceivesCredentials": false
+  }
+}

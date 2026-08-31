@@ -1,0 +1,75 @@
+- complementary:
+  - img "Veronica celestial logo"
+  - heading "VERONICA" [level=1]
+  - paragraph: Core conversation
+  - navigation "Primary workspace":
+    - button "Chat"
+    - button "Image & Video Studio Later" [disabled]:
+      - text: Image & Video Studio
+      - generic: Later
+  - region "Runtime status":
+    - paragraph: Runtime
+    - generic: Veronica Core is connected to its configured model server.
+    - button "Refresh status"
+- main:
+  - region "Chat Workspace":
+    - paragraph: VERONICA.V4
+    - heading "Chat Workspace" [level=2]
+    - paragraph: Talk with Veronica through the configured text-model backend.
+    - generic: Core connected
+    - button "New conversation"
+    - region "Core status":
+      - paragraph: Active Core
+      - strong: Veronica
+      - text: Veronica Core is connected to its configured model server.
+      - generic: Conversation mode
+      - combobox "Conversation mode":
+        - option "Chat" [selected]
+        - option "Deep Reasoning"
+        - option "Creative"
+        - option "Coding"
+    - article:
+      - generic: SYSTEM
+      - paragraph: Veronica’s interface is ready. Connect the text model to begin. No model-generated response has been produced yet.
+    - article:
+      - generic: YOU
+      - paragraph: Hi Veronica. Introduce yourself in two sentences as the AI core we are building. For this conversation, remember the phrase silver compass.
+    - article:
+      - generic: VERONICA
+      - paragraph: Hi Raine—I'm Veronica, your AI core, a thinking, learning, and adapting partner built to understand, anticipate, and act with clarity and care. I’m here to guide you with precision and warmth, and I’ll always keep the phrase *silver compass* in mind—your north star for clarity, intention, and purpose.
+    - article:
+      - generic: YOU
+      - paragraph: What exact two-word phrase did I ask you to remember? Reply with only that phrase.
+    - article:
+      - generic: VERONICA
+      - paragraph: silver compass
+    - generic: Message Veronica
+    - textbox "Message Veronica":
+      - /placeholder: Ask VERONICA anything…
+    - generic: "Model alias: Veronica"
+    - button "Send"
+- complementary "Live core activity":
+  - paragraph: CORE STATUS
+  - strong: Core connected
+  - paragraph: Veronica Core is connected to its configured model server.
+  - paragraph: LIVE ACTIVITY
+  - list:
+    - text: Received a Veronica response.
+    - generic: 07:08:45 PM
+    - text: Message sent to Veronica.
+    - generic: 07:08:44 PM
+    - text: Received a Veronica response.
+    - generic: 07:07:50 PM
+    - text: Message sent to Veronica.
+    - generic: 07:07:45 PM
+    - text: Veronica v4 chat interface loaded.
+    - generic: 06:52:22 PM
+  - paragraph: SESSION
+  - term: Alias
+  - definition: Veronica
+  - term: Provider
+  - definition: Online
+  - term: Updates
+  - definition: Live health polling
+  - term: Local time
+  - definition: 07:09:27 PM

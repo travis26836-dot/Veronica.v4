@@ -1,0 +1,14 @@
+{
+  "runId": "2026-08-30-supervised-first-chat",
+  "authorizedAtUtc": "2026-08-30T22:45:00+00:00",
+  "authorizationEvidence": "User approved one Pod at no more than $1.60/hour for up to two hours, then explicitly accepted a supervised run with explicit shutdown while this computer remains awake and connected instead of guaranteed automatic termination.",
+  "resourceCount": 1,
+  "maxHourlyUsd": 1.60,
+  "durationMinutes": 120,
+  "shutdownMode": "supervised-with-local-backup",
+  "platformDeadlineEnforced": false,
+  "allowReplacementPod": false,
+  "networkVolumeId": "v53gj9flzs",
+  "gpuTypeId": "NVIDIA A100-SXM4-80GB",
+  "modelRevision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f"
+}

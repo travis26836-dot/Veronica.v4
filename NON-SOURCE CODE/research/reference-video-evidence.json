@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "1.0",
+  "capturedAt": "2026-08-30",
+  "source": {
+    "originalMediaUrl": "https://image-b2.civitai.com/file/civitai-media-cache/5ded13a3-7106-4660-9330-29c063a07797/original",
+    "civitaiImageId": 141118212,
+    "civitaiImageUrl": "https://civitai.red/images/141118212",
+    "civitaiPostId": 30680384,
+    "civitaiPostUrl": "https://civitai.red/posts/30680384",
+    "articleUrl": "https://civitai.red/articles/32664/fade-into-darkness-video-series",
+    "title": "Fade Into Darkness 🖤 (017)",
+    "uploadedFilename": "Fade_016.mp4",
+    "creator": "RLS_Animation / Red Line Studios",
+    "publishedAt": "2026-08-28T18:22:10.740Z"
+  },
+  "localEvidence": {
+    "relativeMediaPath": "research/civitai-reference/reference-media",
+    "contactSheetPath": "research/civitai-reference/contact-sheet.jpg",
+    "sceneAnalysisScript": "research/civitai-reference/analyze-scenes.sh",
+    "bytes": 57441687,
+    "sha256": "FA5F0EEDC35871AFB88561DC68AEBEFD199B537AE944BFB48CF42B29BD681D36"
+  },
+  "probe": {
+    "videoCodec": "h264 Main",
+    "width": 1080,
+    "height": 1920,
+    "frameRate": 24,
+    "frames": 3190,
+    "durationSeconds": 132.9167,
+    "audioCodec": "aac",
+    "audioChannels": 2,
+    "audioSampleRate": 48000,
+    "encoder": "Blackmagic Design DaVinci Resolve",
+    "timecode": "01:00:00:00"
+  },
+  "generationMetadata": {
+    "prompt": "masterpiece, detailed_eyes, high_quality, best_quality, highres, absurdres, 8k, subject_focus, depth_of_field",
+    "negativePrompt": "blurry",
+    "steps": 30,
+    "cfgScale": 6,
+    "sampler": "Euler a",
+    "checkpoint": {
+      "modelId": 573152,
+      "modelVersionId": 3112728,
+      "name": "LUSTIFY! [NSFW checkpoint]",
+      "version": "v10 (Krea 2)",
+      "pageUrl": "https://civitai.red/models/573152/lustify-nsfw-checkpoint?modelVersionId=3112728",
+      "filename": "lustify-v10-krea-turbo-fp8.safetensors",
+      "bytesApprox": 12820410000,
+      "autoV2": "94D92700FC",
+      "sha256": "94D92700FC45200EF053895EC5655D4F64A69B924C1EFAA457521DFC22BD5E00",
+      "allowDerivatives": false
+    },
+    "recordedTools": [
+      "ComfyUI",
+      "KREA",
+      "DaVinci Resolve"
+    ],
+    "recordedTechniqueTags": [
+      "txt2img",
+      "img2img",
+      "inpainting",
+      "workflow",
+      "vid2vid",
+      "txt2vid",
+      "img2vid",
+      "controlnet"
+    ],
+    "publicTags": [
+      "story",
+      "woman"
+    ]
+  },
+  "analysis": {
+    "sceneThresholdHitsApprox": 35,
+    "estimatedRealCuts": "25-30",
+    "estimatedAverageShotSeconds": "4-5",
+    "verified": [
+      "Media properties and Resolve encoder metadata from the downloaded file",
+      "Prompt, negative prompt, sampler, steps, CFG, model version, tool labels, and technique tags from the connected Civitai record",
+      "Series premise and chapter identity from the connected article"
+    ],
+    "inferred": [
+      "The film was assembled from individually generated or transformed short shots",
+      "A character and location bible was used to preserve continuity",
+      "Some shots likely began as Krea2 stills or keyframes before a motion stage"
+    ],
+    "notVerified": [
+      "The exact video-generation model",
+      "The exact graph JSON used for each shot",
+      "Whether every broad technique tag was used in this specific video"
+    ]
+  }
+}
+

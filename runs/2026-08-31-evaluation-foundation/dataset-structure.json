@@ -1,0 +1,13 @@
+{
+  "records": 3,
+  "errors": [],
+  "warnings": [
+    "illustrative-sft-001: draft example, not training-ready",
+    "illustrative-sft-002: draft example, not training-ready",
+    "illustrative-dpo-001: draft example, not training-ready"
+  ],
+  "structurally_valid": true,
+  "training_ready_checks_requested": false,
+  "training_authorized_by_tool": false,
+  "limits": "Checks declared metadata and exact overlap only. Human review must verify consent, rights, correct answers, privacy, family assignments and semantic/paraphrase overlap. No export or training occurs."
+}

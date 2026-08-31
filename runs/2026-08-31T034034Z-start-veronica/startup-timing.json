@@ -1,0 +1,13 @@
+{
+  "createdAttemptAtUtc": "2026-08-30T23:41:05.562649-04:00",
+  "deadlineUtc": "2026-08-31T00:41:05.562649-04:00",
+  "earlyUiStartedAtUtc": "2026-08-30T23:49:26.9143314-04:00",
+  "providerReadyAtUtc": "2026-08-30T23:50:50.134869-04:00",
+  "checksCompletedAtUtc": "2026-08-30T23:53:05.2729768-04:00",
+  "creationToModelReadySeconds": 584.57222,
+  "creationToVerificationSeconds": 719.7103278,
+  "earlyUiBeforeVerificationSeconds": 218.3586454,
+  "modelFileCount": 27,
+  "modelBytes": 61084222203,
+  "modelQualification": "pending"
+}

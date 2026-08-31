@@ -1,0 +1,16 @@
+{
+  "capturedAtUtc": "2026-08-30T23:14:23.8863274Z",
+  "health": {
+    "status": "wrapper_only",
+    "wrapper": "ready",
+    "provider": {
+      "reachable": false,
+      "model_available": false,
+      "error": "ConnectError"
+    },
+    "public_model": "Veronica",
+    "upstream_configured": true
+  },
+  "completionStatusAfterPodTermination": 503,
+  "expectedCompletionStatus": 503
+}

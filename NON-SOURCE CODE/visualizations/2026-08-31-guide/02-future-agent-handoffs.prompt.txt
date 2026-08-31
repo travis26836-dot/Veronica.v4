@@ -1,0 +1,26 @@
+Use case: infographic-diagram
+Asset type: polished whiteboard image for a future Veronica.v4 guide, landscape 16:9, high-resolution 2048 x 1152 or greater.
+Primary request: Create a clear, beautiful, sparse whiteboard diagram of a FUTURE proposed agent-coordination workflow. This is conceptual, not a description of an implemented capability.
+Scene/backdrop: clean bright white paper/whiteboard, no frame, no desk, no room; all content inside generous safe margins.
+Style/medium: professional workshop sketch with charcoal hand-drawn strokes, exceptionally readable clean sans-serif lettering, restrained teal and violet accent washes, small polished hand-drawn icons, lots of whitespace. It should look purpose-designed for a printed guide.
+Title at top left in large crisp type: "VERONICA / AGENT HANDOFFS"
+Prominent violet outlined status pill directly below title: "FUTURE CONCEPT — NOT IMPLEMENTED"
+
+Diagram across the middle, left-to-right:
+"Owner brief" -> "Veronica coordinator" -> three parallel specialist cards stacked vertically (exact labels: "Research", "Build", "Media") -> "Reviewer" -> "Owner approval" -> "Delivered artifact".
+The coordinator fans out via clearly visible arrows to EACH of the three specialist cards. Arrows from EACH of those three cards converge on the Reviewer. These are parallel roles, not sequential stages. The owner brief, coordinator, reviewer, owner approval, and delivered artifact align along one main horizontal progression. Small simple role-related sketch icons help orientation.
+Draw one clear violet revision arrow RETURNING from Reviewer, over the specialist cards, back into Veronica coordinator. Exact label on that return arrow: "Revise".
+Make the 'Owner approval' card distinctive with teal outline and small human/checkmark icon. Final artifact is a document/package icon, not a deployed system.
+
+Lower left separate whiteboard note card, heading "HANDOFF PACKET", containing precisely these six short fields in two neat columns, all easy to read:
+"Goal"
+"Context + sources"
+"Inputs / outputs"
+"Permissions + budget"
+"Evidence"
+"Next owner"
+
+A thin bottom divider and one readable footer rail, verbatim:
+"Permission before action • Bounded retries • Evidence before completion"
+
+Constraints: every label must be rendered verbatim and only once, except ordinary icons. Use no other text. No provider names, product logos, code, model names, deployment or running-status badges. Do not imply autonomous learning, existing built agents, paid resource starts, or bypassing owner permission. Do not combine this with other images or create a multi-panel contact sheet. Avoid tiny text, dark backgrounds, excessive decorations, sticky-note clutter, illegible cursive, crossing arrows, and watermark.

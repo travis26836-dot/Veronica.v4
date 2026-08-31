@@ -1,0 +1,7 @@
+{
+  "pid": 25792,
+  "atUtc": "2026-08-31T03:49:26.9143314+00:00",
+  "url": "http://127.0.0.1:8011",
+  "runId": "2026-08-31T034034Z-start-veronica",
+  "reason": "User requested visible usable UI before background checks finish; current launcher retains port 8010 for its own checks."
+}

@@ -1,0 +1,13 @@
+{
+  "networkVolumeId": "v53gj9flzs",
+  "provisionedSizeGb": 300,
+  "observedExistingBytes": 152739906680,
+  "measurement": "du -sb /workspace before bootstrap",
+  "mountedSource": "mfs#eur-is-1.runpod.net:9421[/networkvolumes/v53gj9flzs]",
+  "studioDirectory": "/workspace/runpod-slim/ComfyUI",
+  "existingStudioModified": false,
+  "candidateSearch": "find /workspace -maxdepth 6 for qwen and huihui names found only ComfyUI source/tokenizers, not the text candidate",
+  "downloadExpectedBytes": 61084222203,
+  "newTextNamespace": "/workspace/veronica-core",
+  "note": "df reports shared backend capacity, not the purchased volume allowance; the 300 GB allowance was considered separately"
+}

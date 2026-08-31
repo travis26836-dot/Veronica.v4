@@ -1,0 +1,19 @@
+{
+  "states": [
+    "intake",
+    "validated",
+    "hold",
+    "ready",
+    "in_progress",
+    "approval_pending",
+    "qualified",
+    "selected",
+    "rejected",
+    "completed",
+    "blocked",
+    "failed",
+    "superseded"
+  ],
+  "advancementRule": "A stage advances only after its required artifact, validation result, and milestone acknowledgment are recorded in a dated run folder.",
+  "truthRule": "Planning is not implementation; implementation is not verified capability; verified capability is not production readiness."
+}

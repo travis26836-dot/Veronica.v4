@@ -1,0 +1,16 @@
+{"atUtc":"2026-08-31T03:57:21.8170715+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":3.0,"keepAwakeAgeSeconds":21.0,"remainingMinutes":43.7,"alerts":[]}
+{"atUtc":"2026-08-31T03:58:11.3471802+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":2.0,"keepAwakeAgeSeconds":11.0,"remainingMinutes":42.9,"alerts":[]}
+{"atUtc":"2026-08-31T03:59:00.0438240+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":1.0,"keepAwakeAgeSeconds":29.0,"remainingMinutes":42.1,"alerts":[]}
+{"atUtc":"2026-08-31T03:59:49.2231698+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":5.0,"keepAwakeAgeSeconds":18.0,"remainingMinutes":41.3,"alerts":[]}
+{"atUtc":"2026-08-31T04:00:39.5902854+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":5.0,"keepAwakeAgeSeconds":9.0,"remainingMinutes":40.4,"alerts":[]}
+{"atUtc":"2026-08-31T04:01:35.8105951+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":1.0,"keepAwakeAgeSeconds":5.0,"remainingMinutes":39.5,"alerts":[]}
+{"atUtc":"2026-08-31T04:02:32.2095520+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":2.0,"keepAwakeAgeSeconds":1.0,"remainingMinutes":38.6,"alerts":[]}
+{"atUtc":"2026-08-31T04:03:28.4011983+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":3.0,"keepAwakeAgeSeconds":28.0,"remainingMinutes":37.6,"alerts":[]}
+{"atUtc":"2026-08-31T04:04:22.2170003+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":2.0,"keepAwakeAgeSeconds":21.0,"remainingMinutes":36.7,"alerts":[]}
+{"atUtc":"2026-08-31T04:05:23.0563464+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":2.0,"keepAwakeAgeSeconds":22.0,"remainingMinutes":35.7,"alerts":[]}
+{"atUtc":"2026-08-31T04:06:18.7211578+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":3.0,"keepAwakeAgeSeconds":18.0,"remainingMinutes":34.8,"alerts":[]}
+{"atUtc":"2026-08-31T04:07:15.4710048+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":5.0,"keepAwakeAgeSeconds":14.0,"remainingMinutes":33.8,"alerts":[]}
+{"atUtc":"2026-08-31T04:08:17.2038577+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":1.0,"keepAwakeAgeSeconds":16.0,"remainingMinutes":32.8,"alerts":[]}
+{"atUtc":"2026-08-31T04:09:20.6366544+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":4.0,"keepAwakeAgeSeconds":20.0,"remainingMinutes":31.7,"alerts":[]}
+{"atUtc":"2026-08-31T04:10:21.0647166+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":true,"watchdogAgeSeconds":5.0,"keepAwakeAgeSeconds":20.0,"remainingMinutes":30.7,"alerts":[]}
+{"atUtc":"2026-08-31T04:11:20.3282243+00:00","podId":"wosedisslfwffs","livePodStatus":"RUNNING","modelAvailable":false,"watchdogAgeSeconds":4.0,"keepAwakeAgeSeconds":19.0,"remainingMinutes":29.8,"alerts":["Model is unavailable to UI"]}

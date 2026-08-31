@@ -1,0 +1,56 @@
+NVIDIA A100-SXM4-80GB, 81920 MiB, 580.159.04
+TARGET     SOURCE                                                   FSTYPE OPTIONS
+/workspace mfs#eur-is-1.runpod.net:9421[/networkvolumes/v53gj9flzs] fuse   rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other
+Filesystem                    Size  Used Avail Use% Mounted on
+mfs#eur-is-1.runpod.net:9421  2.1P  1.4P  730T  66% /workspace
+/workspace
+/workspace/veronica-core
+/workspace/veronica-core/runtime-vllm-0.11.0
+/workspace/veronica-core/runtime-vllm-0.11.0/share
+/workspace/veronica-core/runtime-vllm-0.11.0/lib
+/workspace/veronica-core/runtime-vllm-0.11.0/bin
+/workspace/veronica-core/hf-cache
+/workspace/veronica-core/hf-cache/xet
+/workspace/veronica-core/hf-cli-1.29.0
+/workspace/veronica-core/hf-cli-1.29.0/lib
+/workspace/veronica-core/hf-cli-1.29.0/bin
+/workspace/veronica-core/uv-cache
+/workspace/veronica-core/uv-cache/archive-v0
+/workspace/veronica-core/uv-cache/wheels-v5
+/workspace/veronica-core/uv-cache/simple-v18
+/workspace/veronica-core/uv-cache/interpreter-v4
+/workspace/veronica-core/uv-cache/sdists-v9
+/workspace/veronica-core/models
+/workspace/veronica-core/models/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated
+/workspace/veronica-core/runs
+/workspace/veronica-core/runs/2026-08-30-supervised-first-chat
+/workspace/staging
+/workspace/staging/wan2.2-direct
+/workspace/staging/wan2.2
+/workspace/staging/wan2.2/split_files
+/workspace/runpod-slim
+/workspace/runpod-slim/ComfyUI
+/workspace/runpod-slim/ComfyUI/temp
+/workspace/runpod-slim/ComfyUI/__pycache__
+/workspace/runpod-slim/ComfyUI/api_server
+/workspace/runpod-slim/ComfyUI/alembic_db
+/workspace/runpod-slim/ComfyUI/tests-unit
+/workspace/runpod-slim/ComfyUI/comfy_api
+/workspace/runpod-slim/ComfyUI/models
+/workspace/runpod-slim/ComfyUI/middleware
+/workspace/runpod-slim/ComfyUI/input
+/workspace/runpod-slim/ComfyUI/tests
+/workspace/runpod-slim/ComfyUI/script_examples
+/workspace/runpod-slim/ComfyUI/output
+/workspace/runpod-slim/ComfyUI/custom_nodes
+/workspace/runpod-slim/ComfyUI/comfy
+/workspace/runpod-slim/ComfyUI/blueprints
+/workspace/runpod-slim/ComfyUI/utils
+/workspace/runpod-slim/ComfyUI/comfy_extras
+/workspace/runpod-slim/ComfyUI/user
+/workspace/runpod-slim/ComfyUI/comfy_execution
+/workspace/runpod-slim/ComfyUI/comfy_config
+/workspace/runpod-slim/ComfyUI/comfy_api_nodes
+/workspace/runpod-slim/ComfyUI/app
+/usr/bin/uv
+Python 3.12.3

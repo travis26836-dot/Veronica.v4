@@ -1,0 +1,11 @@
+# START command configured; no paid deployment
+
+The owner requested a reusable "Start Veronica" command, then selected one hour by default, one A100 80 GB, a maximum $1.75/hour rate, and supervised shutdown from this awake/connected computer. The owner subsequently requested exactly one startup question: **"How long would you like the pod to run? Default: 1 hour."** Ask and wait unless the start request already includes its duration. Do not repeat price or supervision questions.
+
+The project skill (also exposed by the existing global junction), AGENTS.md, Copilot instructions, configuration, and starting procedure now route that request to `scripts/start-veronica.ps1`. `-PlanOnly` is offline and non-mutating. Actual startup requires a current one-use approval record, reuses the persistent model volume, validates current/actual cost, verifies generated provider and wrapper responses, and retains supervision until confirmed termination. This configuration discussion did not authorize a paid start.
+
+Additional safeguards: deadline-aware startup bounds; exact owned-Pod cleanup; Linux process-group timeout handling; local port checks; no automatic replacements; serialization of concurrent STARTs; unresolved prior creation blocks a new rental; unknown creation cannot be marked terminated from an empty inventory; the keep-awake helper remains until matching confirmed absence or safe pre-creation cancellation.
+
+Validation: **109 tests passed, 1 skipped**, with the pre-existing Starlette deprecation warning; the skill validator passed and the real PowerShell offline preview returned the saved settings with durationSelectionRequired=true. Artifacts: `offline-tests.txt` and `startup-plan.json`. Tests use mocked control-plane responses and harmless local/WSL process checks, not paid compute or real model inference. A native Linux lock test is skipped by Windows pytest; the platform lock remains an unverified live-start component. The first full paid cold restart of the new launcher remains open and requires an actual owner START request.
+
+No Pod was created, no storage was altered, no model weights were downloaded or changed, and no cloud spending was incurred by this configuration work. Existing first-chat and termination evidence remains in `../2026-08-30-supervised-first-chat/`. Full model qualification is still pending.

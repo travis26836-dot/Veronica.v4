@@ -1,0 +1,13 @@
+{
+  "runId": "2026-08-30-candidate-provenance",
+  "recordedAt": "2026-08-30T00:00:00-04:00",
+  "stage": "foundation_provenance",
+  "status": "in_progress",
+  "scope": "Immutable revision and remote manifest discovery for the two candidate foundations and their official controls.",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "modelSelectionStatus": "benchmark_required",
+  "evidenceSource": "Hugging Face public model API queried on 2026-08-30",
+  "nextAction": "Save immutable model-card and license snapshots, then validate the owner's copied Candidate A artifacts against its source manifest before considering a timed model-server run."
+}

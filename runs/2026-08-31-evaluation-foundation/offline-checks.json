@@ -1,0 +1,111 @@
+[
+  {
+    "artifact": "suite-validation.json",
+    "command": [
+      "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\.venv\\Scripts\\python.exe",
+      "-B",
+      "scripts/evaluate_veronica.py",
+      "validate",
+      "--tier",
+      "extended"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "passed": true
+  },
+  {
+    "artifact": "smoke-plan.json",
+    "command": [
+      "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\.venv\\Scripts\\python.exe",
+      "-B",
+      "scripts/evaluate_veronica.py",
+      "plan",
+      "--tier",
+      "smoke"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "passed": true
+  },
+  {
+    "artifact": "core-plan.json",
+    "command": [
+      "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\.venv\\Scripts\\python.exe",
+      "-B",
+      "scripts/evaluate_veronica.py",
+      "plan",
+      "--tier",
+      "core"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "passed": true
+  },
+  {
+    "artifact": "targeted-plan.json",
+    "command": [
+      "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\.venv\\Scripts\\python.exe",
+      "-B",
+      "scripts/evaluate_veronica.py",
+      "plan",
+      "--tier",
+      "core",
+      "--case-id",
+      "CC-01",
+      "--case-id",
+      "CC-02",
+      "--case-id",
+      "MB-01",
+      "--case-id",
+      "MB-02",
+      "--max-tokens",
+      "192",
+      "--max-calls",
+      "6",
+      "--max-output-tokens",
+      "1152"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "passed": true
+  },
+  {
+    "artifact": "dataset-structure.json",
+    "command": [
+      "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\.venv\\Scripts\\python.exe",
+      "-B",
+      "scripts/check_training_dataset.py",
+      "data/training/examples/sft-draft.jsonl",
+      "data/training/examples/dpo-draft.jsonl"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "passed": true
+  },
+  {
+    "artifact": "dataset-training-ready-refused.json",
+    "command": [
+      "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\.venv\\Scripts\\python.exe",
+      "-B",
+      "scripts/check_training_dataset.py",
+      "data/training/examples/sft-draft.jsonl",
+      "data/training/examples/dpo-draft.jsonl",
+      "--training-ready"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "passed": true
+  },
+  {
+    "artifact": "skill-validation.txt",
+    "command": [
+      "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\.venv\\Scripts\\python.exe",
+      "-B",
+      "C:/Users/raine/.codex/skills/.system/skill-creator/scripts/quick_validate.py",
+      ".agents/skills/veronica-evals"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "passed": true
+  }
+]

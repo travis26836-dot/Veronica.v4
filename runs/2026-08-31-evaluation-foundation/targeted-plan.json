@@ -1,0 +1,26 @@
+{
+  "case_count": 4,
+  "completion_calls": 6,
+  "repeats": 1,
+  "max_completion_tokens": 1152,
+  "max_tokens_per_call": 192,
+  "categories": {
+    "memory-boundaries": 2,
+    "correction-calibration": 2
+  },
+  "input_tokens": "Not estimated; full multi-turn history is sent each turn",
+  "cost": "No dollar estimate: provider/GPU price and model speed must be supplied separately",
+  "creates_compute": false,
+  "executes_tools_or_generated_code": false,
+  "ai_judge_calls": 0,
+  "heldout": false,
+  "case_ids": [
+    "MB-01",
+    "MB-02",
+    "CC-01",
+    "CC-02"
+  ],
+  "suite_id": "veronica-core-v1",
+  "suite_sha256": "ce1644f045953b66cd9b98883570d7404cac832cf06a6085453259af86aecf90",
+  "network_calls": 0
+}

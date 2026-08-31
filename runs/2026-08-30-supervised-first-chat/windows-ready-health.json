@@ -1,0 +1,16 @@
+{
+  "capturedAtUtc": "2026-08-30T23:10:49.0284543Z",
+  "endpoint": "http://127.0.0.1:8010/api/health",
+  "environment": "Windows",
+  "health": {
+    "status": "ready",
+    "wrapper": "ready",
+    "provider": {
+      "reachable": true,
+      "model_available": true,
+      "status_code": 200
+    },
+    "public_model": "Veronica",
+    "upstream_configured": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "records": 3,
+  "errors": [
+    "illustrative-sft-001: training-ready requires approval and reviewer",
+    "illustrative-sft-001: training use is not authorized",
+    "illustrative-sft-002: training-ready requires approval and reviewer",
+    "illustrative-sft-002: training use is not authorized",
+    "illustrative-dpo-001: training-ready requires approval and reviewer",
+    "illustrative-dpo-001: training use is not authorized"
+  ],
+  "warnings": [],
+  "structurally_valid": false,
+  "training_ready_checks_requested": true,
+  "training_authorized_by_tool": false,
+  "limits": "Checks declared metadata and exact overlap only. Human review must verify consent, rights, correct answers, privacy, family assignments and semantic/paraphrase overlap. No export or training occurs."
+}

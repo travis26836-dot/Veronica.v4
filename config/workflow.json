@@ -1,0 +1,20 @@
+{
+  "projectName": "Veronica.v4",
+  "projectSlug": "veronica-v4",
+  "workflowStandard": "Trav's CREATED Workflow",
+  "operatingMode": "local development, timed RunPod evaluation, serverless production",
+  "canonicalHome": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4",
+  "sourceOfTruth": "docs/SOURCE-OF-TRUTH.md",
+  "executionChecklist": "TODO.md",
+  "runFolderPattern": "runs/YYYY-MM-DD-purpose",
+  "requiresHumanConfirmationFor": [
+    "publish",
+    "send",
+    "purchase",
+    "delete",
+    "external_commit",
+    "start_paid_gpu_without_deadline",
+    "merge_personality_adapter",
+    "production_release"
+  ]
+}

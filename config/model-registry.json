@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "publicAlias": "Veronica",
+  "selectionStatus": "benchmark_required",
+  "defaultDevelopmentCandidate": "qwen3-30b-a3b-2507-abliterated",
+  "candidates": [
+    {
+      "id": "qwen3-30b-a3b-2507-abliterated",
+      "repository": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
+      "role": "available_first_run_candidate",
+      "licenseDeclared": "Apache-2.0",
+      "uncensoredMethod": "abliteration",
+      "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+      "qualification": "pending",
+      "notes": "Already copied to the owner's Hugging Face bucket. Efficient MoE candidate with 30.5B total and 3.3B active parameters according to its base model card."
+    },
+    {
+      "id": "qwen3.8-27b-abliterated",
+      "repository": "huihui-ai/Huihui-Qwen3.8-27B-abliterated",
+      "role": "capability_challenger",
+      "licenseDeclared": "Apache-2.0",
+      "uncensoredMethod": "abliteration",
+      "revision": "739e3c5b89849f6c238ce1e5b70008612ae42cdd",
+      "qualification": "pending",
+      "notes": "Newer dense multimodal candidate. Must be compared for capability retention, native tools, latency, VRAM, and cost."
+    }
+  ],
+  "selectionRule": "The selected foundation must pass integrity, license, capability, tool-call, and cost gates. Download completion alone cannot select a model."
+}

@@ -1,0 +1,28 @@
+{
+  "runId": "2026-08-30-core-foundation",
+  "recordedAt": "2026-08-30T16:13:04-04:00",
+  "owner": "Raine",
+  "stage": "local_wrapper_foundation",
+  "status": "completed",
+  "scope": "source of truth, build pipeline, basic wrapper, local mocked validation",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "modelSelectionStatus": "benchmark_required",
+  "pythonVersion": "3.12.10",
+  "testResults": { "passed": 13, "failed": 0, "warnings": 1 },
+  "buildResults": {
+    "wheel": "dist/veronica_core-0.1.0-py3-none-any.whl",
+    "wheelSha256": "5679ff93a3dedb750e433077ab06f52150c5b04d7e7ca10d8dd70d804f9980e5",
+    "sourceArchiveExcludesResearchAndRuntimeData": true
+  },
+  "liveCheck": {
+    "url": "http://127.0.0.1:8010",
+    "pageStatus": 200,
+    "wrapper": "ready",
+    "provider": "offline",
+    "publicAlias": "Veronica"
+  },
+  "lastDurableHandoff": "wrapper package built and local provider-offline state verified",
+  "nextAction": "Verify candidate provenance/revision/files, start a timed model server, and connect for first text chat."
+}

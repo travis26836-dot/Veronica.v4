@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2600" height="1460" viewBox="0 0 2600 1460"><title>Veronica creative pipeline blueprint</title><desc>Future concept, not implemented. Owner approval branches into separate image and video lanes, which merge into a versioned asset library and export.</desc><rect width="2600" height="1460" fill="white"/>
+<text x='95' y='134.72' font-family='Segoe UI,Arial,sans-serif' font-size='58' font-weight='700' fill='#202b3c' text-anchor='start'>VERONICA / CREATIVE PIPELINE BLUEPRINT</text>
+<text x='100' y='201.56' font-family='Segoe UI,Arial,sans-serif' font-size='34' font-weight='700' fill='#b97524' text-anchor='start'>FUTURE CONCEPT — NOT IMPLEMENTED</text>
+<text x='100' y='268.84' font-family='Segoe UI,Arial,sans-serif' font-size='26' font-weight='700' fill='#45556a' text-anchor='start'>01  SHARED DIRECTION</text>
+<text x='600' y='323.38' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#237b9b' text-anchor='start'>02  IMAGE LANE</text>
+<text x='600' y='763.38' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#7860a7' text-anchor='start'>03  VIDEO LANE</text>
+<rect x='100' y='310' width='360' height='140' rx='12' fill='#f5f7fa' stroke='#45556a' stroke-width='4'/>
+<text x='280' y='370.08' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>Owner brief +</text>
+<text x='280' y='411.68' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>reference rights</text>
+<rect x='100' y='530' width='360' height='140' rx='12' fill='#f5f7fa' stroke='#45556a' stroke-width='4'/>
+<text x='280' y='610.88' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>Creative planner</text>
+<rect x='100' y='760' width='360' height='150' rx='12' fill='#fff8ec' stroke='#b97524' stroke-width='4'/>
+<text x='280' y='825.08' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>Owner approval</text>
+<text x='280' y='866.68' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>+ budget</text>
+<polyline points='280,450 280,530' fill='none' stroke='#45556a' stroke-width='4' /><polygon points='280,530 288,512 272,512' fill='#45556a'/>
+<polyline points='280,670 280,760' fill='none' stroke='#45556a' stroke-width='4' /><polygon points='280,760 288,742 272,742' fill='#45556a'/>
+<polyline points='460,835 515,835 515,450 600,450' fill='none' stroke='#237b9b' stroke-width='4' /><polygon points='600,450 582,442 582,458' fill='#237b9b'/>
+<polyline points='460,835 515,835 515,900 600,900' fill='none' stroke='#7860a7' stroke-width='4' /><polygon points='600,900 582,892 582,908' fill='#7860a7'/>
+<rect x='600' y='360' width='400' height='180' rx='12' fill='#f3fafc' stroke='#237b9b' stroke-width='4'/>
+<text x='800' y='439.46' font-family='Segoe UI,Arial,sans-serif' font-size='34' font-weight='700' fill='#202b3c' text-anchor='middle'>Image prompt</text>
+<text x='800' y='483.66' font-family='Segoe UI,Arial,sans-serif' font-size='34' font-weight='700' fill='#202b3c' text-anchor='middle'>+ references</text>
+<rect x='1100' y='360' width='400' height='180' rx='12' fill='#f3fafc' stroke='#237b9b' stroke-width='4'/>
+<text x='1300' y='439.46' font-family='Segoe UI,Arial,sans-serif' font-size='34' font-weight='700' fill='#202b3c' text-anchor='middle'>Image provider</text>
+<text x='1300' y='483.66' font-family='Segoe UI,Arial,sans-serif' font-size='34' font-weight='700' fill='#202b3c' text-anchor='middle'>adapter</text>
+<rect x='1600' y='360' width='400' height='180' rx='12' fill='#f3fafc' stroke='#237b9b' stroke-width='4'/>
+<text x='1800' y='461.56' font-family='Segoe UI,Arial,sans-serif' font-size='34' font-weight='700' fill='#202b3c' text-anchor='middle'>Review + refine</text>
+<rect x='2100' y='360' width='400' height='180' rx='12' fill='#f3fafc' stroke='#237b9b' stroke-width='4'/>
+<text x='2300' y='461.56' font-family='Segoe UI,Arial,sans-serif' font-size='34' font-weight='700' fill='#202b3c' text-anchor='middle'>Approved stills</text>
+<polyline points='1000,450 1100,450' fill='none' stroke='#237b9b' stroke-width='4' /><polygon points='1100,450 1082,442 1082,458' fill='#237b9b'/>
+<polyline points='1500,450 1600,450' fill='none' stroke='#237b9b' stroke-width='4' /><polygon points='1600,450 1582,442 1582,458' fill='#237b9b'/>
+<polyline points='2000,450 2100,450' fill='none' stroke='#237b9b' stroke-width='4' /><polygon points='2100,450 2082,442 2082,458' fill='#237b9b'/>
+<rect x='600' y='800' width='300' height='200' rx='12' fill='#f8f5fc' stroke='#7860a7' stroke-width='4'/>
+<text x='750' y='890.08' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>Script +</text>
+<text x='750' y='931.68' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>storyboard</text>
+<rect x='1000' y='800' width='300' height='200' rx='12' fill='#f8f5fc' stroke='#7860a7' stroke-width='4'/>
+<text x='1150' y='890.08' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>Keyframes /</text>
+<text x='1150' y='931.68' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>clip plan</text>
+<rect x='1400' y='800' width='300' height='200' rx='12' fill='#f8f5fc' stroke='#7860a7' stroke-width='4'/>
+<text x='1550' y='890.7' font-family='Segoe UI,Arial,sans-serif' font-size='30' font-weight='700' fill='#202b3c' text-anchor='middle'>Video provider</text>
+<text x='1550' y='929.7' font-family='Segoe UI,Arial,sans-serif' font-size='30' font-weight='700' fill='#202b3c' text-anchor='middle'>adapter</text>
+<rect x='1800' y='800' width='300' height='200' rx='12' fill='#f8f5fc' stroke='#7860a7' stroke-width='4'/>
+<text x='1950' y='910.88' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>Edit + audio</text>
+<rect x='2200' y='800' width='300' height='200' rx='12' fill='#f8f5fc' stroke='#7860a7' stroke-width='4'/>
+<text x='2350' y='890.08' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>Reviewed</text>
+<text x='2350' y='931.68' font-family='Segoe UI,Arial,sans-serif' font-size='32' font-weight='700' fill='#202b3c' text-anchor='middle'>video</text>
+<polyline points='900,900 1000,900' fill='none' stroke='#7860a7' stroke-width='4' /><polygon points='1000,900 982,892 982,908' fill='#7860a7'/>
+<polyline points='1300,900 1400,900' fill='none' stroke='#7860a7' stroke-width='4' /><polygon points='1400,900 1382,892 1382,908' fill='#7860a7'/>
+<polyline points='1700,900 1800,900' fill='none' stroke='#7860a7' stroke-width='4' /><polygon points='1800,900 1782,892 1782,908' fill='#7860a7'/>
+<polyline points='2100,900 2200,900' fill='none' stroke='#7860a7' stroke-width='4' /><polygon points='2200,900 2182,892 2182,908' fill='#7860a7'/>
+<polyline points='2300,540 2300,640 1150,640 1150,800' fill='none' stroke='#237b9b' stroke-width='4' stroke-dasharray='16 16'/><polygon points='1150,800 1158,782 1142,782' fill='#237b9b'/>
+<text x='1180' y='691.34' font-family='Segoe UI,Arial,sans-serif' font-size='26' font-weight='400' fill='#237b9b' text-anchor='start'>OPTIONAL  ·  approved stills → video keyframes</text>
+<polyline points='2500,450 2560,450 2560,1110 1300,1110 1300,1190' fill='none' stroke='#237b9b' stroke-width='4' /><polygon points='1300,1190 1308,1172 1292,1172' fill='#237b9b'/>
+<polyline points='2350,1000 2350,1110 1300,1110 1300,1190' fill='none' stroke='#7860a7' stroke-width='4' /><polygon points='1300,1190 1308,1172 1292,1172' fill='#7860a7'/>
+<rect x='1000' y='1190' width='600' height='140' rx='12' fill='#f5f7fa' stroke='#45556a' stroke-width='4'/>
+<text x='1300' y='1272.24' font-family='Segoe UI,Arial,sans-serif' font-size='36' font-weight='700' fill='#202b3c' text-anchor='middle'>Versioned asset library</text>
+<rect x='1880' y='1190' width='620' height='140' rx='12' fill='#f5f7fa' stroke='#45556a' stroke-width='4'/>
+<text x='2190' y='1272.24' font-family='Segoe UI,Arial,sans-serif' font-size='36' font-weight='700' fill='#202b3c' text-anchor='middle'>Guide / editor / export</text>
+<polyline points='1600,1260 1880,1260' fill='none' stroke='#45556a' stroke-width='4' /><polygon points='1880,1260 1862,1252 1862,1268' fill='#45556a'/>
+<text x='100' y='1412.02' font-family='Segoe UI,Arial,sans-serif' font-size='28' font-weight='400' fill='#45556a' text-anchor='start'>Separate generation workers. Owner-gated spending. Reviewed assets. Core-first qualification remains the priority.</text>
+</svg>

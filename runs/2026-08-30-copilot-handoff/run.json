@@ -1,0 +1,13 @@
+{
+  "runId": "2026-08-30-copilot-handoff",
+  "recordedAt": "2026-08-30T00:00:00-04:00",
+  "stage": "handoff",
+  "status": "completed",
+  "scope": "Package the verified v4 state for an agent restart before model artifact validation or paid GPU work.",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "codexCreditBalanceAvailableToAgent": false,
+  "safeRestartBoundary": "after UI port; before Candidate A artifact integrity",
+  "nextAction": "Checkpoint A: validate Candidate A artifact storage and manifest without creating a paid Pod."
+}

@@ -1,0 +1,51 @@
+# Secrets
+.env
+.env.*
+!.env.example
+!.env.runpod.example
+*.pem
+*.key
+
+# Dependencies and environments
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Builds and caches
+dist/
+build/
+.cache/
+.pytest_cache/
+.mypy_cache/
+.vite/
+.ruff_cache/
+*.egg-info/
+uv.lock.tmp
+
+# Runtime material
+*.log
+logs/
+generated_images/
+outputs/
+tmp/
+*.uploading
+
+# Private evaluation inputs and raw replies: review/redact before explicit sharing
+runs/*/results.jsonl
+runs/*/transcript.json
+runs/*/retained-ui-conversation.txt
+runs/*/review-template.jsonl
+runs/*/reviews*.jsonl
+# Private transcript-derived reports and review context remain local too.
+runs/2026-08-31-recorded-conversation-eval/
+
+# Large downloaded research media is stored locally but not versioned
+NON-SOURCE CODE/research/civitai-reference/reference-media
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

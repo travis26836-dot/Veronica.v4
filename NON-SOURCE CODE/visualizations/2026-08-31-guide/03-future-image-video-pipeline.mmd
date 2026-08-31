@@ -1,0 +1,18 @@
+flowchart LR
+    subgraph FUTURE["FUTURE CONCEPT — NOT IMPLEMENTED"]
+      BRIEF["Owner brief + reference rights"] --> PLAN["Creative planner"]
+      PLAN --> APPROVE["Owner approval + budget"]
+      APPROVE --> IP["Image prompt + references"]
+      IP --> IA["Image provider adapter"]
+      IA --> IR["Review + refine"]
+      IR --> IS["Approved stills"]
+      APPROVE --> VP["Script + storyboard"]
+      VP --> VK["Keyframes / clip plan"]
+      VK --> VA["Video provider adapter"]
+      VA --> VE["Edit + audio"]
+      VE --> VR["Reviewed video"]
+      IS -. "Optional still-to-video input" .-> VK
+      IS --> LIB["Versioned asset library"]
+      VR --> LIB
+      LIB --> OUT["Guide / editor / export"]
+    end

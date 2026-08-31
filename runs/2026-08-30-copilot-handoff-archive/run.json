@@ -1,0 +1,12 @@
+{
+  "runId": "2026-08-30-copilot-handoff-archive",
+  "recordedAt": "2026-08-30T00:00:00-04:00",
+  "stage": "handoff-cleanup",
+  "status": "configured_pending_copilot_session_start",
+  "scope": "Archive the finished Codex-to-Copilot handoff documents automatically when the first VS Code Copilot agent session starts.",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "trigger": ".github/hooks/archive-copilot-handoff.json SessionStart",
+  "retainedEvidence": "runs/2026-08-30-copilot-handoff/ remains in runs/ by project contract."
+}

@@ -1,0 +1,54 @@
+{
+  "date": "2026-08-31",
+  "status": "complete",
+  "boards": 3,
+  "formats": [
+    "PNG",
+    "SVG"
+  ],
+  "dropboxFolder": "/Veronica v4 - Guide Visuals - 2026-08-31",
+  "localFolder": "C:/Users/raine/DEVELOPMENT/Projects/Veronica.v4/NON-SOURCE CODE/visualizations/2026-08-31-guide",
+  "verification": "Visual inspection of selected PNGs; source-to-sync SHA256 match; remote Dropbox file identities and byte sizes confirmed. Remote content hashes not claimed.",
+  "files": [
+    {
+      "name": "01-current-tech-stack.png",
+      "size": 1280911,
+      "sha256": "5EDBECE403A103FEE8B75A1FA4CE5121E03BFE105953194DA9D9550379C9B544",
+      "width": 1672,
+      "height": 941,
+      "dropboxPath": "/Veronica v4 - Guide Visuals - 2026-08-31/01-current-tech-stack.png",
+      "dropboxId": "id:lkEkM_yFP-IAAAAAAAAAPw",
+      "remoteBytesMatch": true
+    },
+    {
+      "name": "02-future-agent-handoffs.png",
+      "size": 1122656,
+      "sha256": "96177E6BA40B16FE9DC403E30AC09B5F4A9BC550C7A0D9900B0102F550C0DD0B",
+      "width": 1672,
+      "height": 941,
+      "dropboxPath": "/Veronica v4 - Guide Visuals - 2026-08-31/02-future-agent-handoffs.png",
+      "dropboxId": "id:lkEkM_yFP-IAAAAAAAAAQA",
+      "remoteBytesMatch": true
+    },
+    {
+      "name": "03-future-image-video-pipeline.png",
+      "size": 116238,
+      "sha256": "D6E0F766743B1666D6922DE3FDF6F97B583835E4F85A2671FB9CE0B2E761E3E8",
+      "width": 2600,
+      "height": 1460,
+      "dropboxPath": "/Veronica v4 - Guide Visuals - 2026-08-31/03-future-image-video-pipeline.png",
+      "dropboxId": "id:lkEkM_yFP-IAAAAAAAAAQQ",
+      "remoteBytesMatch": true
+    },
+    {
+      "name": "03-future-image-video-pipeline.svg",
+      "size": 8912,
+      "sha256": "9C8FCA267400A29CF713EC742A3B5B4039904875230416C771F7461E9D3022E4",
+      "width": null,
+      "height": null,
+      "dropboxPath": "/Veronica v4 - Guide Visuals - 2026-08-31/03-future-image-video-pipeline.svg",
+      "dropboxId": "id:lkEkM_yFP-IAAAAAAAAAQg",
+      "remoteBytesMatch": true
+    }
+  ]
+}

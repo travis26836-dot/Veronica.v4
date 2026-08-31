@@ -1,0 +1,34 @@
+{
+  "reviewType": "Agent-reviewed real smoke evidence, not a full capability benchmark",
+  "directProviderGeneratedResponses": 5,
+  "wrapperGeneratedResponses": 5,
+  "uiGeneratedResponses": 2,
+  "providerUnauthenticatedModelListRejected": true,
+  "publicAlias": "Veronica",
+  "uiExactPhraseRecall": "silver compass",
+  "uiPhraseRecallPassed": true,
+  "codingExecution": {
+    "interpreter": ".venv/Scripts/python.exe",
+    "script": "generated-coding-check.py",
+    "exitCode": 0,
+    "modelAssertionsPassed": 3,
+    "additionalEdgeCasesPassed": 6
+  },
+  "modelLoadSeconds": 239.894675,
+  "modelMemoryGiB": 56.9342,
+  "configuredMaxModelLength": 8192,
+  "fullContextLimitTested": false,
+  "singleRequestTimeToFirstContentSeconds": 1.167,
+  "singleRequestCompletionTokensPerTotalSecond": 18.71,
+  "localOfflineTestsPassed": 27,
+  "wrapperBuildPassed": true,
+  "knownQualityFailures": [
+    "Both math responses opened with 3/5, then derived and concluded 3/10.",
+    "Wrapper coding response claimed assertions had passed without an execution tool.",
+    "Direct model invented personal history; memory language overstates implemented persistence."
+  ],
+  "firstRealConversationAchieved": true,
+  "finalModelSelection": "pending",
+  "fullCapabilityGatePassed": false,
+  "rawEvidence": ["provider-smoke.json", "wrapper-smoke.json", "provider-timing.json", "ui-live-transcript.txt", "manual-review.md"]
+}

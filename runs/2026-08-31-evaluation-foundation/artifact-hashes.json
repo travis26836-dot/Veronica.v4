@@ -1,0 +1,21 @@
+{
+  "checkpoint": "offline-evaluation-foundation",
+  "sha256": {
+    "data/evals/veronica-core-v1.json": "ce1644f045953b66cd9b98883570d7404cac832cf06a6085453259af86aecf90",
+    "src/veronica_core/evaluation.py": "fac89f4c856428e45e0d96aeea49e20f8528253a2f63241580c5efa85c8a71cd",
+    "src/veronica_core/dataset_checks.py": "fbccbed284678a9fa2e68311023d9dfaa7cba9a9c5770792d7f91c8399cd5b95",
+    "tests/test_evaluation.py": "bf09b0271e94c71bcf0d1fdc2f025794339c5a283d755d01c2c7db1e7698d1bd",
+    ".agents/skills/veronica-evals/SKILL.md": "2b7c32144a3e309b56ec24c21c382766ffda650323d980d20fead4210cbc21ef",
+    ".agents/skills/veronica-evals/agents/openai.yaml": "e8df70a886eaaa83f1f38f20209ee8dbef66245f23f7aca3e136f69cd5a29171",
+    "docs/evals/DATASET-AND-FINETUNING-STRATEGY.md": "67974e33d3ed475eab91e43a6eee9e42a645a307cbcc953358324eeac9fded0a",
+    "docs/evals/QUESTION-BANK.md": "57a90ef3ca278586e7979f059e17da995091a84847ef7fe8319b4160d7d197d6",
+    "docs/evals/README.md": "48ed4546f19a50410818510150b2584c305a425f776c7e3fc535b4ab55202d80",
+    "docs/evals/SCORING.md": "37731d963cebf1774d8a150dcf4c6250f16de9e90ee9334eaed2bc6a09437e58",
+    "runs/2026-08-31-evaluation-foundation/decision.md": "dc0ca8e610f0e4ac8493c4f1efd9bd930084b26f4a24c8c1674c8a53d60bbb42",
+    "runs/2026-08-31-recorded-conversation-eval/review-context.md": "3eed67b2c4bf985b2f7bb8b1a1c9e45b2af33c17085863d56756ab6da42ce225"
+  },
+  "local_document_links_valid": true,
+  "new_model_calls": 0,
+  "training_started": false,
+  "uploads": false
+}

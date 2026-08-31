@@ -1,0 +1,13 @@
+{
+  "runId": "2026-08-30-supervised-first-chat",
+  "podName": "veronica-core-20260830-224835",
+  "createdAttemptAtUtc": "2026-08-30T22:48:35.572794+00:00",
+  "deadlineUtc": "2026-08-31T00:48:35.572794+00:00",
+  "backupShutdownAtUtc": "2026-08-31T00:43:35.572794+00:00",
+  "maxHourlyUsd": 1.6,
+  "sshKey": "/home/dubs/.ssh/id_ed25519_runpod_noirworks",
+  "podId": "r2c0u02vforaqe",
+  "platformTimer": false,
+  "creationAttempted": true,
+  "actualHourlyUsd": 1.59
+}

@@ -1,0 +1,25 @@
+{
+  "runId": "2026-08-30-reusable-runpod-core",
+  "recordedAtUtc": "2026-08-30T22:35:28Z",
+  "status": "local_preparation_complete_paid_launch_blocked",
+  "profile": "config/runpod-core.json",
+  "skill": ".agents/skills/veronica-runpod-core/SKILL.md",
+  "approval": {
+    "source": "Owner replied Yes to one Pod capped at $1.60/hour for two hours, with automatic termination; storage separate.",
+    "maxPods": 1,
+    "maxHourlyUsd": 1.6,
+    "durationMinutes": 120,
+    "requiresAutomaticTermination": true,
+    "reusable": false,
+    "consumed": false
+  },
+  "podCreated": false,
+  "modelWeightsDownloaded": false,
+  "realInferencePerformed": false,
+  "expectedModelFiles": 27,
+  "expectedModelBytes": 61084222203,
+  "expectedWeightShards": 13,
+  "localTestsPassed": 22,
+  "blocker": "RunPod auto-termination flags never enforced shutdown; removed in runpodctl 2.12.0. A verified alternative or authorization for a changed shutdown arrangement is needed.",
+  "source": "https://github.com/runpod/runpodctl/pull/330"
+}

@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "./scripts/archive-copilot-handoff.ps1",
+        "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\archive-copilot-handoff.ps1",
+        "timeout": 15
+      }
+    ]
+  }
+}

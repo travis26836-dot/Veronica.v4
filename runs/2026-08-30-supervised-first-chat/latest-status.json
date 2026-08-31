@@ -1,0 +1,14 @@
+{
+  "id": "r2c0u02vforaqe",
+  "name": "veronica-core-20260830-224835",
+  "desiredStatus": "RUNNING",
+  "runtimeStatus": "running",
+  "costPerHr": 1.59,
+  "publicIp": null,
+  "portMappings": null,
+  "deadlineUtc": "2026-08-31T00:48:35.572794+00:00",
+  "watchdog": {
+    "atUtc": "2026-08-30T22:49:35.988570+00:00",
+    "pid": 12460
+  }
+}
