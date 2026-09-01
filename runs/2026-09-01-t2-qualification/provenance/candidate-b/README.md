@@ -14,13 +14,12 @@ tags:
 
 # huihui-ai/Huihui-Qwen3.8-27B-abliterated
 
-
 This is an uncensored version of [Qwen/Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B) created with abliteration (see [remove-refusals-with-transformers](https://github.com/Sumandora/remove-refusals-with-transformers) to know more about it).
 This is a crude, proof-of-concept implementation to remove refusals from an LLM model without using TransformerLens.
 
 ## Latest update
 
-Only layers **18 to 51** have been ablated (Previously, The first 15 layers were retained without ablation), while the other layers remain unablated. 
+Only layers **18 to 51** have been ablated (Previously, The first 15 layers were retained without ablation), while the other layers remain unablated.
 This helps retain more of the original model’s performance. MTP and visual has not been modified.
 
 If you want to download a previous version, just use the following command:
@@ -29,21 +28,22 @@ If you want to download a previous version, just use the following command:
 hf download huihui-ai/Huihui-Qwen3.8-27B-abliterated --local-dir ./huihui-ai/Huihui-Qwen3.8-27B-abliterated --revision d42ca89
 ```
 
-
 ## Note
+
 The first 15 layers were retained without ablation. MTP and visual has not been modified.
 
 ## ollama
 
 Please use the latest version of [ollama](https://github.com/ollama/ollama/releases)
 
-You can use [huihui_ai/Qwen3.8-abliterated](https://ollama.com/huihui_ai/Qwen3.8-abliterated) directly, 
+You can use [huihui_ai/Qwen3.8-abliterated](https://ollama.com/huihui_ai/Qwen3.8-abliterated) directly,
+
 ```
 ollama run huihui_ai/Qwen3.8-abliterated
 ```
 
-
 ## Usage
+
 You can use this model in your applications by loading it with Hugging Face's `transformers` library:
 
 ```python
@@ -250,27 +250,29 @@ if __name__ == "__main__":
     main()
 
 ```
+
 ### Usage Warnings
 
+- **Risk of Sensitive or Controversial Outputs**: This model’s safety filtering has been significantly reduced, potentially generating sensitive, controversial, or inappropriate content. Users should exercise caution and rigorously review generated outputs.
 
- - **Risk of Sensitive or Controversial Outputs**: This model’s safety filtering has been significantly reduced, potentially generating sensitive, controversial, or inappropriate content. Users should exercise caution and rigorously review generated outputs.
+- **Not Suitable for All Audiences**: Due to limited content filtering, the model’s outputs may be inappropriate for public settings, underage users, or applications requiring high security.
 
- - **Not Suitable for All Audiences**: Due to limited content filtering, the model’s outputs may be inappropriate for public settings, underage users, or applications requiring high security.
+- **Legal and Ethical Responsibilities**: Users must ensure their usage complies with local laws and ethical standards. Generated content may carry legal or ethical risks, and users are solely responsible for any consequences.
 
- - **Legal and Ethical Responsibilities**: Users must ensure their usage complies with local laws and ethical standards. Generated content may carry legal or ethical risks, and users are solely responsible for any consequences.
+- **Research and Experimental Use**: It is recommended to use this model for research, testing, or controlled environments, avoiding direct use in production or public-facing commercial applications.
 
- - **Research and Experimental Use**: It is recommended to use this model for research, testing, or controlled environments, avoiding direct use in production or public-facing commercial applications.
+- **Monitoring and Review Recommendations**: Users are strongly advised to monitor model outputs in real-time and conduct manual reviews when necessary to prevent the dissemination of inappropriate content.
 
- - **Monitoring and Review Recommendations**: Users are strongly advised to monitor model outputs in real-time and conduct manual reviews when necessary to prevent the dissemination of inappropriate content.
-
- - **No Default Safety Guarantees**: Unlike standard models, this model has not undergone rigorous safety optimization. huihui.ai bears no responsibility for any consequences arising from its use.
-
+- **No Default Safety Guarantees**: Unlike standard models, this model has not undergone rigorous safety optimization. huihui.ai bears no responsibility for any consequences arising from its use.
 
 ### Donation
-##### Your donation helps us continue our further development and improvement, a cup of coffee can do it.
+
+##### Your donation helps us continue our further development and improvement, a cup of coffee can do it
+
 - bitcoin:
+
 ```
   bc1qqnkhuchxw0zqjh2ku3lu4hq45hc6gy84uk70ge
 ```
-- Support our work on [Ko-fi](https://ko-fi.com/huihuiai)!
 
+- Support our work on [Ko-fi](https://ko-fi.com/huihuiai)!
