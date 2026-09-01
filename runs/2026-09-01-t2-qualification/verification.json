@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-09-01",
+  "offlineOnly": true,
+  "checks": [
+    {
+      "command": ".\\scripts\\validate-project.ps1",
+      "exitCode": 0,
+      "result": "Project contract validated: required artifacts, JSON, identity, alias, and hold state."
+    },
+    {
+      "command": ".\\.venv\\Scripts\\python.exe -m py_compile src/veronica_core/evaluation.py src/veronica_core/qualification.py scripts/evaluate_veronica.py scripts/verify_t2_qualification.py",
+      "exitCode": 0,
+      "result": "Python syntax compilation passed."
+    },
+    {
+      "command": ".\\.venv\\Scripts\\python.exe -m pytest -p no:cacheprovider --basetemp runs/2026-09-01-t2-qualification/test-tmp-full-02",
+      "exitCode": 0,
+      "result": "130 passed, 2 skipped; one pre-existing Starlette/httpx deprecation warning."
+    },
+    {
+      "command": ".\\.venv\\Scripts\\python.exe scripts/verify_t2_qualification.py protocol",
+      "exitCode": 0,
+      "result": "Protocol ready: 4 models, 2 pairs, 10 required model-track runs, 8 pinned card/license files, zero issues."
+    }
+  ],
+  "limits": "These checks validate local software and protocol structure. They make no model inference calls and do not qualify a foundation."
+}

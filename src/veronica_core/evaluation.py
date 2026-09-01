@@ -311,6 +311,10 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
     endpoint = check_endpoint(args.base_url, args.allow_remote)
     if not math.isfinite(args.temperature) or not 0 <= args.temperature <= 2:
         raise ValueError("Temperature must be between 0 and 2")
+    if not math.isfinite(args.top_p) or not 0 < args.top_p <= 1:
+        raise ValueError("Top-p must be greater than 0 and at most 1")
+    if args.thinking not in ("default", "enabled", "disabled"):
+        raise ValueError("Thinking must be default, enabled or disabled")
     if not 1 <= args.max_seconds <= 3600 or not 1 <= args.timeout_seconds <= 180:
         raise ValueError("Invalid wall-clock or request timeout")
     runtime = read_json(args.runtime_record)
@@ -329,7 +333,8 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
                 "base_url": endpoint, "model_alias": args.model, "mode": args.mode,
                 "identity": identity, "identity_status": "supplied metadata; confirm against serving-run provenance",
                 "runtime_record_sha256": fingerprint(args.runtime_record), "plan": execution_plan,
-                "max_seconds": args.max_seconds, "temperature": args.temperature, "seed": args.seed,
+                "max_seconds": args.max_seconds, "temperature": args.temperature, "top_p": args.top_p,
+                "thinking": args.thinking, "seed": args.seed,
                 "collection_status": "in_progress", "automatic_judge": False, "tools_executed": False}
     if args.surface == "wrapper":
         manifest["wrapper_source_sha256"] = {name: fingerprint(ROOT / "src/veronica_core" / name) for name in ("persona.py", "provider.py", "app.py")}
@@ -358,7 +363,10 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
                             raise TimeoutError("Evaluation wall-clock budget exhausted")
                         history.append({"role": "user", "content": turn["user"]})
                         payload = {"model": args.model, "messages": deepcopy(history), "max_tokens": args.max_tokens,
-                                   "temperature": args.temperature, "seed": args.seed + repetition, "stream": False}
+                                   "temperature": args.temperature, "top_p": args.top_p,
+                                   "seed": args.seed + repetition, "stream": False}
+                        if args.thinking != "default":
+                            payload["chat_template_kwargs"] = {"enable_thinking": args.thinking == "enabled"}
                         if args.surface == "wrapper":
                             payload["veronica_mode"] = args.mode
                         if case.get("tools"):
@@ -481,6 +489,8 @@ def main() -> None:
             command.add_argument("--max-seconds", type=float, default=900)
             command.add_argument("--timeout-seconds", type=float, default=90)
             command.add_argument("--temperature", type=float, default=0)
+            command.add_argument("--top-p", type=float, default=1)
+            command.add_argument("--thinking", choices=("default", "enabled", "disabled"), default="default")
             command.add_argument("--seed", type=int, default=42)
     report = commands.add_parser("report")
     report.add_argument("--run-dir", type=Path, required=True)

@@ -15,7 +15,7 @@ core = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(core)
 
 
-def fake_inventory(profile, price=1.75):
+def fake_inventory(profile, price=1.75, pods=None):
     replies = {
         ("network-volume", "get", profile["pod"]["networkVolumeId"]): {
             "id": profile["pod"]["networkVolumeId"], "dataCenterId": profile["pod"]["dataCenterId"], "size": 300,
@@ -24,7 +24,7 @@ def fake_inventory(profile, price=1.75):
             "gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": price,
             "dataCenterAvailability": [{"dataCenterId": profile["pod"]["dataCenterId"], "stockStatus": "Low"}],
         }],
-        ("pod", "list", "--all"): [],
+        ("pod", "list", "--all"): [] if pods is None else pods,
         ("ssh", "list-keys"): {"keys": [{"name": "offline-test"}]},
     }
 
@@ -115,6 +115,39 @@ def test_available_exact_gpu_at_or_below_saved_limit_passes_offline_preflight(pr
     assert result["savedMaximumHourlyUsd"] == 1.75
     assert result["gpuCount"] == 1
     assert not result["platformDeadlineEnforced"]
+
+
+@pytest.mark.parametrize(
+    "profile_path,existing_name",
+    [
+        (core.DEFAULT_PROFILE, "veronica-t2-existing"),
+        (ROOT / "config/runpod-t2-candidate-b.json", "veronica-core-existing"),
+    ],
+)
+def test_all_profiles_block_a_second_veronica_pod(profile_path, existing_name):
+    profile = core.profile_at(profile_path)
+    pods = [{"id": "existing123", "name": existing_name}]
+    with patch.object(core, "cli", fake_inventory(profile, 1.59, pods)):
+        result = core.preflight(profile, 1.75, 60, supervised=True)
+    assert not result["safeToCreate"]
+    assert any("already exists" in blocker for blocker in result["blockers"])
+
+
+def test_unrelated_account_pod_does_not_trigger_veronica_duplicate_guard():
+    profile = core.profile_at(core.DEFAULT_PROFILE)
+    pods = [{"id": "unrelated123", "name": "another-project"}]
+    with patch.object(core, "cli", fake_inventory(profile, 1.59, pods)):
+        result = core.preflight(profile, 1.75, 60, supervised=True)
+    assert result["safeToCreate"]
+
+
+def test_unapproved_veronica_name_prefix_is_rejected(tmp_path):
+    profile = core.read_json(core.DEFAULT_PROFILE)
+    profile["pod"]["namePrefix"] = "generic-pod-"
+    path = tmp_path / "profile.json"
+    path.write_text(json.dumps(profile))
+    with pytest.raises(ValueError, match="approved Veronica workflow"):
+        core.profile_at(path)
 
 
 def test_windows_awake_release_requires_exact_confirmed_termination_or_safe_cancellation(tmp_path):

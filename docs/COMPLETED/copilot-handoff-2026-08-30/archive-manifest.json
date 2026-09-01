@@ -1,0 +1,19 @@
+{
+  "archivedAtUtc": "2026-09-01T12:15:57.7292409Z",
+  "trigger": "VS Code Copilot SessionStart hook",
+  "archivedFiles": [
+    {
+      "originalPath": "docs\\CODEX-CREDIT-CHECKPOINT.md",
+      "archivedPath": "docs\\COMPLETED\\copilot-handoff-2026-08-30\\CODEX-CREDIT-CHECKPOINT.md"
+    },
+    {
+      "originalPath": "docs\\COPILOT-HANDOFF.md",
+      "archivedPath": "docs\\COMPLETED\\copilot-handoff-2026-08-30\\COPILOT-HANDOFF.md"
+    },
+    {
+      "originalPath": "docs\\COPILOT-RESTART-PROMPT.md",
+      "archivedPath": "docs\\COMPLETED\\copilot-handoff-2026-08-30\\COPILOT-RESTART-PROMPT.md"
+    }
+  ],
+  "retainedEvidence": "runs/2026-08-30-copilot-handoff/ is retained because run evidence stays in runs/ by project contract."
+}

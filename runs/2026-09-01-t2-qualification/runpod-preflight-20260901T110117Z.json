@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-09-01T11:01:17.080706+00:00",
+  "profile": "config/runpod-t2-candidate-a.json",
+  "readOnly": true,
+  "resourceCreationAttempted": false,
+  "cliVersion": "2.12.0",
+  "volumeId": "v53gj9flzs",
+  "volumeSizeGb": 300,
+  "dataCenterId": "EUR-IS-1",
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "listedHourlyUsd": 1.59,
+  "stock": "none",
+  "requestedLimitUsd": 1.75,
+  "savedMaximumHourlyUsd": 1.75,
+  "gpuCount": 1,
+  "requestedDurationMinutes": 60,
+  "approvalIsReusable": false,
+  "podCount": 0,
+  "blockers": [
+    "Requested GPU is unavailable in the volume data center"
+  ],
+  "shutdownMode": "supervised-with-local-backup",
+  "platformDeadlineEnforced": false,
+  "safeToCreate": false
+}

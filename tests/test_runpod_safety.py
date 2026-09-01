@@ -153,3 +153,16 @@ def test_non_lfs_metadata_uses_git_blob_hash(tmp_path):
     git_blob = hashlib.sha1(f"blob {len(content)}\0".encode() + content).hexdigest()
     manifest = {"files": [{"path": "config.json", "bytes": len(content), "sha256": None, "gitBlob": git_blob}]}
     assert len(bootstrap.verify_files(tmp_path, manifest)) == 1
+
+
+def test_only_reviewed_vllm_parser_arguments_are_accepted():
+    assert bootstrap.validated_server_arguments({"serverArguments": [
+        "--enable-auto-tool-choice", "--tool-call-parser", "hermes"
+    ]}) == ["--enable-auto-tool-choice", "--tool-call-parser", "hermes"]
+    assert bootstrap.validated_server_arguments({"serverArguments": [
+        "--reasoning-parser", "qwen3", "--tool-call-parser", "qwen3_coder"
+    ]}) == ["--reasoning-parser", "qwen3", "--tool-call-parser", "qwen3_coder"]
+    for arguments in (["--served-model-name", "fake"], ["--tool-call-parser", "evil"],
+                      ["--reasoning-parser"], ["--enable-auto-tool-choice", "--enable-auto-tool-choice"]):
+        with pytest.raises(ValueError):
+            bootstrap.validated_server_arguments({"serverArguments": arguments})

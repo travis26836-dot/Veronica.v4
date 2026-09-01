@@ -10,13 +10,21 @@ param(
     [Nullable[double]]$MaxHourlyUsd,
     [string]$RunDir,
     [string]$ApprovalFile,
+    [string]$ProfilePath,
     [string]$SshKey = '/home/dubs/.ssh/id_ed25519_runpod_noirworks'
 )
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $projectRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
-$profilePath = Join-Path $projectRoot 'config/runpod-core.json'
+$configRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot 'config'))
+$profilePath = if ($ProfilePath) { [IO.Path]::GetFullPath($ProfilePath) } else { Join-Path $configRoot 'runpod-core.json' }
+if ([IO.Path]::GetDirectoryName($profilePath) -ne $configRoot -or [IO.Path]::GetFileName($profilePath) -notmatch '^runpod-(core|t2-[a-z0-9-]+)\.json$') {
+    throw 'ProfilePath must be runpod-core.json or a runpod-t2-*.json direct child of this project config directory.'
+}
+if (-not (Test-Path -LiteralPath $profilePath -PathType Leaf)) { throw 'ProfilePath does not exist.' }
+$profileItem = Get-Item -Force -LiteralPath $profilePath
+if (($profileItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'ProfilePath cannot be a symlink or junction.' }
 $profile = Get-Content -Raw -LiteralPath $profilePath | ConvertFrom-Json
 $minutes = [int]$profile.safety.defaultDurationMinutes
 if ($DurationMinutes) {
@@ -72,6 +80,7 @@ if ($PlanOnly) {
         durationMinutes = $minutes; maxHourlyUsd = $hourly; maximumHourlyUsd = $profile.safety.maximumHourlyUsd
         resourceCount = 1; gpuTypeId = $profile.pod.gpuTypeId; networkVolumeId = $profile.pod.networkVolumeId
         dataCenterId = $profile.pod.dataCenterId; modelRevision = $profile.model.revision
+        modelRepository = $profile.model.repository; profilePath = $profilePath
         shutdownMode = $profile.safety.defaultShutdownMode; platformDeadlineEnforced = $false
         currentAuthorizationRequired = $true; runDir = $resolvedRun; stages = $stages
         durationSelectionRequired = $profile.safety.durationSelectionRequired

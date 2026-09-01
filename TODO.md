@@ -31,9 +31,9 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Register the already-bucketed 30B-A3B uncensored candidate.
 - [x] Register the newer Qwen3.8-27B uncensored capability challenger.
 - [x] Pin immutable Hugging Face revisions for every candidate and control. Proof: `runs/2026-08-30-candidate-provenance/decision.md`.
-- [ ] Save the full license and model-card snapshots in the run record.
-- [ ] Verify commercial use, modification, redistribution, attribution, and derivative obligations.
-- [ ] Record base-model lineage and the community ablation method.
+- [x] Save the full license and model-card snapshots in the run record. Proof: `runs/2026-09-01-t2-qualification/provenance-manifest.json`.
+- [x] Verify commercial use, modification, redistribution, attribution, and derivative obligations. Proof: `runs/2026-09-01-t2-qualification/license-review.md`; repository declarations do not replace final legal review.
+- [x] Record base-model lineage and the community ablation method. Proof: the same pinned snapshots and license/lineage review.
 - [ ] Record complete file manifest, expected byte count, and storage URI.
 - [ ] Validate transfers before promotion from `.uploading` storage.
 - [ ] Select comparison quantizations appropriate to 48 GB and 80 GB GPUs.
@@ -138,6 +138,7 @@ This file is the execution source of truth. Check an item only when its stated p
 ## T2 - Test: untouched model baseline
 
 - [x] Build an offline-validated evaluation runner, transcript intake/reporting, draft dataset linter, and reusable `veronica-evals` skill. Proof: `runs/2026-08-31-evaluation-foundation/decision.md`.
+- [x] Freeze a matched four-model T2 protocol and add a strict offline evidence verifier. Proof: `config/t2-qualification.json` and `runs/2026-09-01-t2-qualification/decision.md`; no live comparison is claimed.
 - [x] Preserve and import the retained first conversation for evaluation, with assistant findings labeled advisory and training consent absent. Proof: `runs/2026-08-31-recorded-conversation-eval/report.md`.
 - [ ] Adjudicate the transcript's advisory findings and approve the next bounded evaluation selection.
 - [ ] Extend short context probes into long-context stress tests and add complete schema/executable-code qualification environments; the current runner never executes tools or generated code.

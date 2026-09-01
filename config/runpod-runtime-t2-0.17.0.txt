@@ -1,0 +1,4 @@
+# T2 compatibility target. The base image is pinned in each profile.
+# The live run must preserve the complete resolved freeze as evidence.
+vllm==0.17.0
+transformers==5.8.0

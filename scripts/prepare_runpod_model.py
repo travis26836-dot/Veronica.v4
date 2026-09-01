@@ -14,6 +14,33 @@ import shutil
 import subprocess
 
 
+def validated_server_arguments(runtime):
+    """Allow only reviewed vLLM parser switches from a profile; never shell text."""
+    arguments = runtime.get("serverArguments", [])
+    if not isinstance(arguments, list) or not all(isinstance(value, str) for value in arguments):
+        raise ValueError("runtime.serverArguments must be a string list")
+    result, seen, index = [], set(), 0
+    valued = {
+        "--tool-call-parser": {"hermes", "qwen3_coder"},
+        "--reasoning-parser": {"qwen3"},
+    }
+    switches = {"--enable-auto-tool-choice"}
+    while index < len(arguments):
+        flag = arguments[index]
+        if flag in seen:
+            raise ValueError(f"Duplicate server argument: {flag}")
+        seen.add(flag)
+        if flag in switches:
+            result.append(flag)
+            index += 1
+            continue
+        if flag not in valued or index + 1 >= len(arguments) or arguments[index + 1] not in valued[flag]:
+            raise ValueError(f"Unsupported server argument: {flag}")
+        result.extend((flag, arguments[index + 1]))
+        index += 2
+    return result
+
+
 def validated_path(root, name):
     root = Path(root).resolve()
     path = root / name
@@ -123,6 +150,7 @@ def main():
     env["VLLM_API_KEY"] = env.pop("VERONICA_UPSTREAM_API_KEY")
     env["HF_HUB_OFFLINE"] = "1"
     server = [str(runtime_env / "bin/python"), "-m", "vllm.entrypoints.openai.api_server", "--model", str(selected), "--served-model-name", profile["publicAlias"], "--host", runtime["host"], "--port", str(runtime["port"]), "--dtype", runtime["dtype"], "--max-model-len", str(runtime["maxModelLen"]), "--max-num-seqs", str(runtime["maxNumSeqs"]), "--gpu-memory-utilization", str(runtime["gpuMemoryUtilization"]), "--enforce-eager"]
+    server.extend(validated_server_arguments(runtime))
     (args.evidence_dir / "server-command.json").write_text(json.dumps(server, indent=2) + "\n")
     # Run foreground under a supervisor/setsid chosen by the deployment controller.
     os.execve(server[0], server, env)

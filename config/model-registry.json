@@ -3,6 +3,7 @@
   "publicAlias": "Veronica",
   "selectionStatus": "benchmark_required",
   "defaultDevelopmentCandidate": "qwen3-30b-a3b-2507-abliterated",
+  "qualificationProtocol": "config/t2-qualification.json",
   "candidates": [
     {
       "id": "qwen3-30b-a3b-2507-abliterated",
@@ -11,6 +12,9 @@
       "licenseDeclared": "Apache-2.0",
       "uncensoredMethod": "abliteration",
       "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+      "matchingControlId": "qwen3-30b-a3b-2507-control",
+      "provenanceSnapshot": "runs/2026-09-01-t2-qualification/provenance/candidate-a",
+      "runpodProfile": "config/runpod-t2-candidate-a.json",
       "qualification": "pending",
       "notes": "Already copied to the owner's Hugging Face bucket. Efficient MoE candidate with 30.5B total and 3.3B active parameters according to its base model card."
     },
@@ -21,8 +25,37 @@
       "licenseDeclared": "Apache-2.0",
       "uncensoredMethod": "abliteration",
       "revision": "739e3c5b89849f6c238ce1e5b70008612ae42cdd",
+      "matchingControlId": "qwen3.8-27b-control",
+      "provenanceSnapshot": "runs/2026-09-01-t2-qualification/provenance/candidate-b",
+      "runpodProfile": "config/runpod-t2-candidate-b.json",
       "qualification": "pending",
       "notes": "Newer dense multimodal candidate. Must be compared for capability retention, native tools, latency, VRAM, and cost."
+    }
+  ],
+  "controls": [
+    {
+      "id": "qwen3-30b-a3b-2507-control",
+      "repository": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+      "role": "official_control",
+      "licenseDeclared": "Apache-2.0",
+      "revision": "0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe",
+      "controlsCandidateId": "qwen3-30b-a3b-2507-abliterated",
+      "provenanceSnapshot": "runs/2026-09-01-t2-qualification/provenance/candidate-a-control",
+      "runpodProfile": "config/runpod-t2-candidate-a-control.json",
+      "qualification": "pending",
+      "notes": "Official untouched control for Candidate A. The pinned card declares non-thinking behavior."
+    },
+    {
+      "id": "qwen3.8-27b-control",
+      "repository": "Qwen/Qwen3.8-27B",
+      "role": "official_control",
+      "licenseDeclared": "Apache-2.0",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "controlsCandidateId": "qwen3.8-27b-abliterated",
+      "provenanceSnapshot": "runs/2026-09-01-t2-qualification/provenance/candidate-b-control",
+      "runpodProfile": "config/runpod-t2-candidate-b-control.json",
+      "qualification": "pending",
+      "notes": "Official untouched control for Candidate B. The pinned card declares native multimodal and flexible-thinking behavior."
     }
   ],
   "selectionRule": "The selected foundation must pass integrity, license, capability, tool-call, and cost gates. Download completion alone cannot select a model."

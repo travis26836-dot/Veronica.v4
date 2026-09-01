@@ -56,6 +56,22 @@ Assistant-produced reviews must say `reviewer_type: "assistant"`; they are advis
 
 The runner does not provision, start, extend or terminate compute. Start Veronica through its existing skill only under a fresh request/duration approval. Open the UI early. Run evals as a separate workload, not by injecting messages into the owner's chat. The A100 runtime currently allows one sequence, so evaluation requests can delay interactive replies; keep concurrency at one and agree on the short test window.
 
+For T2 foundation qualification, first validate the frozen four-model protocol offline:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/verify_t2_qualification.py protocol
+```
+
+The protocol is `config/t2-qualification.json`. It pins both candidates and both official controls, matched runtime requirements, selected cases, sampling settings and evidence gates. Its verifier never starts compute or selects a model. The prior Candidate A smoke run cannot be substituted because it used an older runtime and did not include the other three models.
+
+After all live runs and human reviews exist, copy `config/t2-comparison-inputs.template.json`, replace every placeholder with the actual evidence paths, and audit the complete matrix:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/verify_t2_qualification.py compare --inputs runs/ACTUAL-T2-COMPARISON/comparison-inputs.json
+```
+
+The comparison remains `hold` if a required run, paired sample, human review, artifact manifest, runtime attestation, executable-code report, long-context report, native-tool report or adjudication record is absent.
+
 First preview the selected pack. The plan counts completion calls and the configured maximum completion tokens. It does **not** estimate input tokens, elapsed time or dollars; full conversation history is resent each turn. Choose limits compatible with the remaining Pod deadline, with a cleanup margin. `max_seconds` stops new requests once elapsed; HTTP phase timeouts bound in-flight I/O but are not a cloud billing timer. A disconnected client does not prove server work stopped.
 
 Example for an already-running authorized wrapper; replace the runtime record and run-directory names with the actual new run:
@@ -63,6 +79,8 @@ Example for an already-running authorized wrapper; replace the runtime record an
 ```powershell
 .\.venv\Scripts\python.exe scripts/evaluate_veronica.py run --execute --tier smoke --base-url http://127.0.0.1:8010/v1 --surface wrapper --runtime-record runs/ACTUAL-START-RUN/profile.json --run-dir runs/ACTUAL-EVAL-RUN --max-seconds 600 --max-calls 30 --max-output-tokens 12000
 ```
+
+Use `--top-p` and `--thinking disabled|enabled` exactly as frozen for the selected T2 track. These values are copied into every request and the run manifest so mismatched sampling or reasoning modes cannot masquerade as a fair comparison.
 
 Use the active UI port if different; the earlier session used 8011. The runner requires the model alias advertised by `/v1/models`. `--surface wrapper` sends `veronica_mode`; `--surface direct` does not. The direct Pod tunnel needs its private credential in an environment variable, passed only by variable **name** with `--api-key-env`. Do not copy a key into commands, files, reports or chat. Existing private-state handling is in the startup controller; no key extraction is required for ordinary wrapper evaluation.
 

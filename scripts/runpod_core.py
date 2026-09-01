@@ -21,6 +21,7 @@ from urllib.error import HTTPError
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PROFILE = ROOT / "config/runpod-core.json"
+VERONICA_POD_PREFIXES = ("veronica-core-", "veronica-t2-")
 
 
 def read_json(path):
@@ -64,6 +65,8 @@ def profile_at(path):
             raise ValueError(f"{field} must be an immutable 40-character commit")
     if not re.fullmatch(r"[\w./-]+@sha256:[0-9a-f]{64}", pod["image"]):
         raise ValueError("Container image must use an immutable SHA-256 digest")
+    if pod.get("namePrefix") not in VERONICA_POD_PREFIXES:
+        raise ValueError("Pod name prefix must identify an approved Veronica workflow")
     directory = PurePosixPath(model["directory"])
     if ".." in directory.parts or not directory.is_relative_to("/workspace/veronica-core/models"):
         raise ValueError("Model directory must be inside /workspace/veronica-core/models")
@@ -216,8 +219,8 @@ def preflight(profile, hourly, minutes, *, supervised=False):
         blockers.append("Requested GPU is unavailable in the volume data center")
     if not price_within_limit(price, hourly):
         blockers.append("Current GPU price does not satisfy the approved ceiling")
-    if any(p.get("name", "").startswith(pod["namePrefix"]) for p in pods):
-        blockers.append("A Veronica core Pod already exists; inspect it instead of creating another")
+    if any(p.get("name", "").startswith(VERONICA_POD_PREFIXES) for p in pods):
+        blockers.append("A Veronica Pod already exists; inspect it instead of creating another")
     if not keys.get("keys"):
         blockers.append("No registered SSH key")
     create_help = cli("pod", "create", "--help")

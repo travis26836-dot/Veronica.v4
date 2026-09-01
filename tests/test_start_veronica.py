@@ -22,6 +22,7 @@ def launcher(tmp_path):
     (root / "config").mkdir()
     shutil.copyfile(ROOT / "scripts/start-veronica.ps1", root / "scripts/start-veronica.ps1")
     shutil.copyfile(ROOT / "config/runpod-core.json", root / "config/runpod-core.json")
+    shutil.copyfile(ROOT / "config/runpod-t2-candidate-a.json", root / "config/runpod-t2-candidate-a.json")
     return root
 
 
@@ -58,6 +59,22 @@ def test_explicit_options_override_defaults_without_raising_saved_ceiling(launch
     assert plan["durationMinutes"] == 120
     assert plan["maxHourlyUsd"] == 1.6
     assert plan["maximumHourlyUsd"] == 1.75
+
+
+def test_t2_profile_is_explicit_and_visible_in_plan(launcher):
+    profile = launcher / "config/runpod-t2-candidate-a.json"
+    result = invoke(launcher, "-PlanOnly", "-ProfilePath", profile)
+    assert result.returncode == 0, result.stderr
+    plan = json.loads(result.stdout)
+    assert Path(plan["profilePath"]) == profile
+    assert plan["modelRepository"] == "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated"
+
+
+@pytest.mark.parametrize("relative", ["outside.json", "config/other.json", "config/../runpod-t2-candidate-a.json"])
+def test_profile_path_cannot_escape_or_use_an_unapproved_name(launcher, relative):
+    result = invoke(launcher, "-PlanOnly", "-ProfilePath", launcher / relative)
+    assert result.returncode != 0
+    assert "ProfilePath must be" in result.stderr or "ProfilePath does not exist" in result.stderr
 
 
 @pytest.mark.parametrize("args", [(), ("-RunDir", "RUN_PLACEHOLDER")])

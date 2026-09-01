@@ -139,14 +139,37 @@ def test_live_runner_isolates_cases_but_keeps_generated_history_within_case(tmp_
     monkeypatch.setattr(ev.httpx, "Client", lambda **kwargs: actual_client(transport=httpx.MockTransport(handler), **kwargs))
     monkeypatch.setattr(ev, "new_run", lambda path: (path.mkdir(), path)[1])
     args = SimpleNamespace(execute=True, base_url="http://127.0.0.1:9999/v1", allow_remote=False,
-                           temperature=0, max_seconds=10, timeout_seconds=5, runtime_record=runtime, api_key_env=None,
+                           temperature=0, top_p=1, thinking="disabled", max_seconds=10, timeout_seconds=5,
+                           runtime_record=runtime, api_key_env=None,
                            run_dir=tmp_path / "results", suite=suite_path, surface="direct", model="Veronica",
                            mode="chat", seed=1, repeats=1, max_tokens=10)
     report = ev.collect(args, data, data["cases"], ev.plan(data["cases"], 1, 10, 10, 100))
     assert requests[1]["messages"][-2] == {"role": "assistant", "content": "reply-1"}
+    assert requests[0]["top_p"] == 1
+    assert requests[0]["chat_template_kwargs"] == {"enable_thinking": False}
     assert all(m["role"] != "assistant" for m in requests[2]["messages"])
     assert "rubric" not in json.dumps(requests) and "DO_NOT_COPY" not in (args.run_dir / "manifest.json").read_text()
     assert report["gate"] == "human_review_pending"
+
+
+@pytest.mark.parametrize(("top_p", "thinking"), [(0, "default"), (1.1, "default"), (1, "invalid")])
+def test_live_runner_rejects_invalid_sampling_or_thinking_before_network(tmp_path, monkeypatch, top_p, thinking):
+    data = suite()
+    suite_path = tmp_path / "suite.json"
+    ev.write_json(suite_path, data)
+    runtime = tmp_path / "runtime.json"
+    ev.write_json(runtime, {"model": {"repository": "fixture", "revision": "fixture"}})
+    args = SimpleNamespace(execute=True, base_url="http://127.0.0.1:9999/v1", allow_remote=False,
+                           temperature=0, top_p=top_p, thinking=thinking, max_seconds=10, timeout_seconds=5,
+                           runtime_record=runtime, api_key_env=None, run_dir=tmp_path / "results", suite=suite_path,
+                           surface="direct", model="Veronica", mode="chat", seed=1, repeats=1, max_tokens=10)
+    if thinking == "invalid":
+        # argparse enforces this in normal CLI use; collect defensively rejects it too.
+        with pytest.raises(ValueError, match="Thinking"):
+            ev.collect(args, data, data["cases"], ev.plan(data["cases"], 1, 10, 10, 100))
+    else:
+        with pytest.raises(ValueError, match="Top-p"):
+            ev.collect(args, data, data["cases"], ev.plan(data["cases"], 1, 10, 10, 100))
 
 
 def training_record(record_id="example", family="new-family", split="train"):

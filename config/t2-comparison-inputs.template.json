@@ -1,0 +1,23 @@
+{
+  "protocolId": "t2-untouched-foundation-v1",
+  "runs": [
+    {"modelId": "qwen3-30b-a3b-2507-abliterated", "trackId": "neutral-deterministic", "runDir": "runs/REPLACE-candidate-a-deterministic", "reviews": "runs/REPLACE-candidate-a-deterministic/reviews-adjudicated.jsonl"},
+    {"modelId": "qwen3-30b-a3b-2507-abliterated", "trackId": "neutral-sampled", "runDir": "runs/REPLACE-candidate-a-sampled", "reviews": "runs/REPLACE-candidate-a-sampled/reviews-adjudicated.jsonl"},
+    {"modelId": "qwen3-30b-a3b-2507-control", "trackId": "neutral-deterministic", "runDir": "runs/REPLACE-candidate-a-control-deterministic", "reviews": "runs/REPLACE-candidate-a-control-deterministic/reviews-adjudicated.jsonl"},
+    {"modelId": "qwen3-30b-a3b-2507-control", "trackId": "neutral-sampled", "runDir": "runs/REPLACE-candidate-a-control-sampled", "reviews": "runs/REPLACE-candidate-a-control-sampled/reviews-adjudicated.jsonl"},
+    {"modelId": "qwen3.8-27b-abliterated", "trackId": "neutral-deterministic", "runDir": "runs/REPLACE-candidate-b-deterministic", "reviews": "runs/REPLACE-candidate-b-deterministic/reviews-adjudicated.jsonl"},
+    {"modelId": "qwen3.8-27b-abliterated", "trackId": "neutral-sampled", "runDir": "runs/REPLACE-candidate-b-sampled", "reviews": "runs/REPLACE-candidate-b-sampled/reviews-adjudicated.jsonl"},
+    {"modelId": "qwen3.8-27b-abliterated", "trackId": "native-thinking", "runDir": "runs/REPLACE-candidate-b-thinking", "reviews": "runs/REPLACE-candidate-b-thinking/reviews-adjudicated.jsonl"},
+    {"modelId": "qwen3.8-27b-control", "trackId": "neutral-deterministic", "runDir": "runs/REPLACE-candidate-b-control-deterministic", "reviews": "runs/REPLACE-candidate-b-control-deterministic/reviews-adjudicated.jsonl"},
+    {"modelId": "qwen3.8-27b-control", "trackId": "neutral-sampled", "runDir": "runs/REPLACE-candidate-b-control-sampled", "reviews": "runs/REPLACE-candidate-b-control-sampled/reviews-adjudicated.jsonl"},
+    {"modelId": "qwen3.8-27b-control", "trackId": "native-thinking", "runDir": "runs/REPLACE-candidate-b-control-thinking", "reviews": "runs/REPLACE-candidate-b-control-thinking/reviews-adjudicated.jsonl"}
+  ],
+  "supplementalEvidence": {
+    "artifactManifests": ["runs/REPLACE/artifact-manifest.json"],
+    "runtimeAttestations": ["runs/REPLACE/runtime-attestation.json"],
+    "executableCodeReports": ["runs/REPLACE/executable-code-report.json"],
+    "longContextReports": ["runs/REPLACE/long-context-report.json"],
+    "nativeToolReports": ["runs/REPLACE/native-tool-report.json"],
+    "humanAdjudication": ["runs/REPLACE/human-adjudication.md"]
+  }
+}
