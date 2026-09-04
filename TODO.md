@@ -60,15 +60,15 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Define the initial OpenAI-compatible wrapper endpoints.
 - [x] Define run-folder evidence requirements.
 - [x] Add a local project-contract validator for required artifacts, JSON, identity, alias, and hold state.
-- [ ] Add JSON schemas for run records, model records, evaluation cases, and module manifests.
-- [ ] Add a configuration fingerprint generator.
-- [ ] Add an immutable run-folder initializer.
-- [ ] Add a license/provenance validation checklist script.
+- [x] Add JSON schemas for run records, model records, evaluation cases, and module manifests. Proof: `config/schemas/` and `runs/2026-09-04-establish-contracts/`.
+- [x] Add a configuration fingerprint generator. Proof: `scripts/configuration_fingerprint.py` and `runs/2026-09-04-establish-contracts/configuration-fingerprint.json`.
+- [x] Add an immutable run-folder initializer. Proof: `scripts/init_run_folder.py`; this run folder was created by it and refused overwrite (`outputs/init-overwrite.txt`).
+- [x] Add a license/provenance validation checklist script. Proof: `scripts/check_license_provenance.py` and `runs/2026-09-04-establish-contracts/outputs/provenance.json`.
 - [ ] Commit the initial source-of-truth baseline.
 
 **Gate E:** another session can identify the current state and next legitimate action without relying on chat history.
 
-**ACK:** `Trail Marked` - pending initial commit and schema validation.
+**ACK:** `Trail Marked` - pending owner commit of this baseline.
 
 ## A1 - Assemble: local wrapper and chat
 
@@ -81,10 +81,10 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Add basic non-streaming chat completions.
 - [x] Add clear provider-unavailable behavior.
 - [x] Add a local interactive chat page with a mode menu.
-- [ ] Add streaming chat responses.
-- [ ] Add conversation persistence for the browser session.
-- [ ] Add message retry, stop-generation, copy, and regenerate controls.
-- [ ] Add Markdown and code-block rendering with safe escaping.
+- [x] Add streaming chat responses. Proof: `runs/2026-09-04-a1-chat-controls/decision.md` (pytest SSE forwarding plus mock-provider browser stream).
+- [x] Add conversation persistence for the browser session. Proof: the same run's browser restore/clear check.
+- [x] Add message retry, stop-generation, copy, and regenerate controls. Proof: the same run's browser control check.
+- [x] Add Markdown and code-block rendering with safe escaping. Proof: the same run's node XSS checks and browser DOM inspection.
 - [ ] Add model context/token usage display.
 - [ ] Add configurable reasoning-effort controls supported by the selected model.
 - [ ] Add local-only access controls before exposing beyond loopback.

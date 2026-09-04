@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+from pathlib import Path
+import subprocess
 from typing import Any
 
 from fastapi.testclient import TestClient
 
-from veronica_core.app import create_app
+from veronica_core.app import create_app, rewrite_sse_line
 from veronica_core.config import Settings
-from veronica_core.provider import ProviderError
+from veronica_core.provider import ProviderError, StreamingNotSupported
 
 
 SETTINGS = Settings(
@@ -16,6 +18,8 @@ SETTINGS = Settings(
     upstream_api_key=None,
     provider_timeout_seconds=5,
 )
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class MockProvider:
@@ -40,6 +44,13 @@ class MockProvider:
             ],
         }
 
+    async def stream(self, payload: dict[str, Any]):
+        self.last_payload = payload
+        yield b'data: {"id":"chatcmpl-test","object":"chat.completion.chunk","model":"candidate/model","choices":[{"index":0,"delta":{"role":"assistant","content":"Core"}}]}\n\n'
+        yield b'data: {"id":"chatcmpl-test","object":"chat.completion.chunk","model":"candidate/model","choices":[{"index":0,"delta":{"content":" res'
+        yield b'ponse"},"finish_reason":null}]}\n\n'
+        yield b"data: [DONE]\n\n"
+
 
 class OfflineProvider(MockProvider):
     async def health(self) -> dict[str, Any]:
@@ -47,6 +58,31 @@ class OfflineProvider(MockProvider):
 
     async def complete(self, payload: dict[str, Any]) -> dict[str, Any]:
         raise ProviderError("Provider offline")
+
+    async def stream(self, payload: dict[str, Any]):
+        self.last_payload = payload
+        raise ProviderError("Provider offline")
+        yield b""
+
+
+class CompleteOnlyProvider:
+    async def health(self) -> dict[str, Any]:
+        return {"reachable": True, "model_available": True, "status_code": 200}
+
+    async def complete(self, payload: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "id": "chatcmpl-test",
+            "object": "chat.completion",
+            "model": "candidate/model",
+            "choices": [{"index": 0, "message": {"role": "assistant", "content": "Core response"}, "finish_reason": "stop"}],
+        }
+
+
+class NoStreamProvider(MockProvider):
+    async def stream(self, payload: dict[str, Any]):
+        self.last_payload = payload
+        raise StreamingNotSupported("The configured model provider does not support streaming.")
+        yield b""
 
 
 def test_health_distinguishes_wrapper_and_provider() -> None:
@@ -82,6 +118,7 @@ def test_chat_injects_persona_mode_and_maps_model() -> None:
     assert response.json()["model"] == "Veronica"
     assert provider.last_payload is not None
     assert provider.last_payload["model"] == "candidate/model"
+    assert provider.last_payload["stream"] is False
     assert provider.last_payload["messages"][0]["role"] == "system"
     assert "highly capable" in provider.last_payload["messages"][0]["content"]
     assert "vivid, original language" in provider.last_payload["messages"][1]["content"]
@@ -105,7 +142,7 @@ def test_invalid_requests_stop_before_provider() -> None:
     assert provider.last_payload is None
 
 
-def test_provider_failure_is_honest_and_streaming_is_not_faked() -> None:
+def test_provider_failure_is_honest() -> None:
     client = TestClient(create_app(SETTINGS, OfflineProvider()))
     failed = client.post(
         "/v1/chat/completions",
@@ -117,15 +154,67 @@ def test_provider_failure_is_honest_and_streaming_is_not_faked() -> None:
         "/v1/chat/completions",
         json={"messages": [{"role": "user", "content": "Hello"}], "stream": True},
     )
-    assert streaming.status_code == 501
+    assert streaming.status_code == 503
+
+
+def test_streaming_forwards_sse_and_rewrites_model() -> None:
+    provider = MockProvider()
+    client = TestClient(create_app(SETTINGS, provider))
+    response = client.post(
+        "/v1/chat/completions",
+        json={"messages": [{"role": "user", "content": "Hello"}], "stream": True, "veronica_mode": "coding"},
+    )
+    assert response.status_code == 200
+    assert "text/event-stream" in response.headers["content-type"]
+    assert "candidate/model" not in response.text
+    assert '"model":"Veronica"' in response.text
+    assert "Core" in response.text
+    assert "response" in response.text
+    assert "data: [DONE]" in response.text
+    assert provider.last_payload is not None
+    assert provider.last_payload["stream"] is True
+    assert provider.last_payload["model"] == "candidate/model"
+    assert "veronica_mode" not in provider.last_payload
+    assert "rigorous software collaborator" in provider.last_payload["messages"][1]["content"]
+
+
+def test_streaming_unsupported_is_not_faked() -> None:
+    missing = TestClient(create_app(SETTINGS, CompleteOnlyProvider())).post(
+        "/v1/chat/completions",
+        json={"messages": [{"role": "user", "content": "Hello"}], "stream": True},
+    )
+    assert missing.status_code == 501
+    assert "does not support streaming" in missing.json()["detail"]
+
+    refused = TestClient(create_app(SETTINGS, NoStreamProvider())).post(
+        "/v1/chat/completions",
+        json={"messages": [{"role": "user", "content": "Hello"}], "stream": True},
+    )
+    assert refused.status_code == 501
+    assert "does not support streaming" in refused.json()["detail"]
+
+
+def test_rewrite_sse_line_maps_public_alias() -> None:
+    rewritten = rewrite_sse_line(
+        'data: {"model":"candidate/model","choices":[{"delta":{"content":"Hi"}}]}',
+        "Veronica",
+    )
+    assert '"model":"Veronica"' in rewritten
+    assert "candidate/model" not in rewritten
+    assert rewrite_sse_line("data: [DONE]", "Veronica") == "data: [DONE]"
+    assert rewrite_sse_line("event: delta", "Veronica") == "event: delta"
 
 
 def test_capability_report_separates_implemented_and_planned() -> None:
     response = TestClient(create_app(SETTINGS, MockProvider())).get("/api/capabilities")
     body = response.json()
     assert "basic_text_chat" in body["implemented"]
+    assert "streaming_chat" in body["implemented"]
+    assert "streaming" not in body["planned"]
     assert "native_tool_execution" in body["planned"]
     assert "native_tool_execution" not in body["implemented"]
+    assert body["local_access"].startswith("intended for loopback")
+    assert "localStorage_persistence" in body["browser_session"]
 
 
 def test_system_messages_and_native_tool_fields_are_preserved() -> None:
@@ -162,9 +251,47 @@ def test_malformed_message_and_mode_types_are_rejected() -> None:
 
 def test_static_chat_interface_is_served() -> None:
     client = TestClient(create_app(SETTINGS, MockProvider()))
-    assert client.get("/").status_code == 200
-    assert "No model-generated response" in client.get("/").text
-    assert client.get("/assets/app.js").status_code == 200
-    assert client.get("/assets/styles.css").status_code == 200
+    page = client.get("/")
+    js = client.get("/assets/app.js")
+    horizon = client.get("/assets/blackhole-background.js")
+    css = client.get("/assets/styles.css")
+    assert page.status_code == 200
+    assert "No model-generated response" in page.text
+    assert "stopChat" in page.text
+    assert "blackhole-background.js" in page.text
+    assert js.status_code == 200
+    assert horizon.status_code == 200
+    assert "startVeronicaHorizon" in horizon.text
+    assert "localStorage" in js.text
+    assert "AbortController" in js.text
+    assert "markdownToSafeHtml" in js.text
+    assert "data-action" in js.text
+    assert "streaming_chat" in js.text
+    assert css.status_code == 200
+    assert "message-actions" in css.text
     assert client.get("/assets/assets/cosmic-background.png").status_code == 200
     assert client.get("/assets/assets/veronica-logo-mark.png").status_code == 200
+
+
+def test_chat_javascript_parses_and_markdown_is_safe() -> None:
+    parsed = subprocess.run(
+        ["node", "--check", str(ROOT / "src/veronica_core/static/app.js")],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert parsed.returncode == 0, parsed.stderr
+    horizon = subprocess.run(
+        ["node", "--check", str(ROOT / "src/veronica_core/static/blackhole-background.js")],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert horizon.returncode == 0, horizon.stderr
+    markdown = subprocess.run(
+        ["node", str(Path(__file__).with_name("test_chat_markdown.js"))],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert markdown.returncode == 0, markdown.stdout + markdown.stderr

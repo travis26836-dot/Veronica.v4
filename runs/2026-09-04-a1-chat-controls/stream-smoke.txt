@@ -1,0 +1,16 @@
+data: {"id":"chatcmpl-ui","object":"chat.completion.chunk","model":"Veronica","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-ui","object":"chat.completion.chunk","model":"Veronica","choices":[{"index":0,"delta":{"content":"Hello "},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-ui","object":"chat.completion.chunk","model":"Veronica","choices":[{"index":0,"delta":{"content":"**Raine**.\n\n"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-ui","object":"chat.completion.chunk","model":"Veronica","choices":[{"index":0,"delta":{"content":"```python\nprint('<script>alert(1)</script>')\n```\n\n"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-ui","object":"chat.completion.chunk","model":"Veronica","choices":[{"index":0,"delta":{"content":"<img src=x onerror=alert(1)>\n\n"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-ui","object":"chat.completion.chunk","model":"Veronica","choices":[{"index":0,"delta":{"content":"Link [ok](https://example.com)."},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-ui","object":"chat.completion.chunk","model":"Veronica","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+data: [DONE]
+

@@ -47,7 +47,7 @@
           <form id="composer" class="prompt-row">
             <label class="sr-only" for="prompt">Message Veronica</label>
             <textarea id="prompt" rows="3" placeholder="Ask VERONICA anything…" required></textarea>
-            <div class="composer-actions"><span id="notice">Model alias: Veronica</span><button id="sendChat" class="primary-button" type="submit">Send</button></div>
+            <div class="composer-actions"><span id="notice">Model alias: Veronica</span><button id="stopChat" class="secondary-button" type="button" hidden>Stop</button><button id="sendChat" class="primary-button" type="submit">Send</button></div>
           </form>
         </section>
       </main>
@@ -57,6 +57,7 @@
         <section class="rail-panel compact-panel"><p class="section-title">SESSION</p><dl class="stat-list"><div><dt>Alias</dt><dd>Veronica</dd></div><div><dt>Provider</dt><dd id="providerState">Checking…</dd></div><div><dt>Updates</dt><dd>Live health polling</dd></div><div><dt>Local time</dt><dd id="clock">—</dd></div></dl></section>
       </aside>
     </div>
+    <script src="/assets/blackhole-background.js" defer></script>
     <script src="/assets/app.js" defer></script>
   </body>
 </html>

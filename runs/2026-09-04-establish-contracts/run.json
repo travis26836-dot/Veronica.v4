@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-04-establish-contracts",
+  "recordedAt": "2026-09-04T08:00:36Z",
+  "owner": "Raine",
+  "stage": "establish",
+  "status": "completed",
+  "scope": "JSON schemas, configuration fingerprint generator, immutable run-folder initializer, and license/provenance checklist.",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "modelSelectionStatus": "benchmark_required",
+  "modelRevision": null,
+  "runtimeVersion": "Python 3.12.13 (isolated local venv)",
+  "gpu": null,
+  "configurationFingerprint": "c7e3871ec0843da0b46bbebc484a8d68386fe312758a4902a740238dd2d99088",
+  "testResults": {
+    "contractTestsPassed": 12,
+    "fullSuitePassed": 145,
+    "fullSuiteSkipped": 30,
+    "fullSuiteFailed": 2,
+    "fullSuiteFailureNote": "Frozen suite SHA expects CRLF bytes of data/evals/veronica-core-v1.json; this Linux checkout is LF. Suite and t2-qualification.json were not edited."
+  },
+  "lastDurableHandoff": "Establish contract schemas, fingerprint, run-folder initializer, and provenance checklist recorded. Trail Marked still requires an owner commit.",
+  "nextAction": "Owner commits this baseline. Do not start a Pod from this checkpoint. T2 remains hold on the unsatisfiable matched runtime."
+}

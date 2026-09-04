@@ -117,7 +117,7 @@ Run `./scripts/verify-local.ps1` for local tests, or `./scripts/build.ps1` to te
 - `tests/`: local, provider-mocked verification.
 - `docs/`: source of truth, architecture, and build pipeline.
 - `agents/`: durable role and handoff instructions.
-- `config/`: model registry, workflow status, and secret-free controls.
+- `config/`: model registry, workflow status, JSON schemas, and secret-free controls.
 - `data/`: intake, normalized training/evaluation data, and approved assets.
 - `runs/`: immutable evidence from each execution.
 - `scripts/`: repeatable setup, validation, and start commands.

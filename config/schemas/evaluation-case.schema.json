@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "evaluation-case.schema.json",
+  "title": "Veronica evaluation case suite",
+  "description": "Public development/regression suite containing evaluation cases. Not a sealed holdout and not live inference evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "suite_id", "cases"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "suite_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$" },
+    "description": { "type": "string", "minLength": 1 },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/evaluationCase" }
+    }
+  },
+  "$defs": {
+    "evaluationCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "category",
+        "family",
+        "tier",
+        "release_blocker",
+        "context",
+        "turns",
+        "improvement_route",
+        "source"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$" },
+        "category": { "type": "string", "minLength": 1 },
+        "family": { "type": "string", "minLength": 1 },
+        "tier": { "type": "string", "enum": ["smoke", "core", "extended"] },
+        "release_blocker": { "type": "boolean" },
+        "context": { "type": "string", "minLength": 1 },
+        "initial_messages": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/fixtureMessage" }
+        },
+        "tools": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/toolFixture" }
+        },
+        "turns": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/turn" }
+        },
+        "improvement_route": {
+          "type": "string",
+          "enum": ["prompt", "implementation", "dataset", "base-model", "mixed"]
+        },
+        "notes": { "type": "string" },
+        "source": { "$ref": "#/$defs/source" }
+      }
+    },
+    "fixtureMessage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "content"],
+      "properties": {
+        "role": { "type": "string", "enum": ["system", "user", "assistant", "tool"] },
+        "content": { "type": "string" },
+        "name": { "type": "string", "minLength": 1 },
+        "tool_call_id": { "type": "string", "minLength": 1 }
+      },
+      "if": {
+        "properties": { "role": { "const": "tool" } },
+        "required": ["role"]
+      },
+      "then": { "required": ["tool_call_id"] }
+    },
+    "toolFixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "function"],
+      "properties": {
+        "type": { "const": "function" },
+        "function": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name"],
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "description": { "type": "string" },
+            "parameters": { "type": "object" }
+          }
+        }
+      }
+    },
+    "turn": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["user", "checks", "rubric"],
+      "properties": {
+        "user": { "type": "string", "minLength": 1 },
+        "checks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/check" }
+        },
+        "rubric": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "check": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": { "enum": ["exact", "contains", "excludes"] },
+            "value": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": { "const": "max_words" },
+            "value": { "type": "integer", "minimum": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": { "const": "json_equals" },
+            "value": true
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "required"],
+          "properties": {
+            "kind": { "const": "json_keys" },
+            "required": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "const": "no_tool_calls" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "name", "arguments"],
+          "properties": {
+            "kind": { "const": "tool_call" },
+            "name": { "type": "string", "minLength": 1 },
+            "arguments": { "type": "object" }
+          }
+        }
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "description"],
+      "properties": {
+        "type": { "type": "string", "enum": ["original", "observed_failure"] },
+        "path": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
