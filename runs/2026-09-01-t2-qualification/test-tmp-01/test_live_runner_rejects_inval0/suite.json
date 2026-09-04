@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "suite_id": "test",
+  "cases": [
+    {
+      "id": "sample",
+      "family": "sample",
+      "category": "grounding",
+      "tier": "smoke",
+      "release_blocker": true,
+      "context": "Text-only test fixture. No tools or persistent memory.",
+      "turns": [
+        {
+          "user": "Question 0",
+          "checks": [],
+          "rubric": [
+            "Answer using only supplied facts."
+          ]
+        }
+      ]
+    }
+  ]
+}

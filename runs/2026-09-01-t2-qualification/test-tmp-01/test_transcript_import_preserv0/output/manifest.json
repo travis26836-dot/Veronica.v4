@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "suite_id": "transcript-bd140fcf57383cf9",
+  "source_kind": "recorded_conversation",
+  "source_path": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\runs\\2026-09-01-t2-qualification\\test-tmp-01\\test_transcript_import_preserv0\\chat.txt",
+  "source_sha256": "bd140fcf57383cf919f9aefd4362ee82aa8d3f97feb6b53e4fdd76789a4c7e6d",
+  "imported_at": "2026-09-01T10:49:05.789665+00:00",
+  "plan": {
+    "completion_calls": 1
+  },
+  "collection_status": "complete",
+  "new_model_calls": 0,
+  "independent_conversation_families": 1,
+  "training_authorized": false,
+  "source_system_prompt": "Not inferred from UI transcript; reviewer must inspect serving-run evidence"
+}

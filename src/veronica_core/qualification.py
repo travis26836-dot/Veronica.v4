@@ -13,6 +13,19 @@ from .evaluation import fingerprint, read_json, read_jsonl, validate_suite
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PROTOCOL = ROOT / "config" / "t2-qualification.json"
+JSON_STATUS_GROUPS = ("executableCodeReports", "longContextReports", "nativeToolReports")
+
+
+def _supplemental_status_issues(name: str, path: Path, label: str) -> list[str]:
+    if name not in JSON_STATUS_GROUPS or path.suffix.lower() != ".json":
+        return []
+    try:
+        payload = read_json(path)
+    except (OSError, ValueError, json.JSONDecodeError):
+        return [f"Unreadable supplemental JSON: {label}"]
+    if isinstance(payload, dict) and "status" in payload and payload["status"] != "collected_pass":
+        return [f"Supplemental {name} status is {payload['status']}, not collected_pass: {label}"]
+    return []
 
 
 def _project_path(value: str, root: Path = ROOT) -> Path:
@@ -337,8 +350,11 @@ def compare_evidence(inputs_path: Path, protocol_path: Path = DEFAULT_PROTOCOL, 
             continue
         for value in values:
             try:
-                if not _project_path(value, root).is_file():
+                path = _project_path(value, root)
+                if not path.is_file():
                     issues.append(f"Missing supplemental evidence file: {value}")
+                    continue
+                issues.extend(_supplemental_status_issues(name, path, value))
             except ValueError as exc:
                 issues.append(str(exc))
 

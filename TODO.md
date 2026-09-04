@@ -258,5 +258,4 @@ This file is the execution source of truth. Check an item only when its stated p
 
 **Gate D:** the system is reproducible, supportable, accountable, and affordable to operate.
 
-**ACK:** `Veronica Released` - pending.
-
+**ACK:** `Veronica Released` - pending

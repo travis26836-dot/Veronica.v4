@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "suite_id": "test",
+  "suite_sha256": "e5a5a8581daa896ab720bba421a6d70f92fd869d487e0f335934fa81478a76db",
+  "source_kind": "live_endpoint",
+  "started_at": "2026-09-01T10:49:05.866868+00:00",
+  "surface": "direct",
+  "base_url": "http://127.0.0.1:9999/v1",
+  "model_alias": "Veronica",
+  "mode": "chat",
+  "identity": {
+    "repository": "fixture",
+    "revision": "fixture"
+  },
+  "identity_status": "supplied metadata; confirm against serving-run provenance",
+  "runtime_record_sha256": "70a56bbf5bab7b585c18fa7b528b1350b4e289de78c957d264586e62e3b2429f",
+  "plan": {
+    "case_count": 2,
+    "completion_calls": 3,
+    "repeats": 1,
+    "max_completion_tokens": 30,
+    "max_tokens_per_call": 10,
+    "categories": {
+      "grounding": 2
+    },
+    "input_tokens": "Not estimated; full multi-turn history is sent each turn",
+    "cost": "No dollar estimate: provider/GPU price and model speed must be supplied separately",
+    "creates_compute": false,
+    "executes_tools_or_generated_code": false,
+    "ai_judge_calls": 0,
+    "heldout": false,
+    "case_ids": [
+      "first",
+      "second"
+    ]
+  },
+  "max_seconds": 10,
+  "temperature": 0,
+  "top_p": 1,
+  "thinking": "disabled",
+  "seed": 1,
+  "collection_status": "complete",
+  "automatic_judge": false,
+  "tools_executed": false,
+  "finished_at": "2026-09-01T10:49:05.870477+00:00"
+}

@@ -1,0 +1,37 @@
+{
+  "suite_id": "veronica-core-v1",
+  "source_kind": "live_endpoint",
+  "gate": "blocked_on_observed_failures",
+  "planned_responses": 6,
+  "recorded_samples": 6,
+  "errors": 0,
+  "automatic_failures": 1,
+  "human_reviewed": 0,
+  "human_critical_failures": 0,
+  "human_below_target": 0,
+  "assistant_advisory_reviews": 6,
+  "assistant_advisory_critical_failures": 2,
+  "categories": {
+    "memory-boundaries": {
+      "responses": 3,
+      "errors": 0,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 3,
+      "human_mean_score": null
+    },
+    "correction-calibration": {
+      "responses": 3,
+      "errors": 0,
+      "automatic_failures": 1,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 3,
+      "human_mean_score": null
+    }
+  },
+  "heldout": false,
+  "foundation_qualified": false,
+  "limits": "A development-suite pass is not model selection, a statistical population claim, or permission to train. No code/tools were executed."
+}

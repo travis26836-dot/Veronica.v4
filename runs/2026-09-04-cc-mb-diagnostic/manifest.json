@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "suite_id": "veronica-core-v1",
+  "suite_sha256": "ce1644f045953b66cd9b98883570d7404cac832cf06a6085453259af86aecf90",
+  "source_kind": "live_endpoint",
+  "started_at": "2026-09-04T07:20:41.027554+00:00",
+  "surface": "wrapper",
+  "base_url": "http://127.0.0.1:8010/v1",
+  "model_alias": "Veronica",
+  "mode": "chat",
+  "identity": {
+    "repository": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
+    "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f"
+  },
+  "identity_status": "supplied metadata; confirm against serving-run provenance",
+  "runtime_record_sha256": "5b4e02122cccb49242e159387b961b1e2f2444aa999e4c8ff9db961c27222ed5",
+  "plan": {
+    "case_count": 4,
+    "completion_calls": 6,
+    "repeats": 1,
+    "max_completion_tokens": 1152,
+    "max_tokens_per_call": 192,
+    "categories": {
+      "memory-boundaries": 2,
+      "correction-calibration": 2
+    },
+    "input_tokens": "Not estimated; full multi-turn history is sent each turn",
+    "cost": "No dollar estimate: provider/GPU price and model speed must be supplied separately",
+    "creates_compute": false,
+    "executes_tools_or_generated_code": false,
+    "ai_judge_calls": 0,
+    "heldout": false,
+    "case_ids": [
+      "MB-01",
+      "MB-02",
+      "CC-01",
+      "CC-02"
+    ],
+    "suite_id": "veronica-core-v1",
+    "suite_sha256": "ce1644f045953b66cd9b98883570d7404cac832cf06a6085453259af86aecf90",
+    "network_calls": 0
+  },
+  "max_seconds": 600.0,
+  "temperature": 0,
+  "top_p": 1,
+  "thinking": "default",
+  "seed": 42,
+  "collection_status": "complete",
+  "automatic_judge": false,
+  "tools_executed": false,
+  "wrapper_source_sha256": {
+    "persona.py": "c3f06d9ef722df9c0c9662eba28ba4d3cecfc1a2defdaae62033b2ee2872ceb9",
+    "provider.py": "c1e396c9526cce2b6814b3234000601b6058f9c03b8b46442bd948185275d26c",
+    "app.py": "4aaac37389d7df0819d28ddc5c9bd637b35cd02fd890e2fbbbe99c406f927863"
+  },
+  "finished_at": "2026-09-04T07:21:03.679992+00:00"
+}

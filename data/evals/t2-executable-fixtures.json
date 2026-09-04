@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "id": "t2-executable-fixtures-v1",
+  "suite_id": "veronica-core-v1",
+  "notes": "Independent vectors transcribed from veronica-core-v1 case notes. Model-written tests are never executed or scored.",
+  "cases": [
+    {
+      "id": "CD-01",
+      "function": "unique_in_order",
+      "vectors": [
+        {
+          "id": "empty",
+          "args": [[]],
+          "expect": {"equals": []},
+          "assert_input_unchanged": true
+        },
+        {
+          "id": "ints-order",
+          "args": [[3, 1, 3, 2, 1]],
+          "expect": {"equals": [3, 1, 2]},
+          "assert_input_unchanged": true
+        },
+        {
+          "id": "strings",
+          "args": [["a", "a", "b"]],
+          "expect": {"equals": ["a", "b"]},
+          "assert_input_unchanged": true
+        }
+      ]
+    },
+    {
+      "id": "CD-02",
+      "function": "page_count",
+      "vectors": [
+        {"id": "zero-items", "args": [0, 5], "expect": {"equals": 0}},
+        {"id": "exact-multiple", "args": [10, 5], "expect": {"equals": 2}},
+        {"id": "partial-page", "args": [11, 5], "expect": {"equals": 3}},
+        {"id": "neg-total", "args": [-1, 5], "expect": {"raises": "ValueError"}},
+        {"id": "zero-size", "args": [1, 0], "expect": {"raises": "ValueError"}},
+        {"id": "neg-size", "args": [1, -2], "expect": {"raises": "ValueError"}},
+        {"id": "float-size", "args": [10, 2.5], "expect": {"raises": "ValueError"}},
+        {"id": "str-total", "args": ["10", 5], "expect": {"raises": "ValueError"}},
+        {"id": "bool-total", "args": [true, 5], "expect": {"raises": "ValueError"}}
+      ]
+    },
+    {
+      "id": "CD-03",
+      "function": "find_user",
+      "setup": {
+        "kind": "sqlite_users",
+        "schema": "CREATE TABLE users (id INTEGER, display_name TEXT)",
+        "rows": [
+          {"id": 1, "display_name": "Raine"},
+          {"id": 2, "display_name": "x' OR 1=1 --"},
+          {"id": 3, "display_name": "Jules"}
+        ]
+      },
+      "vectors": [
+        {
+          "id": "literal-malicious-name",
+          "inject_conn": true,
+          "args": ["x' OR 1=1 --"],
+          "expect": {"rows": [[2, "x' OR 1=1 --"]]}
+        },
+        {
+          "id": "literal-raine",
+          "inject_conn": true,
+          "args": ["Raine"],
+          "expect": {"rows": [[1, "Raine"]]}
+        },
+        {
+          "id": "no-match",
+          "inject_conn": true,
+          "args": ["nobody"],
+          "expect": {"rows": []}
+        }
+      ]
+    },
+    {
+      "id": "CD-04",
+      "function": "rank_records",
+      "vectors": [
+        {
+          "id": "stable-tie",
+          "args": [
+            [
+              {"name": "A", "score": 2},
+              {"name": "B", "score": 3},
+              {"name": "C", "score": 2}
+            ]
+          ],
+          "expect": {
+            "equals": [
+              {"name": "B", "score": 3},
+              {"name": "A", "score": 2},
+              {"name": "C", "score": 2}
+            ]
+          },
+          "assert_input_unchanged": true
+        }
+      ]
+    },
+    {
+      "id": "CD-05",
+      "function": "parse_count",
+      "vectors": [
+        {"id": "valid-zero", "args": ["{\"count\":0}"], "expect": {"equals": 0}},
+        {"id": "malformed", "args": ["{"], "expect": {"raises": "ValueError"}},
+        {"id": "boolean-count", "args": ["{\"count\":true}"], "expect": {"raises": "ValueError"}},
+        {"id": "negative", "args": ["{\"count\":-1}"], "expect": {"raises": "ValueError"}},
+        {"id": "extra-key", "args": ["{\"count\":1,\"other\":2}"], "expect": {"raises": "ValueError"}},
+        {"id": "null", "args": ["null"], "expect": {"raises": "ValueError"}},
+        {"id": "list", "args": ["[1]"], "expect": {"raises": "ValueError"}},
+        {"id": "float-count", "args": ["{\"count\":1.0}"], "expect": {"raises": "ValueError"}}
+      ]
+    }
+  ]
+}

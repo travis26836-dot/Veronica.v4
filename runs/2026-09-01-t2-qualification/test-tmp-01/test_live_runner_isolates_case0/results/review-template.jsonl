@@ -1,0 +1,3 @@
+{"sample_id": "first.r1.t1", "score": null, "critical_failure": null, "reviewer_type": "human", "reviewer": "", "rationale": "", "failure_tags": [], "rubric": ["Answer using only supplied facts."]}
+{"sample_id": "first.r1.t2", "score": null, "critical_failure": null, "reviewer_type": "human", "reviewer": "", "rationale": "", "failure_tags": [], "rubric": ["Answer using only supplied facts."]}
+{"sample_id": "second.r1.t1", "score": null, "critical_failure": null, "reviewer_type": "human", "reviewer": "", "rationale": "", "failure_tags": [], "rubric": ["Answer using only supplied facts."]}

@@ -1,0 +1,13 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello"
+    },
+    {
+      "role": "assistant",
+      "content": "I read your emails."
+    }
+  ],
+  "evaluation_only": true
+}

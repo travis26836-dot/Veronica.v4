@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-04T065235Z-start-veronica",
+  "decision": "hold",
+  "kind": "matched_runtime_unsatisfiable",
+  "resourceCreationAttempted": true,
+  "inferenceVerified": false,
+  "weightsModified": false,
+  "profile": "config/runpod-t2-candidate-a.json",
+  "requestedRuntime": {
+    "vllmVersion": "0.17.0",
+    "transformersVersion": "5.8.0",
+    "constraintsFile": "config/runpod-runtime-t2-0.17.0.txt"
+  },
+  "installerError": "vllm==0.17.0 depends on transformers>=4.56.0,<5; transformers==5.8.0 is unsatisfiable",
+  "evidence": [
+    "bootstrap-log.txt",
+    "preflight.json",
+    "supervised-state.json",
+    "termination.json"
+  ],
+  "podId": "cds4rrvw2nmm4w",
+  "actualHourlyUsd": 1.59,
+  "createdAttemptAtUtc": "2026-09-04T06:53:31.325811+00:00",
+  "terminatedAtUtc": "2026-09-04T07:01:18.175004+00:00",
+  "networkVolumeRetained": true,
+  "silentRuntimeChange": false,
+  "note": "The frozen T2 matched stack cannot be installed. Record hold. Do not serve Candidate A on the old vLLM 0.11.0 runtime as a substitute comparison."
+}
