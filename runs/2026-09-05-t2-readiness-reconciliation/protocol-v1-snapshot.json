@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "protocolId": "t2-untouched-foundation-v2",
+  "protocolId": "t2-untouched-foundation-v1",
   "status": "frozen_before_live_runs",
   "objective": "Determine whether Candidate A is capable enough to remain Veronica's foundation and compare Candidate A and Candidate B fairly with their official untouched controls.",
   "modelRegistry": "config/model-registry.json",
@@ -32,7 +32,7 @@
     "gpuCount": 1,
     "maximumHourlyUsd": 1.75,
     "freshAuthorizationRequiredPerPod": true,
-    "vllmVersion": "0.28.0",
+    "vllmVersion": "0.17.0",
     "transformersVersion": "5.8.0",
     "minimumReason": "Qwen3.8-27B requires vLLM 0.17.0+ and Transformers 5.8.0+ according to the pinned model card and official vLLM recipe.",
     "dtype": "bfloat16",

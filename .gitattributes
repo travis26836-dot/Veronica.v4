@@ -1,0 +1,2 @@
+# Preserve the byte format used by the frozen T2 suite fingerprint.
+data/evals/veronica-core-v1.json text eol=crlf

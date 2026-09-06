@@ -253,15 +253,14 @@ def test_static_chat_interface_is_served() -> None:
     client = TestClient(create_app(SETTINGS, MockProvider()))
     page = client.get("/")
     js = client.get("/assets/app.js")
-    horizon = client.get("/assets/blackhole-background.js")
     css = client.get("/assets/styles.css")
     assert page.status_code == 200
     assert "No model-generated response" in page.text
     assert "stopChat" in page.text
-    assert "blackhole-background.js" in page.text
+    assert "blackhole-background.js" not in page.text
     assert js.status_code == 200
-    assert horizon.status_code == 200
-    assert "startVeronicaHorizon" in horizon.text
+    assert "drawStarfield" in js.text
+    assert "startVeronicaHorizon" not in js.text
     assert "localStorage" in js.text
     assert "AbortController" in js.text
     assert "markdownToSafeHtml" in js.text
@@ -269,6 +268,7 @@ def test_static_chat_interface_is_served() -> None:
     assert "streaming_chat" in js.text
     assert css.status_code == 200
     assert "message-actions" in css.text
+    assert "cosmic-background.png" in css.text
     assert client.get("/assets/assets/cosmic-background.png").status_code == 200
     assert client.get("/assets/assets/veronica-logo-mark.png").status_code == 200
 
@@ -281,13 +281,6 @@ def test_chat_javascript_parses_and_markdown_is_safe() -> None:
         check=False,
     )
     assert parsed.returncode == 0, parsed.stderr
-    horizon = subprocess.run(
-        ["node", "--check", str(ROOT / "src/veronica_core/static/blackhole-background.js")],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert horizon.returncode == 0, horizon.stderr
     markdown = subprocess.run(
         ["node", str(Path(__file__).with_name("test_chat_markdown.js"))],
         capture_output=True,

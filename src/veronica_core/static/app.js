@@ -380,13 +380,37 @@ function bootChat() {
   modeInput.addEventListener("change", persist);
   document.querySelector("#refreshStatus").addEventListener("click", () => refreshHealth({ announce: true }));
   document.querySelector("#newConversation").addEventListener("click", resetConversation);
-  function drawHorizon() {
+  function drawStarfield() {
     const canvas = document.querySelector("#starfield");
-    if (typeof window.startVeronicaHorizon === "function") window.startVeronicaHorizon(canvas);
+    const context = canvas.getContext("2d");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let stars = [];
+    const resize = () => {
+      canvas.width = window.innerWidth * devicePixelRatio;
+      canvas.height = window.innerHeight * devicePixelRatio;
+      context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+      stars = Array.from({ length: Math.min(130, Math.ceil(window.innerWidth / 11)) }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        size: Math.random() * 1.4 + .25,
+        alpha: Math.random() * .6 + .15,
+      }));
+    };
+    const render = () => {
+      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      for (const star of stars) {
+        context.fillStyle = `rgba(221, 198, 255, ${star.alpha})`;
+        context.fillRect(star.x, star.y, star.size, star.size);
+      }
+      if (!reduceMotion) requestAnimationFrame(render);
+    };
+    resize();
+    window.addEventListener("resize", resize);
+    render();
   }
   document.querySelector("#clock").textContent = localTime();
   window.setInterval(() => { document.querySelector("#clock").textContent = localTime(); }, 1000);
-  drawHorizon();
+  drawStarfield();
   const restored = restore();
   renderConversation();
   addActivity(restored ? "Restored the previous local conversation." : "Veronica v4 chat interface loaded.");
