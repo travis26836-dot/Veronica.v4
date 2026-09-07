@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
 from typing import Any, Protocol
 
 import httpx
@@ -8,6 +9,10 @@ from .config import Settings
 
 
 class ProviderError(RuntimeError):
+    pass
+
+
+class StreamingNotSupported(RuntimeError):
     pass
 
 
@@ -21,8 +26,10 @@ class OpenAICompatibleProvider:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
 
-    def _headers(self) -> dict[str, str]:
+    def _headers(self, accept: str | None = None) -> dict[str, str]:
         headers = {"Content-Type": "application/json"}
+        if accept:
+            headers["Accept"] = accept
         if self.settings.upstream_api_key:
             headers["Authorization"] = f"Bearer {self.settings.upstream_api_key}"
         return headers
@@ -76,3 +83,45 @@ class OpenAICompatibleProvider:
         ):
             raise ProviderError("The configured model provider returned an invalid chat completion.")
         return data
+
+    async def stream(self, payload: dict[str, Any]) -> AsyncIterator[bytes]:
+        body = {**payload, "stream": True}
+        try:
+            async with httpx.AsyncClient(
+                timeout=self.settings.provider_timeout_seconds
+            ) as client:
+                async with client.stream(
+                    "POST",
+                    f"{self.settings.upstream_base_url}/chat/completions",
+                    headers=self._headers(accept="text/event-stream"),
+                    json=body,
+                ) as response:
+                    content_type = (response.headers.get("content-type") or "").lower()
+                    if response.status_code >= 400:
+                        await response.aread()
+                        if response.status_code == 501:
+                            raise StreamingNotSupported(
+                                "The configured model provider does not support streaming."
+                            )
+                        raise ProviderError(
+                            "The configured model provider is unavailable or returned an invalid response."
+                        )
+                    if "text/event-stream" in content_type:
+                        async for chunk in response.aiter_bytes():
+                            if chunk:
+                                yield chunk
+                        return
+                    raw = await response.aread()
+                    stripped = raw.lstrip()
+                    if stripped.startswith(b"data:"):
+                        yield raw
+                        return
+                    raise StreamingNotSupported(
+                        "The configured model provider did not return a stream."
+                    )
+        except (StreamingNotSupported, ProviderError):
+            raise
+        except (httpx.HTTPError, ValueError) as exc:
+            raise ProviderError(
+                "The configured model provider is unavailable or returned an invalid response."
+            ) from exc

@@ -1,20 +1,22 @@
 from __future__ import annotations
 
+import json
+from collections.abc import AsyncIterator
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, StrictBool
-from typing import Literal
 
 from .config import Settings
 from .persona import MODE_PROMPTS, prepare_messages
-from .provider import ChatProvider, OpenAICompatibleProvider, ProviderError
+from .provider import ChatProvider, OpenAICompatibleProvider, ProviderError, StreamingNotSupported
 
 
 STATIC_DIR = Path(__file__).parent / "static"
+LOOPBACK_HOSTS = {"127.0.0.1", "::1", "localhost", "testclient"}
 
 
 class ChatMessage(BaseModel):
@@ -29,6 +31,23 @@ class ChatRequest(BaseModel):
     messages: list[ChatMessage] = Field(min_length=1)
     veronica_mode: Literal["chat", "deep-reasoning", "creative", "coding"] = "chat"
     stream: StrictBool = False
+
+
+def rewrite_sse_line(line: str, public_model: str) -> str:
+    line = line.rstrip("\r")
+    if not line.startswith("data:"):
+        return line
+    data = line[5:].strip()
+    if data in {"", "[DONE]"}:
+        return line
+    try:
+        payload = json.loads(data)
+    except ValueError:
+        return line
+    if isinstance(payload, dict) and "model" in payload:
+        payload["model"] = public_model
+        return "data: " + json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+    return line
 
 
 def create_app(
@@ -61,10 +80,12 @@ def create_app(
         }
 
     @app.get("/api/capabilities")
-    async def capabilities() -> dict[str, Any]:
+    async def capabilities(request: Request) -> dict[str, Any]:
+        host = request.client.host if request.client else ""
         return {
             "implemented": [
                 "basic_text_chat",
+                "streaming_chat",
                 "persona_wrapper",
                 "mode_selection",
                 "openai_compatible_alias",
@@ -73,8 +94,17 @@ def create_app(
             "modes": list(MODE_PROMPTS),
             "mode_control": "prompt_presets_only; native reasoning controls require model qualification",
             "foundation_qualification": "pending",
+            "local_access": "intended for loopback; no authentication yet",
+            "loopback_client": host in LOOPBACK_HOSTS or host.startswith("127."),
+            "browser_session": [
+                "localStorage_persistence",
+                "message_retry",
+                "stop_generation",
+                "copy",
+                "regenerate",
+                "safe_markdown",
+            ],
             "planned": [
-                "streaming",
                 "native_tool_execution",
                 "scoped_memory",
                 "personality_adapter",
@@ -96,26 +126,82 @@ def create_app(
             ],
         }
 
+    def _upstream_payload(request: ChatRequest) -> dict[str, Any]:
+        payload = request.model_dump(exclude={"veronica_mode"}, exclude_unset=True)
+        payload["model"] = settings.upstream_model
+        payload["messages"] = prepare_messages(payload["messages"], request.veronica_mode)
+        payload["stream"] = request.stream
+        return payload
+
+    async def _relay_sse(chunks: AsyncIterator[bytes]) -> AsyncIterator[bytes]:
+        buffer = b""
+        async for chunk in chunks:
+            buffer += chunk
+            while True:
+                newline = buffer.find(b"\n")
+                if newline < 0:
+                    break
+                line = buffer[:newline].decode("utf-8", errors="replace")
+                buffer = buffer[newline + 1 :]
+                yield (rewrite_sse_line(line, settings.public_model) + "\n").encode("utf-8")
+        if buffer:
+            line = buffer.decode("utf-8", errors="replace")
+            yield (rewrite_sse_line(line, settings.public_model) + "\n").encode("utf-8")
+
     @app.post("/v1/chat/completions")
-    async def chat_completions(request: ChatRequest) -> dict[str, Any]:
-        if request.stream:
+    async def chat_completions(request: ChatRequest) -> Any:
+        upstream_payload = _upstream_payload(request)
+        if not request.stream:
+            try:
+                response = await provider.complete(upstream_payload)
+            except ProviderError as exc:
+                raise HTTPException(status_code=503, detail=str(exc)) from exc
+            response["model"] = settings.public_model
+            return response
+
+        stream_fn = getattr(provider, "stream", None)
+        if stream_fn is None:
             raise HTTPException(
                 status_code=501,
-                detail="Streaming is a planned milestone; use stream=false for basic chat.",
+                detail="The configured model provider does not support streaming; use stream=false.",
             )
 
-        upstream_payload = request.model_dump(exclude={"veronica_mode"}, exclude_unset=True)
-        prepared = prepare_messages(upstream_payload["messages"], request.veronica_mode)
-        upstream_payload["model"] = settings.upstream_model
-        upstream_payload["messages"] = prepared
-        upstream_payload["stream"] = False
-
+        agen = stream_fn(upstream_payload)
         try:
-            response = await provider.complete(upstream_payload)
+            first = await anext(agen)
+            while not first:
+                first = await anext(agen)
+        except StopAsyncIteration:
+            raise HTTPException(status_code=502, detail="The model provider returned an empty stream.") from None
+        except StreamingNotSupported as exc:
+            raise HTTPException(status_code=501, detail=str(exc)) from exc
         except ProviderError as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
 
-        response["model"] = settings.public_model
-        return response
+        async def generate() -> AsyncIterator[bytes]:
+            async def combined() -> AsyncIterator[bytes]:
+                yield first
+                async for chunk in agen:
+                    yield chunk
+
+            try:
+                async for chunk in _relay_sse(combined()):
+                    yield chunk
+            except StreamingNotSupported as exc:
+                payload = {"error": {"message": str(exc), "code": "streaming_unsupported"}}
+                yield f"data: {json.dumps(payload, ensure_ascii=False)}\n\n".encode()
+            except ProviderError as exc:
+                payload = {"error": {"message": str(exc), "code": "provider_unavailable"}}
+                yield f"data: {json.dumps(payload, ensure_ascii=False)}\n\n".encode()
+
+        return StreamingResponse(
+            generate(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache, no-transform",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
 
     return app

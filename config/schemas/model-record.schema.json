@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "model-record.schema.json",
+  "title": "Veronica model registry",
+  "description": "Versioned registry of foundation candidates and official controls. Individual model records are the candidates and controls arrays.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "publicAlias",
+    "selectionStatus",
+    "defaultDevelopmentCandidate",
+    "qualificationProtocol",
+    "candidates",
+    "controls",
+    "selectionRule"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "publicAlias": { "const": "Veronica" },
+    "selectionStatus": {
+      "type": "string",
+      "enum": ["benchmark_required", "hold", "qualified", "selected", "rejected", "superseded"]
+    },
+    "defaultDevelopmentCandidate": { "type": "string", "minLength": 1 },
+    "qualificationProtocol": { "type": "string", "minLength": 1 },
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/modelRecord" }
+    },
+    "controls": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/modelRecord" }
+    },
+    "selectionRule": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "modelRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "repository",
+        "role",
+        "licenseDeclared",
+        "revision",
+        "provenanceSnapshot",
+        "qualification"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+        "repository": { "type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$" },
+        "role": { "type": "string", "minLength": 1 },
+        "licenseDeclared": { "type": "string", "minLength": 1 },
+        "uncensoredMethod": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "matchingControlId": { "type": "string", "minLength": 1 },
+        "controlsCandidateId": { "type": "string", "minLength": 1 },
+        "provenanceSnapshot": { "type": "string", "minLength": 1 },
+        "runpodProfile": { "type": "string", "minLength": 1 },
+        "qualification": {
+          "type": "string",
+          "enum": ["pending", "hold", "qualified", "selected", "rejected", "superseded"]
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

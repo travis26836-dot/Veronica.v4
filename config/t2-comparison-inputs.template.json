@@ -1,5 +1,5 @@
 {
-  "protocolId": "t2-untouched-foundation-v1",
+  "protocolId": "t2-untouched-foundation-v2",
   "runs": [
     {"modelId": "qwen3-30b-a3b-2507-abliterated", "trackId": "neutral-deterministic", "runDir": "runs/REPLACE-candidate-a-deterministic", "reviews": "runs/REPLACE-candidate-a-deterministic/reviews-adjudicated.jsonl"},
     {"modelId": "qwen3-30b-a3b-2507-abliterated", "trackId": "neutral-sampled", "runDir": "runs/REPLACE-candidate-a-sampled", "reviews": "runs/REPLACE-candidate-a-sampled/reviews-adjudicated.jsonl"},

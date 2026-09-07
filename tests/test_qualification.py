@@ -34,3 +34,22 @@ def test_required_matrix_does_not_pretend_non_thinking_candidate_has_native_thin
     assert ("qwen3-30b-a3b-2507-control", "native-thinking") not in matrix
     assert ("qwen3.8-27b-abliterated", "native-thinking") in matrix
     assert ("qwen3.8-27b-control", "native-thinking") in matrix
+
+
+def test_json_supplemental_status_other_than_collected_pass_is_an_issue(tmp_path):
+    report = tmp_path / "executable-code-report.json"
+    report.write_text(json.dumps({"status": "isolation_unverified"}), encoding="utf-8")
+    issues = q._supplemental_status_issues("executableCodeReports", report, "runs/x/executable-code-report.json")
+    assert issues
+    assert "isolation_unverified" in issues[0]
+    report.write_text(json.dumps({"status": "collected_pass"}), encoding="utf-8")
+    assert q._supplemental_status_issues("executableCodeReports", report, "runs/x/executable-code-report.json") == []
+    skipped = tmp_path / "long-context-report.json"
+    skipped.write_text(json.dumps({"status": "not_collected"}), encoding="utf-8")
+    assert q._supplemental_status_issues("longContextReports", skipped, "runs/x/long-context-report.json")
+    manifest = tmp_path / "artifact-manifest.json"
+    manifest.write_text(json.dumps({"files": []}), encoding="utf-8")
+    assert q._supplemental_status_issues("artifactManifests", manifest, "runs/x/artifact-manifest.json") == []
+    note = tmp_path / "human-adjudication.md"
+    note.write_text("# pending\n", encoding="utf-8")
+    assert q._supplemental_status_issues("humanAdjudication", note, "runs/x/human-adjudication.md") == []

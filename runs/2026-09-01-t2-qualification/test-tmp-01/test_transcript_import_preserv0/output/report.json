@@ -1,0 +1,28 @@
+{
+  "suite_id": "transcript-bd140fcf57383cf9",
+  "source_kind": "recorded_conversation",
+  "gate": "human_review_pending",
+  "planned_responses": 1,
+  "recorded_samples": 1,
+  "errors": 0,
+  "automatic_failures": 0,
+  "human_reviewed": 0,
+  "human_critical_failures": 0,
+  "human_below_target": 0,
+  "assistant_advisory_reviews": 0,
+  "assistant_advisory_critical_failures": 0,
+  "categories": {
+    "recorded-conversation": {
+      "responses": 1,
+      "errors": 0,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 0,
+      "human_mean_score": null
+    }
+  },
+  "heldout": false,
+  "foundation_qualified": false,
+  "limits": "A development-suite pass is not model selection, a statistical population claim, or permission to train. No code/tools were executed."
+}

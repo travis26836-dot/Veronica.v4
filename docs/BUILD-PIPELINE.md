@@ -157,3 +157,11 @@ decision.md
 ```
 
 `run.json` records stage, status, owner, timestamps, model revision, runtime version, GPU, configuration fingerprint, and last durable handoff. Secrets are never written into the run folder.
+
+Create new folders with `scripts/init_run_folder.py`; it refuses to overwrite an existing run directory.
+
+## Contract schemas
+
+Machine-readable JSON Schema files live in `config/schemas/` for run records, model records, evaluation cases, and module manifests. `scripts/validate-project.ps1` requires those schema files. After dependency sync, `scripts/verify-local.ps1` runs `scripts/validate_contracts.py` against the canonical registry and evaluation suite, then `scripts/check_license_provenance.py` against pinned local snapshots. Neither command downloads weights or starts compute.
+
+Non-secret profile, runtime, and identity settings are hashed by `scripts/configuration_fingerprint.py`.

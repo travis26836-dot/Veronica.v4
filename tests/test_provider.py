@@ -1,10 +1,11 @@
 import asyncio
+import json
 
 import httpx
 import pytest
 
 from veronica_core.config import Settings
-from veronica_core.provider import OpenAICompatibleProvider, ProviderError
+from veronica_core.provider import OpenAICompatibleProvider, ProviderError, StreamingNotSupported
 
 
 SETTINGS = Settings(
@@ -53,5 +54,52 @@ def test_provider_error_does_not_expose_response_or_credentials(monkeypatch) -> 
     transport_for(monkeypatch, lambda request: httpx.Response(401, text="test-secret private provider details"))
     with pytest.raises(ProviderError) as error:
         asyncio.run(OpenAICompatibleProvider(SETTINGS).complete({"messages": []}))
+    assert "test-secret" not in str(error.value)
+    assert "private provider" not in str(error.value)
+
+
+def test_provider_streams_sse(monkeypatch) -> None:
+    def handler(request):
+        payload = json.loads(request.content)
+        assert payload["stream"] is True
+        assert request.headers["authorization"] == "Bearer test-secret"
+        body = b'data: {"choices":[{"delta":{"content":"Hi"}}]}\n\ndata: [DONE]\n\n'
+        return httpx.Response(200, headers={"content-type": "text/event-stream"}, content=body)
+
+    transport_for(monkeypatch, handler)
+
+    async def collect() -> bytes:
+        chunks = []
+        async for chunk in OpenAICompatibleProvider(SETTINGS).stream({"messages": []}):
+            chunks.append(chunk)
+        return b"".join(chunks)
+
+    assert b"[DONE]" in asyncio.run(collect())
+    assert b"Hi" in asyncio.run(collect())
+
+
+def test_provider_rejects_json_as_stream(monkeypatch) -> None:
+    transport_for(
+        monkeypatch,
+        lambda request: httpx.Response(200, json={"choices": [{"message": {"role": "assistant", "content": "nope"}}]}),
+    )
+
+    async def consume() -> None:
+        async for _chunk in OpenAICompatibleProvider(SETTINGS).stream({"messages": []}):
+            pass
+
+    with pytest.raises(StreamingNotSupported, match="did not return a stream"):
+        asyncio.run(consume())
+
+
+def test_provider_stream_error_does_not_expose_credentials(monkeypatch) -> None:
+    transport_for(monkeypatch, lambda request: httpx.Response(401, text="test-secret private provider details"))
+
+    async def consume() -> None:
+        async for _chunk in OpenAICompatibleProvider(SETTINGS).stream({"messages": []}):
+            pass
+
+    with pytest.raises(ProviderError) as error:
+        asyncio.run(consume())
     assert "test-secret" not in str(error.value)
     assert "private provider" not in str(error.value)

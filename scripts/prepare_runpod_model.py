@@ -76,6 +76,15 @@ def command(*args, env=None):
     subprocess.run(args, check=True, env=env)
 
 
+def runtime_environment_arguments(runtime, runtime_env):
+    """Keep legacy chat behavior; allow a clean environment for matched runs."""
+    isolated = runtime.get("isolatedEnvironment", False)
+    if not isinstance(isolated, bool):
+        raise ValueError("runtime.isolatedEnvironment must be boolean")
+    inheritance = [] if isolated else ["--system-site-packages"]
+    return ["uv", "venv", *inheritance, "--python", "python3", str(runtime_env)]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", type=Path, required=True)
@@ -140,7 +149,11 @@ def main():
         return
     runtime_env = Path("/workspace/veronica-core/runtime-vllm-" + runtime["vllmVersion"])
     if not (runtime_env / "bin/python").exists():
-        command("uv", "venv", "--system-site-packages", "--python", "python3", str(runtime_env), env=env)
+        command(*runtime_environment_arguments(runtime, runtime_env), env=env)
+    if runtime.get("isolatedEnvironment", False):
+        configuration = (runtime_env / "pyvenv.cfg").read_text()
+        if "include-system-site-packages = false" not in configuration.lower():
+            raise ValueError("Matched runtime must not inherit system packages; use a fresh isolated environment")
     constraints = ["--constraint", str(args.runtime_constraints)] if args.runtime_constraints else []
     command("uv", "pip", "install", "--python", str(runtime_env / "bin/python"), *constraints, "vllm==" + runtime["vllmVersion"], "transformers==" + runtime["transformersVersion"], env=env)
     frozen = subprocess.check_output(["uv", "pip", "freeze", "--python", str(runtime_env / "bin/python")], env=env)

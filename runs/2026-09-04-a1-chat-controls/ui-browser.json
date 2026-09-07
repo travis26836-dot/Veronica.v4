@@ -1,0 +1,30 @@
+{
+  "checkedAtUtc": "2026-09-04T08:10:00Z",
+  "target": "http://127.0.0.1:8012/",
+  "provider": "SlowMarkdownProvider mock; not live GPU inference",
+  "streaming": {
+    "sseForwarded": true,
+    "publicModel": "Veronica",
+    "stopVisibleDuringGeneration": true,
+    "noticeOnStop": "Generation stopped"
+  },
+  "markdown": {
+    "strongText": ["Raine"],
+    "codeBlock": "print('<script>alert(1)</script>')",
+    "imgElements": 0,
+    "scriptElements": 0,
+    "rawImgTagInHtml": false,
+    "link": {"href": "https://example.com", "rel": "noopener noreferrer"}
+  },
+  "controls": {
+    "copyNotice": "Copied",
+    "regeneratePresent": true,
+    "retryAfterStop": true,
+    "retryRestoredAssistant": true
+  },
+  "persistence": {
+    "survivedReload": true,
+    "newConversationStored": {"version": 1, "messages": [], "mode": "chat"},
+    "welcomeAfterClear": true
+  }
+}

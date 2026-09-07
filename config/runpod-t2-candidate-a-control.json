@@ -24,10 +24,11 @@
     "imageSourceTag": "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404"
   },
   "runtime": {
-    "vllmVersion": "0.17.0",
+    "vllmVersion": "0.28.0",
     "transformersVersion": "5.8.0",
     "hfCliVersion": "1.29.0",
-    "constraintsFile": "config/runpod-runtime-t2-0.17.0.txt",
+    "constraintsFile": "config/runpod-runtime-t2-0.28.0.txt",
+    "isolatedEnvironment": true,
     "maxModelLen": 32768,
     "maxNumSeqs": 1,
     "gpuMemoryUtilization": 0.92,

@@ -1,0 +1,13 @@
+{
+  "runId": "2026-09-04T065235Z-start-veronica",
+  "podName": "veronica-t2-20260904-065331-479fba6e",
+  "createdAttemptAtUtc": "2026-09-04T06:53:31.325811+00:00",
+  "deadlineUtc": "2026-09-04T07:53:31.325811+00:00",
+  "backupShutdownAtUtc": "2026-09-04T07:53:31.325811+00:00",
+  "maxHourlyUsd": 1.75,
+  "sshKey": "/home/dubs/.ssh/id_ed25519_runpod_noirworks",
+  "podId": "cds4rrvw2nmm4w",
+  "platformTimer": false,
+  "creationAttempted": true,
+  "actualHourlyUsd": 1.59
+}

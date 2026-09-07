@@ -1,0 +1,13 @@
+Header
+Message 1
+SYSTEMWelcome
+
+---
+
+Message 2
+YOUHello
+
+---
+
+Message 3
+VERONICAI read your emails.

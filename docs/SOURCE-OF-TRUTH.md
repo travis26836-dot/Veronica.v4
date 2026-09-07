@@ -6,6 +6,8 @@
 
 **Evaluation checkpoint, 2026-08-31:** The [development evaluation system](evals/README.md) now has 60 cases, 69 turns, transcript intake, human/advisory scoring, dataset checks and a reusable skill. The saved conversation is authorized as evaluation input; its assistant outputs are untrusted evidence, not approved training targets. Offline harness validation does not qualify the foundation. The [checkpoint decision](../runs/2026-08-31-evaluation-foundation/decision.md) records the evidence. Foundation weights and the `Veronica` alias are unchanged; no training, new inference or paid compute was started for this checkpoint.
 
+**Chat-wrapper checkpoint, 2026-09-04:** The local wrapper now forwards `stream=true` SSE when the provider supports it, and the browser chat persists the session, exposes retry/stop/copy/regenerate, and renders escaped Markdown. Native tools, memory, fine-tuning, and T2 qualification are unchanged. Evidence: `runs/2026-09-04-a1-chat-controls/decision.md`.
+
 ## 1. What we are building
 
 Veronica is one highly capable general-purpose AI with a unique identity and a modular agent wrapper. The core must chat naturally, reason deeply, write creatively, code, and call tools before specialized applications are added.
@@ -129,7 +131,7 @@ Initial endpoints:
 - `GET /api/health` - wrapper and provider state.
 - `GET /api/capabilities` - implemented versus planned capabilities.
 - `GET /v1/models` - stable Veronica alias.
-- `POST /v1/chat/completions` - OpenAI-compatible non-streaming chat.
+- `POST /v1/chat/completions` - OpenAI-compatible chat. `stream=false` returns a full completion. `stream=true` forwards upstream SSE when the provider supports it, and returns an honest 501/503 if it cannot. The wrapper rewrites the streamed `model` field to the public `Veronica` alias.
 
 The request may include `veronica_mode` with `chat`, `deep-reasoning`, `creative`, or `coding`. The wrapper removes this extension before forwarding the request.
 

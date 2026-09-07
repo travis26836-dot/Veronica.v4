@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "suite_id": "test",
+  "cases": [
+    {
+      "id": "first",
+      "family": "first",
+      "category": "grounding",
+      "tier": "smoke",
+      "release_blocker": true,
+      "context": "Text-only test fixture. No tools or persistent memory.",
+      "turns": [
+        {
+          "user": "Question 0",
+          "checks": [],
+          "rubric": [
+            "Answer using only supplied facts."
+          ]
+        },
+        {
+          "user": "Question 1",
+          "checks": [],
+          "rubric": [
+            "Answer using only supplied facts."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "second",
+      "family": "second",
+      "category": "grounding",
+      "tier": "smoke",
+      "release_blocker": true,
+      "context": "Text-only test fixture. No tools or persistent memory.",
+      "turns": [
+        {
+          "user": "Question 0",
+          "checks": [],
+          "rubric": [
+            "Answer using only supplied facts."
+          ]
+        }
+      ]
+    }
+  ]
+}

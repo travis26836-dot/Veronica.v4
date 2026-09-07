@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "module-manifest.schema.json",
+  "title": "Veronica application module manifest",
+  "description": "Contract for a removable application module that integrates only through the public Veronica alias. This schema does not implement tools, memory, or training.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "version",
+    "status",
+    "publicAlias",
+    "description",
+    "capabilities",
+    "tools",
+    "knowledgeScope",
+    "adapter",
+    "bindsToFoundationRepository",
+    "removableWithoutCoreDamage",
+    "tests"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+([.-][A-Za-z0-9]+)?$"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["planned", "implemented", "qualified", "hold", "retired"]
+    },
+    "publicAlias": { "const": "Veronica" },
+    "description": { "type": "string", "minLength": 1 },
+    "capabilities": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "permission"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "permission": {
+            "type": "string",
+            "enum": ["none", "read", "confirm", "disabled"]
+          },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "knowledgeScope": {
+      "type": "string",
+      "enum": ["none", "session", "user", "project", "application"]
+    },
+    "adapter": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind", "reversible"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "kind": { "type": "string", "enum": ["prompt", "lora", "qlora"] },
+            "reversible": { "const": true }
+          }
+        }
+      ]
+    },
+    "bindsToFoundationRepository": { "const": false },
+    "removableWithoutCoreDamage": { "const": true },
+    "tests": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "notes": { "type": "string" }
+  }
+}

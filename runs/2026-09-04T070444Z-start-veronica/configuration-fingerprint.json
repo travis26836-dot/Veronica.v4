@@ -1,0 +1,13 @@
+{
+  "capturedAtUtc": "2026-09-04T07:14:51.141268+00:00",
+  "sha256": {
+    "profile.json": "5b4e02122cccb49242e159387b961b1e2f2444aa999e4c8ff9db961c27222ed5",
+    "expected-model-manifest.json": "fa276d3f71232005c0405ad02035243a23b0610da2a82f1b6642da21f841d0e2",
+    "validated-model-manifest.json": "0c36bfa6d3638f0234bc757abb34eb939220bdb5735be9c7f9b2ebfcf429d348",
+    "runtime-packages.txt": "07165e545d5183a8a400a5524d50c00cad60f19ffcc371636caf0db55fb86568",
+    "server-command.json": "633e9695b6087e6f003c42f70a2a34c0643ca93aa0317b23994dadbc6ce203b0",
+    "executed-bootstrap.py": "ef80b8e3c93d69dfeaf3215c72efb5d5574d485de4ecf7716112d04cfa1bb171"
+  },
+  "modelFileCount": 27,
+  "validatedModelBytes": 61084222203
+}

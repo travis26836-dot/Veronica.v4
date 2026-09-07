@@ -1,0 +1,4 @@
+# Proposed shared runtime; not approved as validated GPU runtime.
+vllm==0.28.0
+transformers==5.8.0
+huggingface-hub==1.29.0

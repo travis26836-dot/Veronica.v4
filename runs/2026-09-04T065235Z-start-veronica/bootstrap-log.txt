@@ -1,0 +1,46 @@
+VERIFIED .gitattributes
+VERIFIED LICENSE
+VERIFIED Modelfile
+VERIFIED README.md
+VERIFIED added_tokens.json
+VERIFIED chat_template.jinja
+VERIFIED config.json
+VERIFIED generation_config.json
+VERIFIED merges.txt
+VERIFIED model-00001-of-00013.safetensors
+VERIFIED model-00002-of-00013.safetensors
+VERIFIED model-00003-of-00013.safetensors
+VERIFIED model-00004-of-00013.safetensors
+VERIFIED model-00005-of-00013.safetensors
+VERIFIED model-00006-of-00013.safetensors
+VERIFIED model-00007-of-00013.safetensors
+VERIFIED model-00008-of-00013.safetensors
+VERIFIED model-00009-of-00013.safetensors
+VERIFIED model-00010-of-00013.safetensors
+VERIFIED model-00011-of-00013.safetensors
+VERIFIED model-00012-of-00013.safetensors
+VERIFIED model-00013-of-00013.safetensors
+VERIFIED model.safetensors.index.json
+VERIFIED special_tokens_map.json
+VERIFIED tokenizer.json
+VERIFIED tokenizer_config.json
+VERIFIED vocab.json
+Using CPython 3.12.3 interpreter at: /usr/local/bin/python
+Creating virtual environment at: /workspace/veronica-core/runtime-vllm-0.17.0
+Activate with: source /workspace/veronica-core/runtime-vllm-0.17.0/bin/activate
+Using Python 3.12.3 environment at: /workspace/veronica-core/runtime-vllm-0.17.0
+  × No solution found when resolving dependencies:
+  ╰─▶ Because vllm==0.17.0 depends on transformers>=4.56.0,<5 and you require
+      vllm==0.17.0, we can conclude that you require transformers>=4.56.0,<5.
+      And because you require transformers==5.8.0, we can conclude that your
+      requirements are unsatisfiable.
+Traceback (most recent call last):
+  File "/workspace/veronica-core/runs/2026-09-04T065235Z-start-veronica/prepare_runpod_model.py", line 160, in <module>
+    main()
+  File "/workspace/veronica-core/runs/2026-09-04T065235Z-start-veronica/prepare_runpod_model.py", line 145, in main
+    command("uv", "pip", "install", "--python", str(runtime_env / "bin/python"), *constraints, "vllm==" + runtime["vllmVersion"], "transformers==" + runtime["transformersVersion"], env=env)
+  File "/workspace/veronica-core/runs/2026-09-04T065235Z-start-veronica/prepare_runpod_model.py", line 76, in command
+    subprocess.run(args, check=True, env=env)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '('uv', 'pip', 'install', '--python', '/workspace/veronica-core/runtime-vllm-0.17.0/bin/python', '--constraint', '/workspace/veronica-core/runs/2026-09-04T065235Z-start-veronica/runtime-constraints.txt', 'vllm==0.17.0', 'transformers==5.8.0')' returned non-zero exit status 1.
