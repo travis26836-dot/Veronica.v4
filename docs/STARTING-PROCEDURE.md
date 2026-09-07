@@ -1,5 +1,28 @@
 # Veronica RunPod starting procedure
 
+## RunPod agent setup (before START)
+
+The setup path differs by client. It installs skills and registers the hosted
+RunPod MCP server; it does **not** start a Pod or authorize a Veronica run.
+
+- **GitHub Copilot in VS Code or VS Code Insiders:** run
+  `npx @runpod/mcp-server@latest add`. This guided installer writes the hosted
+  MCP registration for the detected VS Code client. It does not prove OAuth;
+  the user must complete **Sign in with Runpod** in the Copilot UI.
+- **Codex:** install the shared skills and use Codex's own registration:
+  `npx -y skills add runpod/runpod-plugins-official --skill '*' --yes --global`,
+  then `codex plugin marketplace add
+  https://github.com/runpod/runpod-plugins-official.git`. The user must run
+  `codex /plugins`, install **Runpod**, and reload if prompted. If tools are
+  absent, add the hosted server directly with
+  `codex mcp add runpod --transport http https://mcp.getrunpod.io/`.
+
+Keep skills/router installation, MCP registration, and authenticated
+connectivity as separate status items. OAuth is incomplete until the user
+signs in; after sign-in, listing Pods verifies the connection (an empty list
+passes). Do not install `runpodctl`, the Flash SDK, or an API key merely for
+setup, and do not claim setup is complete from a command's exit code alone.
+
 ## Say "Start Veronica"
 
 In Codex or Copilot, **"Start Veronica"**, **"launch Veronica"**, or **"boot Veronica"** invokes the `veronica-runpod-core` skill and its checked launcher. No manual Pod deployment is needed. This is an agent command, not a microphone listener or a new PowerShell `start` alias.
@@ -139,4 +162,3 @@ python3 scripts/supervised_runpod.py terminate --run-dir runs/<run>
 ```
 
 Termination checks the exact saved Pod ID and unique name, deletes only that Pod, and confirms absence from inventory. It never deletes the network volume. A termination receipt also releases the local watchdog and keep-awake helper. Record final resource state and the next checkpoint. Never infer shutdown from a timer setting or a process exit; do not end a supervised turn with paid compute running.
-

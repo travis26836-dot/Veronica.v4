@@ -1,6 +1,6 @@
 ---
 name: veronica-runpod-core
-description: Start Veronica when the user says "Start Veronica", "launch Veronica", or "boot Veronica"; prepare, verify, test, or shut down Veronica.v4's RunPod text core on its existing persistent model volume. Excludes Studio and unrelated RunPod workloads.
+description: Set up the RunPod agent integration when the user asks to set up RunPod, install RunPod skills, or connect RunPod MCP; start Veronica when the user says "Start Veronica", "launch Veronica", or "boot Veronica"; prepare, verify, test, or shut down Veronica.v4's RunPod text core on its existing persistent model volume. Excludes Studio and unrelated RunPod workloads.
 ---
 
 # Veronica RunPod core
@@ -8,6 +8,49 @@ description: Start Veronica when the user says "Start Veronica", "launch Veronic
 Find the project root by locating `config/runpod-core.json` above this skill. The installed skill is a junction to this project's `.agents/skills/veronica-runpod-core`; resolve it if necessary. Canonical project: `C:\Users\raine\DEVELOPMENT\Projects\Veronica.v4`. Read `AGENTS.md`, `docs/SOURCE-OF-TRUTH.md`, `docs/STARTING-PROCEDURE.md`, `TODO.md`, and the latest run decision before acting.
 
 The executable contract is `config/runpod-core.json`, `scripts/start-veronica.ps1`, and the existing Python controllers. Keep deployment choices in the profile, not a second cloud template. Prefer the checked launcher for the complete startup; use the installed RunPod skills/CLI or available MCP tools for read-only diagnostics. Never bypass the approval, ownership, or price checks through a direct MCP create call.
+
+## RunPod agent setup
+
+Setup is client-specific. Do not report the MCP connection as complete until the
+client's hosted-server registration is present **and** the user has completed
+RunPod OAuth. Setup never authorizes a Veronica startup.
+
+### GitHub Copilot in VS Code or VS Code Insiders
+
+Use the guided installer; it detects the client and writes the hosted MCP
+registration (OAuth, with no API key stored):
+
+```powershell
+npx @runpod/mcp-server@latest add
+```
+
+The installer may also install the RunPod router and six skills. A successful
+installer exit verifies only the files it reports. The MCP still needs the
+user's **Sign in with Runpod** OAuth action in the VS Code/Copilot UI.
+
+### Codex
+
+Install the shared RunPod skills, then register them through Codex's plugin
+flow; do not assume the Copilot/VS Code installer configured Codex:
+
+```powershell
+npx -y skills add runpod/runpod-plugins-official --skill '*' --yes --global
+codex plugin marketplace add https://github.com/runpod/runpod-plugins-official.git
+```
+
+The user must run `codex /plugins`, install **Runpod** from the marketplace,
+and reload if prompted. If the `runpod` MCP tools do not appear, register the
+hosted server explicitly:
+
+```powershell
+codex mcp add runpod --transport http https://mcp.getrunpod.io/
+```
+
+OAuth still requires the user's Codex sign-in action. Report skills/router,
+MCP registration, and authenticated connectivity as separate states. After
+OAuth, verify connectivity by listing Pods; an empty list is a successful
+connection check. Never install `runpodctl`, the Flash SDK, or an API key just
+for setup, and never create a Pod during setup.
 
 ## START and STOP requests
 

@@ -1,0 +1,8 @@
+{
+  "request": "Restart local UI and run Veronica Startup procedure again",
+  "selectedDuration": "1 hour",
+  "authorizedAtUtc": "2026-09-06T05:40:09.9941909+00:00",
+  "runId": "2026-09-06T054009Z-start-veronica",
+  "hourlyCeiling": 1.75,
+  "supervision": "supervised-with-local-backup"
+}

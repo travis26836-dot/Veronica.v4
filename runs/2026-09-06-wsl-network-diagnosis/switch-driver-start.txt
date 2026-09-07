@@ -1,0 +1,164 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260906001554
+Username: MSI\Dubs
+RunAs User: MSI\Dubs
+Configuration Name: 
+Machine: MSI (Microsoft Windows NT 10.0.26220.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -File C:\Users\raine\DEVELOPMENT\Projects\Veronica.v4\runs\2026-09-06-wsl-network-diagnosis\start-switch-driver.ps1
+Process ID: 32576
+PSVersion: 5.1.26100.8271
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.8271
+BuildVersion: 10.0.26100.8271
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is C:\Users\raine\DEVELOPMENT\Projects\Veronica.v4\runs\2026-09-06-wsl-network-diagnosis\switch-driver-start.txt
+[SC] StartService FAILED 31:
+
+A device attached to the system is not functioning.
+
+SERVICE_NAME: VMSP
+        TYPE               : 1  KERNEL_DRIVER
+        STATE              : 1  STOPPED
+        WIN32_EXIT_CODE    : 31  (0x1f)
+        SERVICE_EXIT_CODE  : 0  (0x0)
+        CHECKPOINT         : 0x0
+        WAIT_HINT          : 0x0
+
+
+TimeCreated : 9/6/2026 12:15:54 AM
+Id          : 7000
+Message     : The VmSwitch Protocol Driver service failed to start due to the following error:
+              A device attached to the system is not functioning.
+
+TimeCreated : 9/6/2026 12:15:54 AM
+Id          : 4
+Message     : Failed to initialize VMSwitch driver due to error {Operation Failed}
+              The requested operation was unsuccessful..
+
+TimeCreated : 9/6/2026 12:15:54 AM
+Id          : 277
+Message     : vmswitch.sys build 26100.amd64.ge_release_svc_betaflt_prod1, debug false, official true, 1 1
+
+
+
+
+
+TimeCreated : 9/6/2026 12:15:54 AM
+Id          : 0
+Message     : VmSwitch Driver state
+
+              State: Stopped and Unloaded,
+              Function: VmsDriverUnload,
+              delta (100 ns): 10483,
+              Status: 0x0(NT=STATUS_SUCCESS)
+
+TimeCreated : 9/6/2026 12:15:54 AM
+Id          : 0
+Message     : VmSwitch Driver state
+
+              State: Started Unloading,
+              Function: VmsDriverUnload
+
+TimeCreated : 9/6/2026 12:15:54 AM
+Id          : 0
+Message     : VmSwitch Driver state
+
+              State: Installed and Started.,
+              Function: DriverEntry,
+              delta (100 ns): 24171,
+              Status: 0xC0000001(NT=Operation Failed)
+
+TimeCreated : 9/6/2026 12:15:54 AM
+Id          : 0
+Message     : ProtocolNic NetPnpEvent End
+
+              netPnpEvent: NetEventBindsComplete,
+              nicName: ,
+              nicFriendlyName: ,
+              switchName: ,
+              switchFriendlyName: ,
+              delta (100 ns): 42,
+              Status: 0x0(NT=STATUS_SUCCESS)
+
+TimeCreated : 9/6/2026 12:15:54 AM
+Id          : 0
+Message     : ProtocolNic NetPnpEvent Begin
+
+              netPnpEvent: NetEventBindsComplete,
+              nicName: ,
+              nicFriendlyName: ,
+              switchName: ,
+              switchFriendlyName:
+
+TimeCreated : 9/6/2026 12:15:54 AM
+Id          : 0
+Message     : VmSwitch Driver state
+
+              State: Started Loading,
+              Function: DriverEntry
+
+TimeCreated : 9/1/2026 12:18:17 AM
+Id          : 0
+Message     : VmSwitch Driver state
+
+              State: Stopped and Unloaded,
+              Function: VmsDriverUnload,
+              delta (100 ns): 80677,
+              Status: 0x0(NT=STATUS_SUCCESS)
+
+TimeCreated : 9/1/2026 12:18:17 AM
+Id          : 0
+Message     : VmSwitch Driver state
+
+              State: Started Unloading,
+              Function: VmsDriverUnload
+
+TimeCreated : 9/1/2026 12:18:17 AM
+Id          : 0
+Message     : VmSwitch Driver state
+
+              State: Installed and Started.,
+              Function: DriverEntry,
+              delta (100 ns): 22408,
+              Status: 0xC0000001(NT=Operation Failed)
+
+TimeCreated : 9/1/2026 12:18:17 AM
+Id          : 0
+Message     : ProtocolNic NetPnpEvent End
+
+              netPnpEvent: NetEventBindsComplete,
+              nicName: ,
+              nicFriendlyName: ,
+              switchName: ,
+              switchFriendlyName: ,
+              delta (100 ns): 41,
+              Status: 0x0(NT=STATUS_SUCCESS)
+
+TimeCreated : 9/1/2026 12:18:17 AM
+Id          : 0
+Message     : ProtocolNic NetPnpEvent Begin
+
+              netPnpEvent: NetEventBindsComplete,
+              nicName: ,
+              nicFriendlyName: ,
+              switchName: ,
+              switchFriendlyName:
+
+TimeCreated : 9/1/2026 12:18:17 AM
+Id          : 0
+Message     : VmSwitch Driver state
+
+              State: Started Loading,
+              Function: DriverEntry
+
+
+
+**********************
+Windows PowerShell transcript end
+End time: 20260906001557
+**********************

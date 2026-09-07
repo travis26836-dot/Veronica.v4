@@ -1,0 +1,42 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260906001218
+Username: MSI\Dubs
+RunAs User: MSI\Dubs
+Configuration Name: 
+Machine: MSI (Microsoft Windows NT 10.0.26220.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -File C:\Users\raine\DEVELOPMENT\Projects\Veronica.v4\runs\2026-09-06-wsl-network-diagnosis\inspect-windows-health.ps1
+Process ID: 51076
+PSVersion: 5.1.26100.8271
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.8271
+BuildVersion: 10.0.26100.8271
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is C:\Users\raine\DEVELOPMENT\Projects\Veronica.v4\runs\2026-09-06-wsl-network-diagnosis\admin-health-check.txt
+2026-09-06T00:12:18.0364025-04:00
+
+
+FeatureName : VirtualMachinePlatform
+State       : Enabled
+
+
+
+
+Deployment Image Servicing and Management tool
+Version: 10.0.26100.7934
+
+Image Version: 10.0.26220.8271
+
+[==========================100.0%==========================] No component store corruption detected.
+The operation completed successfully.
+
+
+Windows Resource Protection did not find any integrity violations.
+**********************
+Windows PowerShell transcript end
+End time: 20260906001500
+**********************
