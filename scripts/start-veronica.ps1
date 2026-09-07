@@ -90,7 +90,10 @@ if ($PlanOnly) {
 if (-not $resolvedRun -or -not $ApprovalFile) {
     throw 'Launch requires explicit RunDir and ApprovalFile recording current user authorization; use -PlanOnly to inspect defaults.'
 }
-$resolvedApproval = (Resolve-Path -LiteralPath $ApprovalFile).Path
+# Use .ProviderPath, not .Path: on a UNC working directory (e.g. \\wsl.localhost\...),
+# PathInfo.Path returns a provider-qualified string ("Microsoft.PowerShell.Core\FileSystem::\\...")
+# that breaks downstream Python/WSL calls expecting a plain filesystem path.
+$resolvedApproval = (Resolve-Path -LiteralPath $ApprovalFile).ProviderPath
 foreach ($artifact in @('supervised-state.json', 'expected-model-manifest.json', 'bootstrap-start.json', 'keep-awake-state.json', 'startup-ui-ready.json', 'startup-ready.json', 'startup-cancelled.json', 'termination.json')) {
     if (Test-Path -LiteralPath (Join-Path $resolvedRun $artifact)) { throw 'This run already contains startup evidence; use a new run and authorization. Creation is never retried.' }
 }

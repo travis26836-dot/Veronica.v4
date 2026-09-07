@@ -58,6 +58,69 @@ def test_legacy_timer_flag_does_not_authorize_creation():
                 core.main()
 
 
+def test_preflight_falls_back_to_approved_gpu_when_primary_has_no_stock():
+    """The primary A100 having zero stock must not block startup when an approved
+    fallback GPU (config/runpod-core.json pod.gpuFallbacks) has stock within its
+    own price cap; the reliability trade-off must be surfaced, not hidden."""
+    profile = core.profile_at(core.DEFAULT_PROFILE)
+    fallback = profile["pod"]["gpuFallbacks"][0]
+
+    def fake_cli(*args):
+        if args == ("network-volume", "get", "v53gj9flzs"):
+            return json.dumps({"id": "v53gj9flzs", "dataCenterId": "EUR-IS-1", "size": 300})
+        if args == ("gpu", "list", "--include-unavailable"):
+            return json.dumps([
+                {"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 1.59,
+                 "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "none"}]},
+                {"gpuId": fallback["gpuTypeId"], "communityPricePerHr": fallback["maxHourlyUsd"],
+                 "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "Medium"}]},
+            ])
+        if args == ("pod", "list", "--all"):
+            return "[]"
+        if args == ("ssh", "list-keys"):
+            return '{"keys":[{"name":"test"}]}'
+        if args == ("pod", "create", "--help"):
+            return "--terminate-after"
+        if args == ("version",):
+            return "test-version"
+        raise AssertionError(f"Unexpected/mutating command: {args}")
+
+    with patch.object(core, "cli", fake_cli):
+        result = core.preflight(profile, 1.75, 60, supervised=True)
+    assert result["safeToCreate"]
+    assert result["usedFallbackGpu"] is True
+    assert result["gpuTypeId"] == fallback["gpuTypeId"]
+    assert result["cloudType"] == fallback["cloudType"]
+    assert result["reliabilityNote"]
+
+
+def test_preflight_blocks_when_primary_and_all_fallbacks_have_no_stock():
+    profile = core.profile_at(core.DEFAULT_PROFILE)
+
+    def fake_cli(*args):
+        if args == ("network-volume", "get", "v53gj9flzs"):
+            return json.dumps({"id": "v53gj9flzs", "dataCenterId": "EUR-IS-1", "size": 300})
+        if args == ("gpu", "list", "--include-unavailable"):
+            return json.dumps([{"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 1.59,
+                                 "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "none"}]}])
+        if args == ("pod", "list", "--all"):
+            return "[]"
+        if args == ("ssh", "list-keys"):
+            return '{"keys":[{"name":"test"}]}'
+        if args == ("pod", "create", "--help"):
+            return "--terminate-after"
+        if args == ("version",):
+            return "test-version"
+        raise AssertionError(f"Unexpected/mutating command: {args}")
+
+    with patch.object(core, "cli", fake_cli):
+        result = core.preflight(profile, 1.75, 60, supervised=True)
+    assert not result["safeToCreate"]
+    assert any("no configured fallback GPU has stock" in item for item in result["blockers"])
+
+
+
+
 def test_duration_selection_defaults_to_one_hour_and_offers_custom_window():
     profile = core.profile_at(core.DEFAULT_PROFILE)
     output = []
@@ -106,6 +169,29 @@ def test_termination_never_selects_unrelated_or_mismatched_pod():
     with patch.object(core, "cli", return_value=json.dumps([{"id": state["podId"], "name": "renamed"}])):
         with pytest.raises(RuntimeError, match="renamed"):
             supervised.owned_pods(state)
+
+
+def test_ambiguous_creation_timeout_without_pod_id_stays_unresolved(tmp_path):
+    """A client-side timeout during creation cannot prove the API never
+    accepted the request server-side; termination must stay blocked."""
+    supervised.write(tmp_path / "supervised-state.json", {"podName": "veronica-core-x", "podId": None, "creationAttempted": True})
+    with patch.object(core, "cli", return_value="[]"):
+        with pytest.raises(RuntimeError, match="unresolved"):
+            supervised.terminate(tmp_path)
+
+
+def test_definitively_rejected_creation_confirms_absence(tmp_path):
+    """A synchronous CLI rejection (e.g. RunPod's 'no longer any instances
+    available' error), corroborated by a live pod-list check finding nothing
+    under our unique name, must resolve to confirmed absence rather than
+    leaving the run stuck in 'unresolved' supervision forever."""
+    supervised.write(tmp_path / "supervised-state.json", {"podName": "veronica-core-x", "podId": None,
+        "creationAttempted": True, "creationDefinitivelyRejected": True})
+    with patch.object(core, "cli", return_value="[]"):
+        supervised.terminate(tmp_path)
+    receipt = core.read_json(tmp_path / "termination.json")
+    assert receipt["confirmedAbsent"] is True
+    assert receipt["podId"] is None
 
 
 def test_watchdog_uses_fixed_deadline_and_verifies_absence(tmp_path):

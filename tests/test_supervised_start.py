@@ -151,6 +151,23 @@ def test_unresolved_previous_run_blocks_new_start_even_if_inventory_would_be_emp
         controller.require_closed_previous_runs(new_run)
 
 
+def test_definitively_rejected_previous_run_with_no_pod_id_does_not_block_new_start(tmp_path):
+    """A creation attempt that was definitively rejected by the API (see
+    terminate()'s creationDefinitivelyRejected marker) never had a Pod ID at
+    all; its matching termination.json legitimately also carries podId: None.
+    That must count as closed so a fresh START is not blocked forever."""
+    old_run = tmp_path / "runs" / "older"
+    new_run = tmp_path / "runs" / "newer"
+    state = {"podName": "veronica-core-old", "podId": None, "creationAttempted": True,
+              "creationDefinitivelyRejected": True}
+    controller.write(old_run / "supervised-state.json", state)
+    with patch.object(core, "ROOT", tmp_path):
+        with pytest.raises(RuntimeError, match="confirmed closeout"):
+            controller.require_closed_previous_runs(new_run)
+        controller.write(old_run / "termination.json", {"podName": state["podName"], "podId": None, "confirmedAbsent": True})
+        controller.require_closed_previous_runs(new_run)
+
+
 def test_start_lock_serializes_attempts_and_releases_after_failure(tmp_path):
     pytest.importorskip("fcntl", reason="Linux/WSL locking tested separately on the serving-control OS")
     lock = tmp_path / "start.lock"

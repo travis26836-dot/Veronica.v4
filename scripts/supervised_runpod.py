@@ -83,9 +83,11 @@ def terminate(run):
     state = state_at(run)
     matches = owned_pods(state)
     pod_id = matches[0]["id"] if matches else state.get("podId")
-    if not matches and state.get("creationAttempted") and not pod_id:
+    if not matches and state.get("creationAttempted") and not pod_id and not state.get("creationDefinitivelyRejected"):
         # An API request can be accepted after its local client times out. An
-        # empty listing alone cannot close that unresolved creation attempt.
+        # empty listing alone cannot close that unresolved creation attempt,
+        # unless the CLI already returned a definitive rejection (see
+        # creationDefinitivelyRejected) confirmed by repeated live checks.
         raise RuntimeError("Pod creation outcome is unresolved; keep supervising. Termination is NOT confirmed")
     if matches:
         if not state.get("podId"):
@@ -157,8 +159,16 @@ def require_closed_previous_runs(run):
             continue
         receipt_path = path.parent / "termination.json"
         receipt = core.read_json(receipt_path) if receipt_path.exists() else {}
-        closed = (receipt.get("confirmedAbsent") is True and receipt.get("podName") == state.get("podName")
-                  and bool(state.get("podId")) and receipt.get("podId") == state["podId"])
+        matching_receipt = receipt.get("confirmedAbsent") is True and receipt.get("podName") == state.get("podName")
+        if state.get("podId"):
+            # A Pod ID was assigned: the receipt must confirm absence of that exact Pod.
+            closed = matching_receipt and receipt.get("podId") == state["podId"]
+        else:
+            # No Pod ID was ever assigned (e.g. a definitively rejected creation
+            # attempt, see terminate()). Nothing was created, so the receipt
+            # legitimately also carries no Pod ID; require that explicit marker
+            # rather than accepting a bare missing ID as closed by omission.
+            closed = matching_receipt and receipt.get("podId") is None and state.get("creationDefinitivelyRejected") is True
         if not closed:
             raise RuntimeError(f"Earlier run {path.parent.name} has no confirmed closeout; reconcile it before another START")
 
@@ -183,6 +193,9 @@ def _start_locked(profile, run, approval_file, ssh_key):
     print(json.dumps(result, indent=2), flush=True)
     if not result["safeToCreate"]:
         raise RuntimeError("No Pod created: resolve preflight blockers")
+    if result.get("usedFallbackGpu"):
+        print(f"WARNING: primary GPU unavailable; using approved fallback {result['gpuTypeId']} on "
+              f"{result['cloudType']} Cloud instead. {result.get('reliabilityNote', '')}", flush=True)
     manifest = core.read_json(run / "expected-model-manifest.json")
     if (manifest["repository"], manifest["revision"]) != (profile["model"]["repository"], profile["model"]["revision"]):
         raise ValueError("Pinned provenance manifest required before paid creation")
@@ -196,6 +209,7 @@ def _start_locked(profile, run, approval_file, ssh_key):
              # best-effort local supervision, not a platform-enforced timer.
              "backupShutdownAtUtc": deadline.isoformat(),
              "maxHourlyUsd": approval["maxHourlyUsd"], "sshKey": str(ssh_key), "podId": None,
+             "gpuTypeId": result["gpuTypeId"], "cloudType": result["cloudType"], "usedFallbackGpu": result.get("usedFallbackGpu", False),
              "platformTimer": False, "creationAttempted": False}
     write(run / "profile.json", profile)
     write(run / "supervised-state.json", state)
@@ -213,7 +227,7 @@ def _start_locked(profile, run, approval_file, ssh_key):
     pod = profile["pod"]
     public_key = ssh_key.with_suffix(ssh_key.suffix + ".pub").read_text().strip()
     args = ["pod", "create", "--name", state["podName"], "--image", pod["image"],
-            "--gpu-id", pod["gpuTypeId"], "--gpu-count", "1", "--cloud-type", pod["cloudType"],
+            "--gpu-id", result["gpuTypeId"], "--gpu-count", "1", "--cloud-type", result["cloudType"],
             "--data-center-ids", pod["dataCenterId"], "--network-volume-id", pod["networkVolumeId"],
             "--container-disk-in-gb", str(pod["containerDiskInGb"]), "--volume-mount-path", pod["volumeMountPath"],
             "--ports", ",".join(pod["ports"]), "--min-cuda-version", "12.8", "--ssh", "--env", json.dumps({"PUBLIC_KEY": public_key})]
@@ -237,8 +251,14 @@ def _start_locked(profile, run, approval_file, ssh_key):
         state["actualHourlyUsd"] = price
         write(run / "supervised-state.json", state)
         print(json.dumps(state, indent=2))
-    except Exception:
+    except Exception as error:
         # On uncertain creation, resolve the unique name and clean it up, never retry.
+        # A synchronous CLI failure (the process completed and returned an error,
+        # e.g. "no longer any instances available") is a definitive rejection, not
+        # an ambiguous client-side timeout where the API might still have accepted
+        # the request server-side. Only the former can safely mark absence as
+        # confirmed once live checks below find nothing under our unique name.
+        creation_call_failed_definitively = state.get("podId") is None and not isinstance(error, subprocess.TimeoutExpired)
         for _ in range(3):
             matches = owned_pods(state)
             if matches:
@@ -247,6 +267,10 @@ def _start_locked(profile, run, approval_file, ssh_key):
                 terminate(run)
                 break
             time.sleep(3)
+        else:
+            if creation_call_failed_definitively:
+                state["creationDefinitivelyRejected"] = True
+                write(run / "supervised-state.json", state)
         raise
 
 

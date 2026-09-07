@@ -17,6 +17,22 @@
     "gpuTypeId": "NVIDIA A100-SXM4-80GB",
     "gpuCount": 1,
     "cloudType": "SECURE",
+    "gpuFallbacks": [
+      {
+        "gpuTypeId": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "cloudType": "COMMUNITY",
+        "minMemoryGb": 96,
+        "maxHourlyUsd": 1.69,
+        "reliabilityNote": "Community Cloud pods can be preempted by their host and lack Secure Cloud's reliability guarantees."
+      },
+      {
+        "gpuTypeId": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
+        "cloudType": "COMMUNITY",
+        "minMemoryGb": 96,
+        "maxHourlyUsd": 1.69,
+        "reliabilityNote": "Community Cloud pods can be preempted by their host and lack Secure Cloud's reliability guarantees."
+      }
+    ],
     "containerDiskInGb": 30,
     "ports": ["22/tcp"],
     "volumeMountPath": "/workspace",

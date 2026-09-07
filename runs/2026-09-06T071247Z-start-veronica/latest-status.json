@@ -1,0 +1,14 @@
+{
+  "id": null,
+  "name": null,
+  "desiredStatus": null,
+  "runtimeStatus": null,
+  "costPerHr": null,
+  "publicIp": null,
+  "portMappings": null,
+  "deadlineUtc": "2026-09-06T08:22:32.528387+00:00",
+  "watchdog": {
+    "atUtc": "2026-09-06T07:23:42.634753+00:00",
+    "pid": 42743
+  }
+}
