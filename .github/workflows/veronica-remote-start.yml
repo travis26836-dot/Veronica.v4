@@ -1,0 +1,122 @@
+name: Veronica remote start
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "Read-only plan, supervised start, or stop an existing run"
+        required: true
+        type: choice
+        options: [plan, start, stop]
+        default: plan
+      duration_minutes:
+        description: "Maximum run duration (60, 120, 180, or a value up to 1440)"
+        required: true
+        default: "60"
+        type: string
+      authorization:
+        description: "Type START_VERONICA only for a fresh start request"
+        required: true
+        default: ""
+        type: string
+      run_id:
+        description: "Existing UTC run directory name, required for stop"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  remote-control:
+    # A durable Linux runner is required because the existing controller owns
+    # the watchdog and runpodctl credentials; a hosted runner may disappear.
+    runs-on: [self-hosted, linux, veronica-runpod]
+    timeout-minutes: 1500
+    environment: ${{ inputs.operation == 'start' && 'veronica-remote-start' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.17"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install wrapper dependencies
+        run: uv sync --frozen
+      - name: Validate remote request
+        env:
+          OPERATION: ${{ inputs.operation }}
+          DURATION: ${{ inputs.duration_minutes }}
+          AUTHORIZATION: ${{ inputs.authorization }}
+        run: |
+          if [[ "$OPERATION" == "plan" ]]; then
+            python scripts/remote_start.py validate --duration-minutes "$DURATION" --authorization PLAN_ONLY
+          else
+            python scripts/remote_start.py validate --duration-minutes "$DURATION" --authorization "$AUTHORIZATION"
+          fi
+      - name: Run no-cost live plan
+        if: inputs.operation == 'plan'
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: |
+          command -v runpodctl
+          python scripts/runpod_core.py prepare --run-dir "runs/remote-${GITHUB_RUN_ID}-plan"
+          python scripts/runpod_core.py preflight --run-dir "runs/remote-${GITHUB_RUN_ID}-plan" \
+            --max-hourly-usd 1.75 --duration-minutes "${{ inputs.duration_minutes }}" --supervised
+      - name: Prepare remote credentials
+        if: inputs.operation == 'start'
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.VERONICA_SSH_PRIVATE_KEY }}
+          SSH_PUBLIC_KEY: ${{ secrets.VERONICA_SSH_PUBLIC_KEY }}
+        run: |
+          test -n "$RUNPOD_API_KEY" -a -n "$SSH_PRIVATE_KEY" -a -n "$SSH_PUBLIC_KEY"
+          mkdir -p "$HOME/.ssh"
+          umask 077
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/veronica_runpod"
+          printf '%s\n' "$SSH_PUBLIC_KEY" > "$HOME/.ssh/veronica_runpod.pub"
+          chmod 600 "$HOME/.ssh/veronica_runpod"
+          echo "VERONICA_SSH_KEY=$HOME/.ssh/veronica_runpod" >> "$GITHUB_ENV"
+      - name: Start one supervised Pod
+        if: inputs.operation == 'start'
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: |
+          run="runs/$(date -u +%Y-%m-%dT%H%M%SZ)-start-veronica"
+          cleanup() {
+            if [[ -f "$run/supervised-state.json" && ! -f "$run/termination.json" ]]; then
+              python scripts/supervised_runpod.py terminate --run-dir "$run" || true
+            fi
+          }
+          trap cleanup EXIT
+          python scripts/remote_start.py approve \
+            --duration-minutes "${{ inputs.duration_minutes }}" \
+            --authorization "${{ inputs.authorization }}" --run-dir "$run"
+          python scripts/runpod_core.py prepare --run-dir "$run"
+          python scripts/runpod_core.py start --supervised --run-dir "$run" \
+            --approval-file "$run/approval.json" --ssh-key "$VERONICA_SSH_KEY"
+          deadline=$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["deadlineUtc"])' "$run/supervised-state.json")
+          while [[ "$(date -u +%s)" -lt "$(date -u -d "$deadline" +%s)" ]]; do
+            sleep 30
+          done
+          python scripts/supervised_runpod.py terminate --run-dir "$run"
+          python scripts/supervised_runpod.py status --run-dir "$run" || true
+          echo "Run evidence: $run"
+      - name: Stop an exact owned run
+        if: inputs.operation == 'stop'
+        env:
+          RUN_ID: ${{ inputs.run_id }}
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: |
+          test -n "$RUN_ID"
+          test -f "runs/$RUN_ID/supervised-state.json"
+          python scripts/supervised_runpod.py terminate --run-dir "runs/$RUN_ID"
+      - name: Upload remote evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: veronica-remote-run-${{ github.run_id }}
+          path: runs/
+          if-no-files-found: ignore
+          retention-days: 14
