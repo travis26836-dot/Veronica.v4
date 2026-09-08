@@ -39,6 +39,7 @@ jobs:
           $repo = $env:GITHUB_REPOSITORY
           $sha = $env:GITHUB_SHA.Substring(0, 7)
           $runUrl = "$env:GITHUB_SERVER_URL/$repo/actions/runs/$env:GITHUB_RUN_ID"
+          gh label create ci-failure --repo $repo --color F85149 --description "An open regression on main" --force
           $existing = gh issue list --repo $repo --label ci-failure --state open --json number --jq ".[0].number"
           if ([string]::IsNullOrWhiteSpace($existing)) {
             gh issue create --repo $repo `
