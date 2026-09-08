@@ -11,7 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, StrictBool
 
 from .config import Settings
-from .persona import MODE_PROMPTS, prepare_messages
+from .persona import MODE_PROMPTS, MODE_SAMPLING_DEFAULTS, prepare_messages
 from .provider import ChatProvider, OpenAICompatibleProvider, ProviderError, StreamingNotSupported
 
 
@@ -131,6 +131,8 @@ def create_app(
         payload["model"] = settings.upstream_model
         payload["messages"] = prepare_messages(payload["messages"], request.veronica_mode)
         payload["stream"] = request.stream
+        for key, value in MODE_SAMPLING_DEFAULTS.get(request.veronica_mode, {}).items():
+            payload.setdefault(key, value)
         return payload
 
     async def _relay_sse(chunks: AsyncIterator[bytes]) -> AsyncIterator[bytes]:

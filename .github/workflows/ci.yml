@@ -1,0 +1,51 @@
+name: CI
+
+# Runs the project's own local verification pipeline (scripts/verify-local.ps1:
+# contract validation, license/provenance check, the full pytest suite, and an
+# application import smoke test) on every push and pull request against main.
+# This is offline-only: no paid compute, no model downloads, no weights.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  verify:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+
+      - name: Run local verification pipeline
+        shell: pwsh
+        run: ./scripts/verify-local.ps1
+
+      - name: File or update an issue for a main-branch regression
+        if: failure() && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $repo = $env:GITHUB_REPOSITORY
+          $sha = $env:GITHUB_SHA.Substring(0, 7)
+          $runUrl = "$env:GITHUB_SERVER_URL/$repo/actions/runs/$env:GITHUB_RUN_ID"
+          $existing = gh issue list --repo $repo --label ci-failure --state open --json number --jq ".[0].number"
+          if ([string]::IsNullOrWhiteSpace($existing)) {
+            gh issue create --repo $repo `
+              --title "CI failure on main at $sha" `
+              --label ci-failure --label bug `
+              --body "scripts/verify-local.ps1 failed on main at commit $env:GITHUB_SHA.`n`nRun: $runUrl"
+          } else {
+            gh issue comment $existing --repo $repo `
+              --body "Still failing at $sha. Run: $runUrl"
+          }
