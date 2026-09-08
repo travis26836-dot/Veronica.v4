@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Install dependencies",
+      "type": "shell",
+      "command": "uv sync --python 3.12",
+      "inAgents": true,
+      "runOptions": { "runOn": "worktreeCreated" }
+    },
+    {
+      "label": "Run local tests",
+      "type": "shell",
+      "command": "./scripts/verify-local.ps1",
+      "inAgents": true
+    },
+    {
+      "label": "Start local wrapper",
+      "type": "shell",
+      "command": "./scripts/start-wrapper.ps1",
+      "inAgents": true
+    },
+    {
+      "label": "Start Veronica - 2 hours (PAID)",
+      "type": "shell",
+      "command": "pwsh -NoProfile -File ./scripts/start-veronica-one-click.ps1",
+      "inAgents": true
+    }
+  ]
+}

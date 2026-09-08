@@ -49,3 +49,5 @@ NON-SOURCE CODE/research/civitai-reference/reference-media
 Thumbs.db
 .idea/
 .vscode/
+!.vscode/
+!.vscode/tasks.json
