@@ -90,6 +90,16 @@ def validate_profile_safety(profile):
         raise ValueError("Every new Pod requires fresh approval and automatic replacement must remain disabled")
     if safety.get("defaultShutdownMode") != "supervised-with-local-backup":
         raise ValueError("The configured shutdown mode must remain supervised-with-local-backup")
+    for fallback in pod.get("gpuFallbacks", []):
+        if not isinstance(fallback.get("gpuTypeId"), str) or not fallback["gpuTypeId"]:
+            raise ValueError("Each GPU fallback requires a non-empty gpuTypeId")
+        if fallback.get("cloudType") not in ("SECURE", "COMMUNITY"):
+            raise ValueError("Each GPU fallback cloudType must be SECURE or COMMUNITY")
+        if type(fallback.get("minMemoryGb")) is not int or fallback["minMemoryGb"] < 80:
+            raise ValueError("Each GPU fallback must require at least 80 GB VRAM to match the primary GPU class")
+        cap = fallback.get("maxHourlyUsd")
+        if isinstance(cap, bool) or not isinstance(cap, (int, float, Decimal)) or not math.isfinite(cap) or cap <= 0 or cap > maximum:
+            raise ValueError("Each GPU fallback's own price cap must be finite, positive, and within the saved ceiling")
     return safety
 
 
@@ -212,13 +222,32 @@ def preflight(profile, hourly, minutes, *, supervised=False):
         blockers.append("Network volume and requested GPU data center do not match")
     if pod.get("networkVolumeSizeGb") and volumes.get("size") != pod["networkVolumeSizeGb"]:
         blockers.append("Persistent-volume allowance changed; review the profile before downloading")
-    gpu = next((g for g in gpus if g.get("gpuId") == pod["gpuTypeId"]), {})
-    dc = next((d for d in gpu.get("dataCenterAvailability", []) if d.get("dataCenterId") == pod["dataCenterId"]), {})
-    price = gpu.get("securePricePerHr" if pod["cloudType"] == "SECURE" else "communityPricePerHr")
-    if not dc or str(dc.get("stockStatus", "none")).lower() == "none":
-        blockers.append("Requested GPU is unavailable in the volume data center")
-    if not price_within_limit(price, hourly):
-        blockers.append("Current GPU price does not satisfy the approved ceiling")
+    # Try the primary GPU first, then ordered fallbacks, each within its own price cap.
+    candidates = [{"gpuTypeId": pod["gpuTypeId"], "cloudType": pod["cloudType"], "maxHourlyUsd": hourly, "isPrimary": True}]
+    candidates += [{**fallback, "isPrimary": False} for fallback in pod.get("gpuFallbacks", [])]
+    considered = []
+    selected = None
+    for candidate in candidates:
+        gpu = next((g for g in gpus if g.get("gpuId") == candidate["gpuTypeId"]), {})
+        dc = next((d for d in gpu.get("dataCenterAvailability", []) if d.get("dataCenterId") == pod["dataCenterId"]), {})
+        price_field = "securePricePerHr" if candidate["cloudType"] == "SECURE" else "communityPricePerHr"
+        price = gpu.get(price_field)
+        stock = str(dc.get("stockStatus", "none")).lower()
+        has_stock = bool(dc) and stock != "none"
+        price_ok = price_within_limit(price, candidate["maxHourlyUsd"])
+        entry = {"gpuTypeId": candidate["gpuTypeId"], "cloudType": candidate["cloudType"], "isPrimary": candidate["isPrimary"],
+                  "stock": dc.get("stockStatus"), "priceUsd": price, "priceCapUsd": candidate["maxHourlyUsd"],
+                  "hasStock": has_stock, "priceOk": price_ok, "selected": False}
+        if candidate.get("reliabilityNote"):
+            entry["reliabilityNote"] = candidate["reliabilityNote"]
+        if selected is None and has_stock and price_ok:
+            entry["selected"] = True
+            selected = {**candidate, "listedHourlyUsd": price, "stock": dc.get("stockStatus")}
+        considered.append(entry)
+    # A fallback selection is informational (surfaced via usedFallbackGpu/reliabilityNote
+    # below), not a blocker: it still satisfies stock and its own approved price cap.
+    if selected is None:
+        blockers.append("Requested GPU is unavailable in the volume data center, and no configured fallback GPU has stock within its price cap")
     if any(p.get("name", "").startswith(VERONICA_POD_PREFIXES) for p in pods):
         blockers.append("A Veronica Pod already exists; inspect it instead of creating another")
     if not keys.get("keys"):
@@ -227,12 +256,18 @@ def preflight(profile, hourly, minutes, *, supervised=False):
     # Presence alone was not proof: old versions advertised a timer that never fired.
     if not supervised and (profile["safety"]["terminationGuard"] != "verified-platform-timer" or "--terminate-after" not in create_help):
         blockers.append("Automatic termination is unverified/unavailable (runpodctl#330); paid creation is blocked")
-    return {
+    result = {
         "checkedAtUtc": datetime.now(timezone.utc).isoformat(),
         "cliVersion": cli("version").strip(), "volumeId": volumes["id"],
         "volumeSizeGb": volumes.get("size"),
-        "dataCenterId": pod["dataCenterId"], "gpu": pod["gpuTypeId"],
-        "listedHourlyUsd": price, "stock": dc.get("stockStatus"),
+        "dataCenterId": pod["dataCenterId"], "requestedGpuTypeId": pod["gpuTypeId"],
+        "gpu": selected["gpuTypeId"] if selected else pod["gpuTypeId"],
+        "gpuTypeId": selected["gpuTypeId"] if selected else pod["gpuTypeId"],
+        "cloudType": selected["cloudType"] if selected else pod["cloudType"],
+        "usedFallbackGpu": bool(selected and not selected["isPrimary"]),
+        "consideredGpus": considered,
+        "listedHourlyUsd": selected["listedHourlyUsd"] if selected else None,
+        "stock": selected["stock"] if selected else "none",
         "requestedLimitUsd": hourly, "savedMaximumHourlyUsd": safety["maximumHourlyUsd"],
         "gpuCount": pod["gpuCount"], "requestedDurationMinutes": minutes,
         "approvalIsReusable": False, "podCount": len(pods), "blockers": blockers,
@@ -240,6 +275,9 @@ def preflight(profile, hourly, minutes, *, supervised=False):
         "platformDeadlineEnforced": False,
         "safeToCreate": not blockers,
     }
+    if selected and not selected["isPrimary"]:
+        result["reliabilityNote"] = next((c.get("reliabilityNote") for c in candidates if c["gpuTypeId"] == selected["gpuTypeId"]), None)
+    return result
 
 
 def verify(profile, base_url, output, wrapper=False):

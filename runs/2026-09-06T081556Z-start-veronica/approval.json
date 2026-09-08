@@ -1,0 +1,12 @@
+{
+  "gpuTypeId": "NVIDIA A100-SXM4-80GB",
+  "resourceCount": 1,
+  "runId": "2026-09-06T081556Z-start-veronica",
+  "shutdownMode": "supervised-with-local-backup",
+  "requestNote": "Fifth attempt today. Prior attempt (2026-09-06T074458Z) fully succeeded end-to-end (model loaded, inference verified, wrapper healthy) but was auto-terminated by the delegated verification agent immediately after smoke tests, while the owner was actively using the live UI. This run keeps the Pod running for real interactive use for the full authorized hour; termination only on explicit stop request or deadline.",
+  "networkVolumeId": "v53gj9flzs",
+  "maxHourlyUsd": 1.75,
+  "authorizedAtUtc": "2026-09-06T08:16:32.7711996Z",
+  "modelRevision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+  "durationMinutes": 60
+}

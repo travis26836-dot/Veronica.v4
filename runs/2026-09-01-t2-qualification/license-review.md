@@ -38,4 +38,3 @@ Primary references:
 ## Gate decision
 
 The pinned card/license snapshot, declared commercial/modification/redistribution permissions, attribution obligations, base lineage and stated ablation method are documented for all four entries. Weight integrity, runtime compatibility and capability comparison remain separate open gates.
-

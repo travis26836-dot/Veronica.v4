@@ -1,0 +1,8 @@
+{
+  "chatUrl": "http://127.0.0.1:8010",
+  "checksPending": true,
+  "atUtc": "2026-09-06T07:50:03.0324814+00:00",
+  "runId": "2026-09-06T074458Z-start-veronica",
+  "uiReady": true,
+  "inferenceVerified": false
+}
