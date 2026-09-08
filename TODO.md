@@ -140,7 +140,7 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Build an offline-validated evaluation runner, transcript intake/reporting, draft dataset linter, and reusable `veronica-evals` skill. Proof: `runs/2026-08-31-evaluation-foundation/decision.md`.
 - [x] Freeze a matched four-model T2 protocol and add a strict offline evidence verifier. Proof: `config/t2-qualification.json` and `runs/2026-09-01-t2-qualification/decision.md`; no live comparison is claimed.
 - [x] Preserve and import the retained first conversation for evaluation, with assistant findings labeled advisory and training consent absent. Proof: `runs/2026-08-31-recorded-conversation-eval/report.md`.
-- [ ] Adjudicate the transcript's advisory findings and approve the next bounded evaluation selection.
+- [x] Adjudicate the transcript's advisory findings and approve the next bounded evaluation selection. Proof: `runs/2026-08-31-recorded-conversation-eval/reviews-owner.jsonl` and regenerated `report.json` (human_reviewed=3, human_critical_failures=2, gate `blocked_on_observed_failures`). Next bounded live selection (CC-01, CC-02, MB-01, MB-02) approved per the run's `owner-adjudication-packet.md` section 4; not yet executed — needs a fresh authorized Pod start.
 - [ ] Extend short context probes into long-context stress tests and add complete schema/executable-code qualification environments; the current runner never executes tools or generated code.
 - [ ] Run the frozen evaluation pack against each candidate and control.
 - [ ] Save every raw response and machine-readable score.
@@ -180,8 +180,8 @@ This file is the execution source of truth. Check an item only when its stated p
 ## E2 - Execute: personality adaptation
 
 - [x] Prepare a diagnosis-first dataset/adapter strategy with provenance, consent, family splits, regression exclusions and draft SFT/DPO examples. Proof: `docs/evals/DATASET-AND-FINETUNING-STRATEGY.md`; no training-ready dataset or training run is claimed.
-- [ ] Write a personality specification with positive examples and explicit non-goals.
-- [ ] Define sarcasm, humor, initiative, confidence, honesty, and disagreement behavior.
+- [x] Write a personality specification with positive examples and explicit non-goals. Proof: `docs/evals/PERSONALITY-SPEC.md`.
+- [x] Define sarcasm, humor, initiative, confidence, honesty, and disagreement behavior. Proof: same spec, section 1.
 - [ ] Collect owner-written or owner-approved conversation examples.
 - [ ] Remove factual teaching and application knowledge from the persona dataset.
 - [ ] Split train, validation, blind preference, and regression sets.

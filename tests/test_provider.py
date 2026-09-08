@@ -33,6 +33,38 @@ def test_health_requires_the_configured_model(monkeypatch) -> None:
     assert health["model_available"] is False
 
 
+async def _no_delay(_seconds: float) -> None:
+    return None
+
+
+def test_health_recovers_from_a_single_transient_failure(monkeypatch) -> None:
+    # A brief WAN/tunnel hiccup on the first attempt should not be reported as
+    # offline if a retry immediately succeeds.
+    attempts = {"count": 0}
+
+    def handler(request):
+        attempts["count"] += 1
+        if attempts["count"] == 1:
+            raise httpx.ConnectError("transient blip", request=request)
+        return httpx.Response(200, json={"data": [{"id": "candidate/model"}]})
+
+    transport_for(monkeypatch, handler)
+    monkeypatch.setattr("veronica_core.provider.asyncio.sleep", _no_delay)
+    health = asyncio.run(OpenAICompatibleProvider(SETTINGS).health())
+    assert attempts["count"] == 2
+    assert health["reachable"] is True
+    assert health["model_available"] is True
+
+
+def test_health_reports_unreachable_after_repeated_failure(monkeypatch) -> None:
+    transport_for(monkeypatch, lambda request: (_ for _ in ()).throw(httpx.ConnectError("down", request=request)))
+    monkeypatch.setattr("veronica_core.provider.asyncio.sleep", _no_delay)
+    health = asyncio.run(OpenAICompatibleProvider(SETTINGS).health())
+    assert health["reachable"] is False
+    assert health["model_available"] is False
+    assert health["error"] == "ConnectError"
+
+
 def test_provider_forwards_auth_but_never_returns_it(monkeypatch) -> None:
     def handler(request):
         assert request.headers["authorization"] == "Bearer test-secret"

@@ -1,0 +1,11 @@
+{
+  "resourceCount": 1,
+  "runId": "2026-09-08T034100Z-start-veronica",
+  "shutdownMode": "supervised-with-local-backup",
+  "authorizedAtUtc": "2026-09-08T03:41:00Z",
+  "networkVolumeId": "v53gj9flzs",
+  "maxHourlyUsd": 1.75,
+  "modelRevision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+  "durationMinutes": 60,
+  "gpuTypeId": "NVIDIA A100-SXM4-80GB"
+}

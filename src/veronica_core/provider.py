@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from collections.abc import AsyncIterator
 from typing import Any, Protocol
 
@@ -35,27 +36,37 @@ class OpenAICompatibleProvider:
         return headers
 
     async def health(self) -> dict[str, Any]:
-        try:
-            async with httpx.AsyncClient(timeout=5.0) as client:
-                response = await client.get(
-                    f"{self.settings.upstream_base_url}/models",
-                    headers=self._headers(),
+        # A single brief WAN/tunnel latency spike should not flip the UI to
+        # "offline" while the model server is actually healthy. Use a more
+        # tolerant timeout than a chat request needs for this lightweight
+        # check, and retry once after a short pause before reporting failure.
+        attempts = 2
+        last_error: Exception | None = None
+        for attempt in range(attempts):
+            try:
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    response = await client.get(
+                        f"{self.settings.upstream_base_url}/models",
+                        headers=self._headers(),
+                    )
+                    response.raise_for_status()
+                    data = response.json()
+                if not isinstance(data, dict) or not isinstance(data.get("data"), list):
+                    raise ValueError("Invalid models response")
+                available = any(
+                    isinstance(item, dict) and item.get("id") == self.settings.upstream_model
+                    for item in data["data"]
                 )
-                response.raise_for_status()
-                data = response.json()
-            if not isinstance(data, dict) or not isinstance(data.get("data"), list):
-                raise ValueError("Invalid models response")
-            available = any(
-                isinstance(item, dict) and item.get("id") == self.settings.upstream_model
-                for item in data["data"]
-            )
-            return {
-                "reachable": True,
-                "model_available": available,
-                "status_code": response.status_code,
-            }
-        except (httpx.HTTPError, ValueError) as exc:
-            return {"reachable": False, "model_available": False, "error": type(exc).__name__}
+                return {
+                    "reachable": True,
+                    "model_available": available,
+                    "status_code": response.status_code,
+                }
+            except (httpx.HTTPError, ValueError) as exc:
+                last_error = exc
+                if attempt + 1 < attempts:
+                    await asyncio.sleep(1.5)
+        return {"reachable": False, "model_available": False, "error": type(last_error).__name__}
 
     async def complete(self, payload: dict[str, Any]) -> dict[str, Any]:
         try:

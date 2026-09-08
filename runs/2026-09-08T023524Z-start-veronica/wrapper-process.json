@@ -1,0 +1,6 @@
+{
+  "pid": 12636,
+  "runId": "restart-with-health-timeout-fix",
+  "script": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\scripts\\start-supervised-wrapper.ps1",
+  "startedAtUtc": "2026-09-08T03:37:21.1543253Z"
+}

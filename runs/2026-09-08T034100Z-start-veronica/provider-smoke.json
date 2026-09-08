@@ -1,0 +1,37 @@
+{
+  "baseUrl": "http://127.0.0.1:18000/v1",
+  "tests": [],
+  "modelIdentityRequiresPodEvidence": true,
+  "automatedChecks": "Nonempty text and recall substring presence only; semantic correctness and action-truthfulness require manual review.",
+  "unauthenticatedModelsStatus": 401,
+  "advertisedModels": {
+    "object": "list",
+    "data": [
+      {
+        "id": "Veronica",
+        "object": "model",
+        "created": 1788839531,
+        "owned_by": "vllm",
+        "root": "/workspace/veronica-core/models/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated/e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+        "parent": null,
+        "max_model_len": 8192,
+        "permission": [
+          {
+            "id": "modelperm-0a940fbaf6bb42ee9124306bfcfd668d",
+            "object": "model_permission",
+            "created": 1788839531,
+            "allow_create_engine": false,
+            "allow_sampling": true,
+            "allow_logprobs": true,
+            "allow_search_indices": false,
+            "allow_view": true,
+            "allow_fine_tuning": false,
+            "organization": "*",
+            "group": null,
+            "is_blocking": false
+          }
+        ]
+      }
+    ]
+  }
+}

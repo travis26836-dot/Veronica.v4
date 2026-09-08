@@ -16,8 +16,9 @@ import shutil
 import subprocess
 import time
 from datetime import datetime, timezone
+from http.client import RemoteDisconnected
 from urllib.request import Request, urlopen
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PROFILE = ROOT / "config/runpod-core.json"
@@ -41,6 +42,32 @@ def fetch(url, payload=None, key=None):
     request = Request(url, data=json.dumps(payload).encode() if payload is not None else None, headers=headers)
     with urlopen(request, timeout=180) as response:
         return response.read()
+
+
+# A single dropped SSH tunnel packet on a real-world (often home) network
+# connection should not throw away an entire authorized, paid Pod. Only retry
+# transient connection-level failures; a real HTTP error status (auth
+# rejection, 4xx/5xx) is not retried here because it is not a network blip.
+TRANSIENT_CONNECTION_ERRORS = (RemoteDisconnected, ConnectionResetError, ConnectionAbortedError, TimeoutError, URLError)
+
+
+def fetch_with_retries(url, payload=None, key=None, attempts=3, backoff_seconds=3):
+    last_error = None
+    for attempt in range(attempts):
+        try:
+            return fetch(url, payload=payload, key=key)
+        except HTTPError:
+            # A real HTTP status (auth rejection, 4xx/5xx) is not a network
+            # blip; HTTPError is a URLError subclass, so it must be checked
+            # first and re-raised immediately, not retried.
+            raise
+        except TRANSIENT_CONNECTION_ERRORS as error:
+            last_error = error
+            if attempt + 1 < attempts:
+                print(f"Transient connection error ({type(error).__name__}); retrying in {backoff_seconds}s "
+                      f"(attempt {attempt + 2}/{attempts})", flush=True)
+                time.sleep(backoff_seconds)
+    raise last_error
 
 
 def cli(*args):
@@ -292,14 +319,14 @@ def verify(profile, base_url, output, wrapper=False):
         if not key:
             raise ValueError("The direct provider smoke test requires this run's upstream key")
         try:
-            fetch(base_url + "/models")
+            fetch_with_retries(base_url + "/models")
         except HTTPError as error:
             if error.code not in (401, 403):
                 raise
             results["unauthenticatedModelsStatus"] = error.code
         else:
             raise RuntimeError("Direct model endpoint accepted an unauthenticated request")
-    models = json.loads(fetch(base_url + "/models", key=key))
+    models = json.loads(fetch_with_retries(base_url + "/models", key=key))
     results["advertisedModels"] = models
     if not any(m.get("id") == profile["publicAlias"] for m in models.get("data", [])):
         raise RuntimeError("Expected Veronica model alias was not advertised")
@@ -319,7 +346,7 @@ def verify(profile, base_url, output, wrapper=False):
             if wrapper:
                 payload["veronica_mode"] = mode
             start = time.monotonic()
-            response = json.loads(fetch(base_url + "/chat/completions", payload, key))
+            response = json.loads(fetch_with_retries(base_url + "/chat/completions", payload, key))
             content = response["choices"][0]["message"]["content"]
             if not isinstance(content, str) or not content.strip():
                 raise RuntimeError("No actual assistant text was generated")
