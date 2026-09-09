@@ -1,0 +1,7 @@
+{
+  "checkedAtUtc": "2026-09-08T11:02:48.974985+00:00",
+  "ready": false,
+  "inferenceVerified": false,
+  "platformDeadlineEnforced": false,
+  "waitingReason": "Model server has not answered over the SSH tunnel"
+}
