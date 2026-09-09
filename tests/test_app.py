@@ -121,9 +121,48 @@ def test_chat_injects_persona_mode_and_maps_model() -> None:
     assert provider.last_payload["stream"] is False
     assert provider.last_payload["messages"][0]["role"] == "system"
     assert "highly capable" in provider.last_payload["messages"][0]["content"]
-    assert "vivid, original language" in provider.last_payload["messages"][1]["content"]
+    assert "Only used when creative writing is explicitly requested" in provider.last_payload["messages"][1]["content"]
     assert provider.last_payload["messages"][-1]["content"] == "Be sarcastic."
     assert "veronica_mode" not in provider.last_payload
+
+
+def test_chat_applies_mode_sampling_defaults() -> None:
+    provider = MockProvider()
+    client = TestClient(create_app(SETTINGS, provider))
+    response = client.post(
+        "/v1/chat/completions",
+        json={
+            "model": "Veronica",
+            "messages": [{"role": "user", "content": "hi"}],
+            "veronica_mode": "chat",
+        },
+    )
+
+    assert response.status_code == 200
+    assert provider.last_payload is not None
+    assert provider.last_payload["temperature"] == 0.4
+    assert provider.last_payload["top_p"] == 0.85
+    assert provider.last_payload["frequency_penalty"] == 0.3
+
+
+def test_chat_client_sampling_overrides_mode_defaults() -> None:
+    provider = MockProvider()
+    client = TestClient(create_app(SETTINGS, provider))
+    response = client.post(
+        "/v1/chat/completions",
+        json={
+            "model": "Veronica",
+            "messages": [{"role": "user", "content": "hi"}],
+            "veronica_mode": "chat",
+            "temperature": 1.0,
+        },
+    )
+
+    assert response.status_code == 200
+    assert provider.last_payload is not None
+    assert provider.last_payload["temperature"] == 1.0
+    # Non-overridden defaults for the same mode still apply.
+    assert provider.last_payload["top_p"] == 0.85
 
 
 def test_invalid_requests_stop_before_provider() -> None:
