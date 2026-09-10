@@ -1,4 +1,4 @@
-# Veronica.v4
+# Veronica.v4 WORK IN PROGRESS
 
 Veronica.v4 is a capable, locally controlled AI built by wrapping and selectively adapting an already-trained open model. The first deliverable is dependable text chat. Reasoning, creative writing, coding, tool calling, scoped memory, and media direction expand from that same core without replacing it.
 
