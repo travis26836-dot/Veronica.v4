@@ -274,9 +274,9 @@ def update_task(root: Path, args: argparse.Namespace, complete: bool) -> Path:
         write_json_exclusive(completed, record)
         handoff = paths["handoffs"] / f"{args.task_id}.md"
         lines = [
-            f"# Handoff: {args.task_id}", "", f"**Status:** completed  ",
-            f"**Agent:** {record['agent']} / {record['surface']}  ",
-            f"**Started:** {record['started_at']}  ", f"**Ended:** {record['ended_at']}", "",
+            f"# Handoff: {args.task_id}", "", "**Status:** completed", "",
+            f"**Agent:** {record['agent']} / {record['surface']}", "",
+            f"**Started:** {record['started_at']}", "", f"**Ended:** {record['ended_at']}", "",
             "## Scope", "", record["summary"], "", "## Files changed", "",
             *[f"- `{item}`" for item in record["files_changed"]], "", "## Tests", "",
             *[f"- {item}" for item in record["tests"]], "", "## Evidence", "",
