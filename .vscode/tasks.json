@@ -21,10 +21,10 @@
       "inAgents": true
     },
     {
-      "label": "Start Veronica - 2 hours (PAID)",
+      "label": "Start Veronica - 2 hours (PAID, OWNER ONLY)",
       "type": "shell",
       "command": "pwsh -NoProfile -File ./scripts/start-veronica-one-click.ps1",
-      "inAgents": true
+      "inAgents": false
     }
   ]
 }

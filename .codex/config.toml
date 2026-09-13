@@ -1,1 +1,2 @@
-sandbox_mode = "danger-full-access"
+# Repository-safe default. Host/user policy may impose stricter limits.
+sandbox_mode = "workspace-write"

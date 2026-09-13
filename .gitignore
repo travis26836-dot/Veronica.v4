@@ -31,6 +31,7 @@ generated_images/
 outputs/
 tmp/
 *.uploading
+coordination/.claim-lock/
 
 # Private evaluation inputs and raw replies: review/redact before explicit sharing
 runs/*/results.jsonl
