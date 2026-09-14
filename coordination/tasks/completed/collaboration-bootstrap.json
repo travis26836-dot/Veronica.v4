@@ -1,0 +1,70 @@
+{
+  "agent": "codex",
+  "branch": "agents/multi-agent-collaboration",
+  "ended_at": "2026-09-13T23:30:02Z",
+  "evidence": [
+    "commit:f77e548",
+    "docs/AGENT-COLLABORATION.md",
+    "docs/AGENT-ENVIRONMENT-MATRIX.md",
+    "coordination/sessions/2026-09-13-logbook-recovery.md"
+  ],
+  "files_changed": [
+    ".codex/config.toml",
+    ".github/copilot-instructions.md",
+    ".gitignore",
+    ".vscode/tasks.json",
+    "AGENTS.md",
+    "HERMES.md",
+    "config/schemas/collaboration-task.schema.json",
+    "coordination/README.md",
+    "coordination/sessions/2026-09-13-logbook-recovery.md",
+    "docs/AGENT-COLLABORATION.md",
+    "docs/AGENT-ENVIRONMENT-MATRIX.md",
+    "docs/CURRENT-STATE.md",
+    "scripts/collaboration.py",
+    "tests/test_collaboration.py"
+  ],
+  "limitations": [
+    "Separate agent products still do not share live memory, tools, permissions, or host settings; repository records coordinate them.",
+    "Hermes AGENTS.md loading was verified from the installed CLI help; other Hermes surfaces must not use ignore-rules or safe-mode for project work."
+  ],
+  "model": "gpt-5",
+  "next_action": "Owner reviews commit f77e548 and this handoff, then explicitly decides whether to merge agents/multi-agent-collaboration into main.",
+  "paths": [
+    ".codex/config.toml",
+    ".github/copilot-instructions.md",
+    ".gitignore",
+    ".vscode/tasks.json",
+    "AGENTS.md",
+    "HERMES.md",
+    "config/schemas/collaboration-task.schema.json",
+    "coordination",
+    "docs/AGENT-COLLABORATION.md",
+    "docs/AGENT-ENVIRONMENT-MATRIX.md",
+    "docs/CURRENT-STATE.md",
+    "scripts/collaboration.py",
+    "tests/test_collaboration.py"
+  ],
+  "repo_commit_after": "f77e54816b992025670d4329ad057d3e15c2a87c",
+  "repo_commit_before": "6664c14e23408a4be69781a4b4af53ae39116e5a",
+  "ruled_out": [
+    "A wholesale merge of the legacy worktree because it had no unique commits and hundreds of unrelated uncommitted changes.",
+    "A static Copilot-only commit log because Git already holds commit facts and the snapshot would become stale.",
+    "One shared JSONL ledger because concurrent agents can collide while appending to the same file."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-13T23:25:35Z",
+  "status": "completed",
+  "summary": "Establish the shared Codex, Hermes, and GitHub Copilot collaboration protocol and retire the obsolete logbook worktree.",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "collaboration-bootstrap",
+  "tests": [
+    "python -m py_compile scripts/collaboration.py tests/test_collaboration.py",
+    "python -m pytest tests/test_collaboration.py -q: 7 passed",
+    "uv run pytest tests -q: full suite passed, 1 skipped, 1 known deprecation warning",
+    "live CLI overlap simulation rejected a conflicting claim"
+  ],
+  "worktree": "C:\\Users\\raine\\.codex\\worktrees\\cf9e\\Veronica.v4"
+}

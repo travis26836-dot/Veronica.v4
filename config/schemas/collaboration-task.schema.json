@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://veronica.local/schemas/collaboration-task.schema.json",
+  "title": "Veronica multi-agent task record",
+  "type": "object",
+  "required": [
+    "schema_version", "task_id", "agent", "surface", "summary", "status",
+    "worktree", "branch", "repo_commit_before", "paths", "started_at",
+    "files_changed", "tests", "evidence", "limitations", "ruled_out",
+    "next_action"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "task_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{2,79}$"},
+    "agent": {"enum": ["codex", "hermes", "copilot", "human", "other"]},
+    "model": {"type": ["string", "null"]},
+    "surface": {"type": "string", "minLength": 1},
+    "session_id": {"type": ["string", "null"]},
+    "summary": {"type": "string", "minLength": 1},
+    "status": {"enum": ["active", "handoff", "blocked", "completed", "superseded", "retracted"]},
+    "worktree": {"type": "string", "minLength": 1},
+    "branch": {"type": "string", "minLength": 1},
+    "repo_commit_before": {"type": "string", "minLength": 7},
+    "repo_commit_after": {"type": ["string", "null"]},
+    "paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "started_at": {"type": "string", "format": "date-time"},
+    "ended_at": {"type": ["string", "null"], "format": "date-time"},
+    "files_changed": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "tests": {"type": "array", "items": {"type": "string"}},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "limitations": {"type": "array", "items": {"type": "string"}},
+    "ruled_out": {"type": "array", "items": {"type": "string"}},
+    "next_action": {"type": ["string", "null"]},
+    "supersedes": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
