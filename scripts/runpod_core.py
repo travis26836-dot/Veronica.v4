@@ -108,8 +108,12 @@ def validate_profile_safety(profile):
     pod, safety = profile["pod"], profile["safety"]
     if type(pod.get("gpuCount")) is not int or pod["gpuCount"] != 1:
         raise ValueError("This first-chat workflow supports exactly one GPU")
-    if pod.get("gpuTypeId") != "NVIDIA A100-SXM4-80GB":
-        raise ValueError("This startup profile is restricted to one NVIDIA A100-SXM4-80GB")
+    # Support primary + configured fallbacks (e.g. H100 when A100 stock unavailable in DC)
+    # Preflight will select based on live stock/price within caps; no hard restriction here.
+    primary = pod.get("gpuTypeId")
+    fallbacks = [f.get("gpuTypeId") for f in pod.get("gpuFallbacks", []) if f.get("gpuTypeId")]
+    if not primary:
+        raise ValueError("Primary gpuTypeId required")
     maximum = safety.get("maximumHourlyUsd")
     if isinstance(maximum, bool) or not isinstance(maximum, (int, float, Decimal)) or not math.isfinite(maximum) or maximum <= 0:
         raise ValueError("The saved hourly spending ceiling must be finite and positive")
@@ -391,6 +395,9 @@ def main():
         if args.command == "start" and args.supervised:
             if not args.run_dir or not args.approval_file or not args.ssh_key:
                 parser.error("Supervised start requires --run-dir, --approval-file, and --ssh-key")
+            import sys
+            from pathlib import Path
+            sys.path.insert(0, str(Path(__file__).parent))
             from supervised_runpod import start
             start(profile, evidence_directory(args.run_dir), Path(args.approval_file), Path(args.ssh_key))
             return

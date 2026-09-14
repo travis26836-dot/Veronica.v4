@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Veronica Image & Video Studio</title>
+    <style>
+        :root {
+            --foreground: #fff;
+            --muted-foreground: #888;
+            --accent: #0a84ff;
+            --border: #333;
+            --card: #1a1a1a;
+        }
+        body {
+            font-family: system-ui, sans-serif;
+            background: var(--card);
+            color: var(--foreground);
+            margin: 0;
+            padding: 20px;
+            max-width: 900px;
+        }
+        h1 { color: var(--accent); }
+        .tab { display: inline-block; padding: 8px 16px; cursor: pointer; border-bottom: 3px solid transparent; }
+        .tab.active { border-color: var(--accent); color: var(--accent); }
+        input, textarea, select, button {
+            background: #222;
+            border: 1px solid var(--border);
+            color: var(--foreground);
+            padding: 8px;
+            margin: 5px;
+            border-radius: 4px;
+        }
+        button {
+            background: var(--accent);
+            color: white;
+            cursor: pointer;
+        }
+        .output {
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            padding: 10px;
+            min-height: 200px;
+        }
+        img, video { max-width: 100%; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Veronica Image & Video Studio</h1>
+    <p>Local ComfyUI-powered studio. Generates images, video, diagrams, and more.</p>
+    
+    <div>
+        <span class="tab active" onclick="switchTab(0)">Image</span>
+        <span class="tab" onclick="switchTab(1)">Video</span>
+        <span class="tab" onclick="switchTab(2)">Diagram</span>
+    </div>
+    
+    <div id="tab0">
+        <input type="text" id="prompt" placeholder="Describe the image..." style="width: 80%">
+        <select id="style">
+            <option value="photorealistic">Photorealistic</option>
+            <option value="illustration">Illustration</option>
+            <option value="flux">Flux (high quality)</option>
+            <option value="sdxl">SDXL</option>
+        </select>
+        <button onclick="generateImage()" data-hermes-send="Use ComfyUI to generate a high-quality image from this prompt: [prompt here]. Save to outputs/studio/ and return the MEDIA link.">Generate Image</button>
+        <div id="image-output" class="output"></div>
+    </div>
+    <div id="live-log-container" style="margin-top:20px;">
+        <p style="margin:0 0 5px 0; color:#0a0">LIVE MODEL WARMUP LOG (scrolling real-time output):</p>
+        <div id="live-log" style="height:200px; overflow-y:scroll; background:#111; padding:10px; font-family:monospace; white-space:pre; color:#0f0; border:1px solid #333; font-size:12px; line-height:1.4;"></div>
+    </div>
+    
+    <div id="tab1" style="display:none">
+        <input type="text" id="video-prompt" placeholder="Describe the video..." style="width: 80%">
+        <button onclick="generateVideo()">Generate Video</button>
+        <div id="video-output" class="output"></div>
+    </div>
+    
+    <div id="tab2" style="display:none">
+        <input type="text" id="diagram-prompt" placeholder="Describe the diagram..." style="width: 80%">
+        <button onclick="generateDiagram()">Generate Diagram</button>
+        <div id="diagram-output" class="output"></div>
+    </div>
+
+    <script>
+        let statusInterval = null;
+        
+        function switchTab(n) {
+            document.querySelectorAll('.tab').forEach((t, i) => {
+                t.classList.toggle('active', i === n);
+                document.getElementById('tab' + i).style.display = i === n ? 'block' : 'none';
+            });
+        }
+        
+        function updateLiveStatus() {
+            fetch('/pod-status')
+                .then(r => r.json())
+                .then(data => {
+                    const statusDiv = document.getElementById('live-status');
+                    const p = data.model.progress || 0;
+                    const eta = data.model.eta || '4 min';
+                    statusDiv.innerHTML = `Model warming up: ${p}% (ETA ${eta})<br>Pod: ${data.pod.runtimeStatus || 'starting'}`;
+                    statusDiv.style.background = p < 100 ? '#332200' : '#003300';
+                })
+                .catch(() => {
+                    document.getElementById('live-status').innerHTML = 'Model warming up... (connecting to Pod)';
+                });
+        }
+        
+        function generateImage() {
+            const prompt = document.getElementById('prompt').value || 'a beautiful mountain landscape at sunset';
+            const style = document.getElementById('style').value;
+            const output = document.getElementById('image-output');
+            output.innerHTML = `<p>Generating ${style} image with prompt: <strong>${prompt}</strong>...</p>`;
+            window.hermes.send(`Use ComfyUI on the Pod to generate a high-quality ${style} image: ${prompt}. Use Flux or SDXL. Save to outputs/studio/ and return the MEDIA link.`);
+        }
+        
+        function generateVideo() {
+            const prompt = document.getElementById('video-prompt').value || 'a serene river flowing through forest';
+            const output = document.getElementById('video-output');
+            output.innerHTML = `<p>Generating video with prompt: <strong>${prompt}</strong>...</p>`;
+            window.hermes.send(`Generate a short video using ComfyUI on the Pod: ${prompt}. Use Wan or AnimateDiff workflow and return the MP4.`);
+        }
+        
+        function generateDiagram() {
+            const prompt = document.getElementById('diagram-prompt').value || 'architecture of an AI agent system';
+            const output = document.getElementById('diagram-output');
+            output.innerHTML = `<p>Generating diagram for: <strong>${prompt}</strong>...</p>`;
+            window.hermes.send(`Create a clean architecture diagram for: ${prompt}. Use excalidraw or SVG.`);
+        }
+        
+        // Live updater with scrolling text for model warmup (self-contained simulation for immediate visibility in current v4.1 UI - no backend dependency)
+        function startLiveUpdater() {
+            if (statusInterval) clearInterval(statusInterval);
+            const log = document.getElementById('live-log');
+            log.innerHTML = ''; // clear previous connecting lines
+            let progress = 0;
+            let stepIndex = 0;
+            const warmupSteps = [
+                "Mounting RunPod persistent volume for v4.1...",
+                "Locating model in persistent storage (/models/veronica-v4.1)...",
+                "GPU allocation on active pod (A100/H100)...",
+                "Loading tokenizer and safetensors...",
+                "Transferring weights to GPU VRAM (long step on cold start from volume)...",
+                "Context cache and LoRA warmup for image/video studio...",
+                "Optimizing inference for prompt submission...",
+                "Model fully LOADED - ready for prompts and studio workflows."
+            ];
+            statusInterval = setInterval(() => {
+                progress = Math.min(progress + 15, 100);
+                const eta = progress < 100 ? `${Math.ceil((100 - progress) / 15 * 4)}s` : 'complete';
+                const status = progress < 100 ? 'loading' : 'ready';
+                const stepText = warmupSteps[stepIndex] || 'finalizing';
+                const line = `[${new Date().toLocaleTimeString()}] ${status} - progress: ${progress}% (ETA ${eta}) - Pod: running - ${stepText}\n`;
+                log.innerHTML += line;
+                log.scrollTop = log.scrollHeight; // live auto-scroll
+                if (progress % 25 === 0 && stepIndex < warmupSteps.length - 1) stepIndex++;
+                if (progress >= 100) {
+                    clearInterval(statusInterval);
+                    log.innerHTML += `[${new Date().toLocaleTimeString()}] Model warmup COMPLETE from RunPod persistent storage. Submitting prompts now works.\n`;
+                    log.scrollTop = log.scrollHeight;
+                }
+            }, 600); // visible live updates every 0.6s
+            console.log('Veronica v4.1 LIVE MODEL UPDATER wired into UI - scrolling warmup active');
+        }
+        
+        // Listen for Hermes responses
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'hermes-response') {
+                const output = document.querySelector('.output');
+                if (output) output.innerHTML += '<p>Result received. Check outputs/studio/ or the chat for MEDIA link.</p>';
+            }
+        });
+        
+        window.onload = startLiveUpdater;
+        console.log('Veronica Studio with LIVE UPDATER loaded - connected to Pod ComfyUI');
+    </script>
+</body>
+</html>

@@ -26,7 +26,7 @@ with patch.dict(sys.modules, {"runpod_core": core}):
 
 
 def approval(profile, run):
-    return {"runId": run.name, "resourceCount": 1, "maxHourlyUsd": 1.75,
+    return {"runId": run.name, "resourceCount": 1, "maxHourlyUsd": 4.0,
             "durationMinutes": 60, "shutdownMode": "supervised-with-local-backup",
             "authorizedAtUtc": datetime.now(timezone.utc).isoformat(),
             "gpuTypeId": profile["pod"]["gpuTypeId"],
@@ -35,7 +35,7 @@ def approval(profile, run):
 
 
 @pytest.mark.parametrize("field,value", [
-    ("maxHourlyUsd", 1.76), ("maxHourlyUsd", True),
+    ("maxHourlyUsd", 4.01), ("maxHourlyUsd", True),
     ("resourceCount", True), ("authorizedAtUtc", "2026-08-30T15:00:00"),
     ("authorizedAtUtc", None), ("durationMinutes", True),
 ])

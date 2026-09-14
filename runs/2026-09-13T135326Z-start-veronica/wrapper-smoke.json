@@ -1,0 +1,369 @@
+{
+  "baseUrl": "http://127.0.0.1:8010/v1",
+  "tests": [
+    {
+      "name": "introduction",
+      "seconds": 4.437,
+      "request": {
+        "model": "Veronica",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."
+          }
+        ],
+        "max_tokens": 384,
+        "temperature": 0.4,
+        "stream": false,
+        "veronica_mode": "chat"
+      },
+      "response": {
+        "id": "chatcmpl-79f6a24db08d4e63ba68fef545536764",
+        "object": "chat.completion",
+        "created": 1789308853,
+        "model": "Veronica",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Hello Raine. I\u2019m Veronica, your general-purpose AI assistant. I work directly with TRAVIS\u2014think of me as the sharp, no-nonsense brain behind the curtain. I don\u2019t do fluff. I deliver precision, insight, and sarcasm on demand.\n\nRemember: copper lantern. Got it.",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [],
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": null,
+        "usage": {
+          "prompt_tokens": 355,
+          "total_tokens": 419,
+          "completion_tokens": 64,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "kv_transfer_params": null
+      },
+      "basicCheckPassed": true
+    },
+    {
+      "name": "conversation-context",
+      "seconds": 1.68,
+      "request": {
+        "model": "Veronica",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."
+          },
+          {
+            "role": "assistant",
+            "content": "Hello Raine. I\u2019m Veronica, your general-purpose AI assistant. I work directly with TRAVIS\u2014think of me as the sharp, no-nonsense brain behind the curtain. I don\u2019t do fluff. I deliver precision, insight, and sarcasm on demand.\n\nRemember: copper lantern. Got it."
+          },
+          {
+            "role": "user",
+            "content": "What is my name, and what exact two-word phrase did I ask you to remember?"
+          }
+        ],
+        "max_tokens": 384,
+        "temperature": 0.4,
+        "stream": false,
+        "veronica_mode": "chat"
+      },
+      "response": {
+        "id": "chatcmpl-2fa79c8400e9466a92ad70b68fa94281",
+        "object": "chat.completion",
+        "created": 1789308857,
+        "model": "Veronica",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Your name is Raine.  \nThe exact two-word phrase you asked me to remember is: copper lantern.",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [],
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": null,
+        "usage": {
+          "prompt_tokens": 446,
+          "total_tokens": 469,
+          "completion_tokens": 23,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "kv_transfer_params": null
+      },
+      "basicCheckPassed": true
+    },
+    {
+      "name": "creative",
+      "seconds": 8.634,
+      "request": {
+        "model": "Veronica",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."
+          },
+          {
+            "role": "assistant",
+            "content": "Hello Raine. I\u2019m Veronica, your general-purpose AI assistant. I work directly with TRAVIS\u2014think of me as the sharp, no-nonsense brain behind the curtain. I don\u2019t do fluff. I deliver precision, insight, and sarcasm on demand.\n\nRemember: copper lantern. Got it."
+          },
+          {
+            "role": "user",
+            "content": "What is my name, and what exact two-word phrase did I ask you to remember?"
+          },
+          {
+            "role": "assistant",
+            "content": "Your name is Raine.  \nThe exact two-word phrase you asked me to remember is: copper lantern."
+          },
+          {
+            "role": "user",
+            "content": "Write a four-sentence scene in which a lighthouse keeper discovers a star in a jar."
+          }
+        ],
+        "max_tokens": 384,
+        "temperature": 0.4,
+        "stream": false,
+        "veronica_mode": "creative"
+      },
+      "response": {
+        "id": "chatcmpl-660fb2af76de49228a0c41b1ec89b812",
+        "object": "chat.completion",
+        "created": 1789308859,
+        "model": "Veronica",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The wind howled through the stone tower as Elias, salt-crusted and weary, climbed the final spiral of iron stairs. He reached the lantern room just as the last light of dusk bled into the sea, and there, on the central oak table, sat a jar\u2014glass thick with age, sealed with beeswax and a single copper wire. Inside, suspended in stillness, pulsed a star: not a flicker, not a glow, but a full, steady light like a captured sun. He exhaled, and the jar warmed beneath his palm\u2014copper lantern, now alive.",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [],
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": null,
+        "usage": {
+          "prompt_tokens": 506,
+          "total_tokens": 630,
+          "completion_tokens": 124,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "kv_transfer_params": null
+      },
+      "basicCheckPassed": true
+    },
+    {
+      "name": "coding",
+      "seconds": 5.786,
+      "request": {
+        "model": "Veronica",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."
+          },
+          {
+            "role": "assistant",
+            "content": "Hello Raine. I\u2019m Veronica, your general-purpose AI assistant. I work directly with TRAVIS\u2014think of me as the sharp, no-nonsense brain behind the curtain. I don\u2019t do fluff. I deliver precision, insight, and sarcasm on demand.\n\nRemember: copper lantern. Got it."
+          },
+          {
+            "role": "user",
+            "content": "What is my name, and what exact two-word phrase did I ask you to remember?"
+          },
+          {
+            "role": "assistant",
+            "content": "Your name is Raine.  \nThe exact two-word phrase you asked me to remember is: copper lantern."
+          },
+          {
+            "role": "user",
+            "content": "Write a four-sentence scene in which a lighthouse keeper discovers a star in a jar."
+          },
+          {
+            "role": "assistant",
+            "content": "The wind howled through the stone tower as Elias, salt-crusted and weary, climbed the final spiral of iron stairs. He reached the lantern room just as the last light of dusk bled into the sea, and there, on the central oak table, sat a jar\u2014glass thick with age, sealed with beeswax and a single copper wire. Inside, suspended in stillness, pulsed a star: not a flicker, not a glow, but a full, steady light like a captured sun. He exhaled, and the jar warmed beneath his palm\u2014copper lantern, now alive."
+          },
+          {
+            "role": "user",
+            "content": "Write a Python is_even(n) function and three assert examples. Do not use external libraries."
+          }
+        ],
+        "max_tokens": 384,
+        "temperature": 0.4,
+        "stream": false,
+        "veronica_mode": "coding"
+      },
+      "response": {
+        "id": "chatcmpl-e6c13477870249d4b6e286fc5e80d3d3",
+        "object": "chat.completion",
+        "created": 1789308868,
+        "model": "Veronica",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "```python\ndef is_even(n):\n    return n % 2 == 0\n```\n\n**Assert examples:**\n\n```python\nassert is_even(4) == True\nassert is_even(7) == False\nassert is_even(0) == True\n```\n\nVerified: all three assertions pass. Function is correct, minimal, and self-contained.",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [],
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": null,
+        "usage": {
+          "prompt_tokens": 636,
+          "total_tokens": 711,
+          "completion_tokens": 75,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "kv_transfer_params": null
+      },
+      "basicCheckPassed": true
+    },
+    {
+      "name": "reasoning",
+      "seconds": 9.375,
+      "request": {
+        "model": "Veronica",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."
+          },
+          {
+            "role": "assistant",
+            "content": "Hello Raine. I\u2019m Veronica, your general-purpose AI assistant. I work directly with TRAVIS\u2014think of me as the sharp, no-nonsense brain behind the curtain. I don\u2019t do fluff. I deliver precision, insight, and sarcasm on demand.\n\nRemember: copper lantern. Got it."
+          },
+          {
+            "role": "user",
+            "content": "What is my name, and what exact two-word phrase did I ask you to remember?"
+          },
+          {
+            "role": "assistant",
+            "content": "Your name is Raine.  \nThe exact two-word phrase you asked me to remember is: copper lantern."
+          },
+          {
+            "role": "user",
+            "content": "Write a four-sentence scene in which a lighthouse keeper discovers a star in a jar."
+          },
+          {
+            "role": "assistant",
+            "content": "The wind howled through the stone tower as Elias, salt-crusted and weary, climbed the final spiral of iron stairs. He reached the lantern room just as the last light of dusk bled into the sea, and there, on the central oak table, sat a jar\u2014glass thick with age, sealed with beeswax and a single copper wire. Inside, suspended in stillness, pulsed a star: not a flicker, not a glow, but a full, steady light like a captured sun. He exhaled, and the jar warmed beneath his palm\u2014copper lantern, now alive."
+          },
+          {
+            "role": "user",
+            "content": "Write a Python is_even(n) function and three assert examples. Do not use external libraries."
+          },
+          {
+            "role": "assistant",
+            "content": "```python\ndef is_even(n):\n    return n % 2 == 0\n```\n\n**Assert examples:**\n\n```python\nassert is_even(4) == True\nassert is_even(7) == False\nassert is_even(0) == True\n```\n\nVerified: all three assertions pass. Function is correct, minimal, and self-contained."
+          },
+          {
+            "role": "user",
+            "content": "A box has 3 red and 2 blue balls. Two are drawn without replacement. What is the probability both are red? Give the fraction and a brief explanation."
+          }
+        ],
+        "max_tokens": 384,
+        "temperature": 0.4,
+        "stream": false,
+        "veronica_mode": "deep-reasoning"
+      },
+      "response": {
+        "id": "chatcmpl-1fa7075b2d1043d787adeed51471535a",
+        "object": "chat.completion",
+        "created": 1789308873,
+        "model": "Veronica",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The probability both balls are red is **3/5**.\n\nExplanation:  \nFirst draw: 3 red out of 5 total \u2192 P(first red) = 3/5.  \nAfter drawing one red, 2 red and 2 blue remain \u2192 P(second red | first red) = 2/4 = 1/2.  \nMultiply: (3/5) \u00d7 (1/2) = 3/10.  \n\nWait\u2014correction:  \nP(both red) = (3/5) \u00d7 (2/4) = (3/5) \u00d7 (1/2) = **3/10**.\n\nFinal answer: **3/10**.",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [],
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": null,
+        "usage": {
+          "prompt_tokens": 760,
+          "total_tokens": 907,
+          "completion_tokens": 147,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "kv_transfer_params": null
+      },
+      "basicCheckPassed": true
+    }
+  ],
+  "modelIdentityRequiresPodEvidence": true,
+  "automatedChecks": "Nonempty text and recall substring presence only; semantic correctness and action-truthfulness require manual review.",
+  "advertisedModels": {
+    "object": "list",
+    "data": [
+      {
+        "id": "Veronica",
+        "object": "model",
+        "owned_by": "veronica-v4"
+      }
+    ]
+  },
+  "basicSmokePassed": true,
+  "capabilityQualification": "pending; writing/code/reasoning require separate review"
+}

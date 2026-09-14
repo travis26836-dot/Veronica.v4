@@ -43,7 +43,7 @@ def test_plan_only_works_without_wsl_or_approval_and_makes_no_changes(launcher):
     assert result.returncode == 0, result.stderr
     plan = json.loads(result.stdout)
     assert plan["durationMinutes"] == 60
-    assert plan["maxHourlyUsd"] == 1.75
+    assert plan["maxHourlyUsd"] == 4.0
     assert plan["resourceCount"] == 1
     assert plan["gpuTypeId"] == "NVIDIA A100-SXM4-80GB"
     assert plan["resourceCreationAttempted"] is False
@@ -58,7 +58,7 @@ def test_explicit_options_override_defaults_without_raising_saved_ceiling(launch
     plan = json.loads(result.stdout)
     assert plan["durationMinutes"] == 120
     assert plan["maxHourlyUsd"] == 1.6
-    assert plan["maximumHourlyUsd"] == 1.75
+    assert plan["maximumHourlyUsd"] == 4.0
 
 
 def test_t2_profile_is_explicit_and_visible_in_plan(launcher):
@@ -92,7 +92,7 @@ def test_invalid_duration_never_reaches_startup(launcher, value):
     assert result.returncode != 0
 
 
-@pytest.mark.parametrize("value", ["0", "-1", "1.76", "NaN", "Infinity"])
+@pytest.mark.parametrize("value", ["0", "-1", "4.01", "5", "NaN", "Infinity"])
 def test_invalid_or_over_budget_rate_never_reaches_startup(launcher, value):
     result = invoke(launcher, "-PlanOnly", "-MaxHourlyUsd", value)
     assert result.returncode != 0
@@ -127,7 +127,7 @@ def test_config_cannot_silently_change_to_multiple_or_different_gpus(launcher):
     path.write_text(json.dumps(profile))
     result = invoke(launcher, "-PlanOnly")
     assert result.returncode != 0
-    assert "exactly one configured A100" in result.stderr
+    assert "exactly one GPU in the pod profile" in result.stderr
 
 
 def test_wsl_timeout_reaps_linux_children_before_returning(tmp_path):

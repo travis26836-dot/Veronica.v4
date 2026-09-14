@@ -1,0 +1,49 @@
+{
+  "checkedAtUtc": "2026-09-13T13:53:49.170629+00:00",
+  "cliVersion": "runpodctl 2.14.0-dd55bcf",
+  "volumeId": "v53gj9flzs",
+  "volumeSizeGb": 300,
+  "dataCenterId": "EUR-IS-1",
+  "requestedGpuTypeId": "NVIDIA A100-SXM4-80GB",
+  "gpu": "NVIDIA A100-SXM4-80GB",
+  "gpuTypeId": "NVIDIA A100-SXM4-80GB",
+  "cloudType": "SECURE",
+  "usedFallbackGpu": false,
+  "consideredGpus": [
+    {
+      "gpuTypeId": "NVIDIA A100-SXM4-80GB",
+      "cloudType": "SECURE",
+      "isPrimary": true,
+      "stock": "Low",
+      "priceUsd": 1.59,
+      "priceCapUsd": 4.0,
+      "hasStock": true,
+      "priceOk": true,
+      "selected": true
+    },
+    {
+      "gpuTypeId": "NVIDIA H100 80GB HBM3",
+      "cloudType": "SECURE",
+      "isPrimary": false,
+      "stock": null,
+      "priceUsd": 3.49,
+      "priceCapUsd": 4.0,
+      "hasStock": false,
+      "priceOk": true,
+      "selected": false,
+      "reliabilityNote": "H100 SXM - close to A100 in VRAM and superior tensor performance for the chosen model."
+    }
+  ],
+  "listedHourlyUsd": 1.59,
+  "stock": "Low",
+  "requestedLimitUsd": 4.0,
+  "savedMaximumHourlyUsd": 4.0,
+  "gpuCount": 1,
+  "requestedDurationMinutes": 60,
+  "approvalIsReusable": false,
+  "podCount": 0,
+  "blockers": [],
+  "shutdownMode": "supervised-with-local-backup",
+  "platformDeadlineEnforced": false,
+  "safeToCreate": true
+}

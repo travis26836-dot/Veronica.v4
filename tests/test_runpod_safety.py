@@ -37,7 +37,7 @@ def test_legacy_timer_flag_does_not_authorize_creation():
         if args == ("network-volume", "get", "v53gj9flzs"):
             return json.dumps({"id": "v53gj9flzs", "dataCenterId": "EUR-IS-1", "size": 300})
         if args == ("gpu", "list", "--include-unavailable"):
-            return json.dumps([{"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 1.59, "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "Low"}]}])
+            return json.dumps([{"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 3.5, "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "Low"}]}])
         if args == ("pod", "list", "--all"):
             return "[]"
         if args == ("ssh", "list-keys"):
@@ -48,12 +48,12 @@ def test_legacy_timer_flag_does_not_authorize_creation():
             return "test-version"
         raise AssertionError(f"Unexpected/mutating command: {args}")
     with patch.object(core, "cli", fake_cli):
-        result = core.preflight(profile, 1.6, 120)
+        result = core.preflight(profile, 3.5, 120)
         assert not result["safeToCreate"]
         assert any("termination" in item for item in result["blockers"])
-        assert core.preflight(profile, 1.6, 120, supervised=True)["safeToCreate"]
-        assert not core.preflight(profile, 1.5, 120, supervised=True)["safeToCreate"]
-        with patch("sys.argv", ["runpod_core.py", "start", "--max-hourly-usd", "1.60", "--duration-minutes", "120"]):
+        assert core.preflight(profile, 3.5, 120, supervised=True)["safeToCreate"]
+        assert not core.preflight(profile, 3.0, 120, supervised=True)["safeToCreate"]
+        with patch("sys.argv", ["runpod_core.py", "start", "--max-hourly-usd", "3.50", "--duration-minutes", "120"]):
             with pytest.raises(RuntimeError, match="No Pod created"):
                 core.main()
 
@@ -70,9 +70,9 @@ def test_preflight_falls_back_to_approved_gpu_when_primary_has_no_stock():
             return json.dumps({"id": "v53gj9flzs", "dataCenterId": "EUR-IS-1", "size": 300})
         if args == ("gpu", "list", "--include-unavailable"):
             return json.dumps([
-                {"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 1.59,
+                {"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 3.5,
                  "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "none"}]},
-                {"gpuId": fallback["gpuTypeId"], "communityPricePerHr": fallback["maxHourlyUsd"],
+                {"gpuId": fallback["gpuTypeId"], "securePricePerHr": fallback["maxHourlyUsd"],
                  "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "Medium"}]},
             ])
         if args == ("pod", "list", "--all"):
@@ -86,7 +86,7 @@ def test_preflight_falls_back_to_approved_gpu_when_primary_has_no_stock():
         raise AssertionError(f"Unexpected/mutating command: {args}")
 
     with patch.object(core, "cli", fake_cli):
-        result = core.preflight(profile, 1.75, 60, supervised=True)
+        result = core.preflight(profile, 4.0, 60, supervised=True)
     assert result["safeToCreate"]
     assert result["usedFallbackGpu"] is True
     assert result["gpuTypeId"] == fallback["gpuTypeId"]
@@ -101,7 +101,7 @@ def test_preflight_blocks_when_primary_and_all_fallbacks_have_no_stock():
         if args == ("network-volume", "get", "v53gj9flzs"):
             return json.dumps({"id": "v53gj9flzs", "dataCenterId": "EUR-IS-1", "size": 300})
         if args == ("gpu", "list", "--include-unavailable"):
-            return json.dumps([{"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 1.59,
+            return json.dumps([{"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 3.5,
                                  "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "none"}]}])
         if args == ("pod", "list", "--all"):
             return "[]"
@@ -114,7 +114,7 @@ def test_preflight_blocks_when_primary_and_all_fallbacks_have_no_stock():
         raise AssertionError(f"Unexpected/mutating command: {args}")
 
     with patch.object(core, "cli", fake_cli):
-        result = core.preflight(profile, 1.75, 60, supervised=True)
+        result = core.preflight(profile, 4.0, 60, supervised=True)
     assert not result["safeToCreate"]
     assert any("no configured fallback GPU has stock" in item for item in result["blockers"])
 

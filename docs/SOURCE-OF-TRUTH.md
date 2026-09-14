@@ -6,7 +6,7 @@
 
 **Evaluation checkpoint, 2026-08-31:** The [development evaluation system](evals/README.md) now has 60 cases, 69 turns, transcript intake, human/advisory scoring, dataset checks and a reusable skill. The saved conversation is authorized as evaluation input; its assistant outputs are untrusted evidence, not approved training targets. Offline harness validation does not qualify the foundation. The [checkpoint decision](../runs/2026-08-31-evaluation-foundation/decision.md) records the evidence. Foundation weights and the `Veronica` alias are unchanged; no training, new inference or paid compute was started for this checkpoint.
 
-**Chat-wrapper checkpoint, 2026-09-04:** The local wrapper now forwards `stream=true` SSE when the provider supports it, and the browser chat persists the session, exposes retry/stop/copy/regenerate, and renders escaped Markdown. Native tools, memory, fine-tuning, and T2 qualification are unchanged. Evidence: `runs/2026-09-04-a1-chat-controls/decision.md`.
+**Chat-wrapper checkpoint, 2026-09-04 (later simplified 2026-09-08):** Backend supports `stream=true` SSE forwarding (when provider allows) and non-streaming. The browser UI was simplified to a minimal plain-text non-streaming client (no session persistence in localStorage, no retry/stop/copy/regenerate controls, plain textContent instead of Markdown). These advanced UI features were removed to focus on core capability first; they can be restored later once foundation is qualified. Native tools, memory, fine-tuning, and T2 qualification are unchanged. Evidence: `runs/2026-09-04-a1-chat-controls/decision.md` and simplify commit. Current UI serves basic chat + modes via the stable Veronica alias.
 
 ## 1. What we are building
 
@@ -131,11 +131,13 @@ Initial endpoints:
 - `GET /api/health` - wrapper and provider state.
 - `GET /api/capabilities` - implemented versus planned capabilities.
 - `GET /v1/models` - stable Veronica alias.
-- `POST /v1/chat/completions` - OpenAI-compatible chat. `stream=false` returns a full completion. `stream=true` forwards upstream SSE when the provider supports it, and returns an honest 501/503 if it cannot. The wrapper rewrites the streamed `model` field to the public `Veronica` alias.
+- `POST /v1/chat/completions` - OpenAI-compatible chat. `stream=false` returns a full completion. `stream=true` forwards upstream SSE when the provider supports it, and returns an honest 501/503 if it cannot. The wrapper rewrites the streamed `model` field to the public `Veronica` alias. (Current minimal UI uses `stream=false`; streaming support remains in backend/API.)
 
 The request may include `veronica_mode` with `chat`, `deep-reasoning`, `creative`, or `coding`. The wrapper removes this extension before forwarding the request.
 
 These initial modes are prompt presets, not proof of native reasoning capability and not yet model-specific reasoning switches. Native controls are enabled only after the chosen server/model combination is qualified.
+
+Current browser UI (as of 2026-09-08 simplify): basic plain-text chat with mode select; no conversation persistence, no message controls (retry/stop/copy/regenerate), plain text rendering.
 
 An Ollama `Modelfile` is one engine-specific way to define an alias and system prompt; it is not a newly trained foundation. This project uses the same identity-wrapper concept through a provider-neutral API so it can run on vLLM/RunPod without being tied to Ollama.
 

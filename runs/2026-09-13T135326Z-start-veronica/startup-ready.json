@@ -1,0 +1,12 @@
+{
+  "ready": true,
+  "atUtc": "2026-09-13T14:05:28.9955303+00:00",
+  "chatUrl": "http://127.0.0.1:8010",
+  "podId": "jmvzzr6qygy90d",
+  "deadlineUtc": "2026-09-13T10:53:49.918035-04:00",
+  "actualHourlyUsd": 1.59,
+  "shutdownMode": "supervised-with-local-backup",
+  "platformDeadlineEnforced": false,
+  "runDir": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\runs\\2026-09-13T135326Z-start-veronica",
+  "evidenceFile": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\runs\\2026-09-13T135326Z-start-veronica\\startup-ready.json"
+}

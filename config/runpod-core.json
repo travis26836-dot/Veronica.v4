@@ -19,18 +19,11 @@
     "cloudType": "SECURE",
     "gpuFallbacks": [
       {
-        "gpuTypeId": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
-        "cloudType": "COMMUNITY",
-        "minMemoryGb": 96,
-        "maxHourlyUsd": 1.69,
-        "reliabilityNote": "Community Cloud pods can be preempted by their host and lack Secure Cloud's reliability guarantees."
-      },
-      {
-        "gpuTypeId": "NVIDIA RTX PRO 6000 Blackwell Workstation Edition",
-        "cloudType": "COMMUNITY",
-        "minMemoryGb": 96,
-        "maxHourlyUsd": 1.69,
-        "reliabilityNote": "Community Cloud pods can be preempted by their host and lack Secure Cloud's reliability guarantees."
+        "gpuTypeId": "NVIDIA H100 80GB HBM3",
+        "cloudType": "SECURE",
+        "minMemoryGb": 80,
+        "maxHourlyUsd": 4.0,
+        "reliabilityNote": "H100 SXM - close to A100 in VRAM and superior tensor performance for the chosen model."
       }
     ],
     "containerDiskInGb": 30,
@@ -51,18 +44,19 @@
     "host": "127.0.0.1",
     "port": 8000,
     "localTunnelPort": 18000,
+    "serverArguments": ["--trust-remote-code"],
     "qualification": "live_chat_smoke_verified_capability_qualification_pending"
   },
   "safety": {
-    "terminationGuard": "unavailable",
-    "terminationEvidence": "https://github.com/runpod/runpodctl/pull/330",
-    "requirePerRunApproval": true,
-    "allowAutomaticReplacementPod": false,
-    "maximumHourlyUsd": 1.75,
-    "defaultShutdownMode": "supervised-with-local-backup",
-    "defaultDurationMinutes": 60,
-    "presetDurationMinutes": [60, 120, 180],
-    "maximumCustomDurationMinutes": 1440,
-    "durationSelectionRequired": true
+  "terminationGuard": "unavailable",
+  "terminationEvidence": "https://github.com/runpod/runpodctl/pull/330",
+  "requirePerRunApproval": true,
+  "allowAutomaticReplacementPod": false,
+  "maximumHourlyUsd": 4.0,
+  "defaultShutdownMode": "supervised-with-local-backup",
+  "defaultDurationMinutes": 60,
+  "presetDurationMinutes": [60, 120, 180],
+  "maximumCustomDurationMinutes": 1440,
+  "durationSelectionRequired": true
   }
 }

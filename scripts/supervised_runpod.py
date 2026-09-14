@@ -23,6 +23,9 @@ from datetime import datetime, timedelta, timezone
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
 import runpod_core as core
 
 
