@@ -3,6 +3,10 @@ Create a fresh bounded approval and invoke the checked Veronica launcher.
 
 This script is intentionally manual-only: it is suitable for a Run-button task,
 but it must never be configured with runOn=worktreeCreated.
+
+CLEANUP AFTER REVISIONS: Added explicit stale port/process kill for 8010/18000/4173
+and veronica python processes to prevent "already running" or port conflicts from
+prior failed starts or revisions. This ensures clean launch every time.
 #>
 [CmdletBinding()]
 param(
@@ -14,10 +18,29 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
 $projectRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
-$profilePath = Join-Path $projectRoot 'config\runpod-core.json'
+$profilePath = Join-Path $projectRoot 'config\\runpod-core.json'
 $profile = Get-Content -Raw -LiteralPath $profilePath | ConvertFrom-Json
+
+# Cleanup stale local wrappers/tunnels from previous revisions or failed starts (ports 8010 UI, 18000 tunnel, 4173 old)
+Write-Host "Cleaning stale local ports and processes..."
+$portsToClean = @(8010, 18000, 4173)
+foreach ($port in $portsToClean) {
+    Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue | ForEach-Object {
+        $pid = $_.OwningProcess
+        if ($pid) {
+            Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
+            Write-Host "Killed listener on port $port (PID $pid)"
+        }
+    }
+}
+# Kill any lingering python veronica processes (local or wrapper)
+Get-Process -Name python* -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -match 'veronica' -or $_.Path -match 'veronica' } | ForEach-Object {
+    Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
+    Write-Host "Killed stale veronica python (PID $($_.Id))"
+}
+
 $runName = "{0}-start-veronica" -f [DateTimeOffset]::UtcNow.ToString('yyyy-MM-ddTHHmmssZ')
-$runDir = Join-Path $projectRoot "runs\$runName"
+$runDir = Join-Path $projectRoot "runs\\$runName"
 
 if (Test-Path -LiteralPath $runDir) {
     throw "The generated run directory already exists; wait one second and try again."

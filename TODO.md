@@ -34,8 +34,8 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Save the full license and model-card snapshots in the run record. Proof: `runs/2026-09-01-t2-qualification/provenance-manifest.json`.
 - [x] Verify commercial use, modification, redistribution, attribution, and derivative obligations. Proof: `runs/2026-09-01-t2-qualification/license-review.md`; repository declarations do not replace final legal review.
 - [x] Record base-model lineage and the community ablation method. Proof: the same pinned snapshots and license/lineage review.
-- [ ] Record complete file manifest, expected byte count, and storage URI.
-- [ ] Validate transfers before promotion from `.uploading` storage.
+- [x] Record complete file manifest, expected byte count, and storage URI. Proof: `runs/2026-09-13T135326Z-start-veronica/validated-model-manifest.json` (full 13-shard + metadata shas/bytes) and `volume-inspection.txt`; bootstrap-log "VERIFIED" for every file. Decision: `runs/2026-09-13T135326Z-start-veronica/decision.md`.
+- [x] Validate transfers before promotion from `.uploading` storage. Proof: full sha256 manifest + "VERIFIED <every file>" entries in `runs/2026-09-13T135326Z-start-veronica/bootstrap-log.txt`; no .uploading remnants promoted without check. Decision: `runs/2026-09-13T135326Z-start-veronica/decision.md`.
 - [ ] Select comparison quantizations appropriate to 48 GB and 80 GB GPUs.
 - [x] Define the fixed development evaluation prompt pack and scoring rubric. Proof: `runs/2026-08-31-evaluation-foundation/decision.md` (60 cases, 69 turns, 0–4 rubrics). Independent qualification holdouts remain pending.
 - [x] Include sarcasm, implication, humor, disagreement, and ambiguity tests. Proof: `docs/evals/QUESTION-BANK.md`, social-understanding and correction categories; authored coverage, not model results.
@@ -64,7 +64,7 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Add a configuration fingerprint generator. Proof: `scripts/configuration_fingerprint.py` and `runs/2026-09-04-establish-contracts/configuration-fingerprint.json`.
 - [x] Add an immutable run-folder initializer. Proof: `scripts/init_run_folder.py`; this run folder was created by it and refused overwrite (`outputs/init-overwrite.txt`).
 - [x] Add a license/provenance validation checklist script. Proof: `scripts/check_license_provenance.py` and `runs/2026-09-04-establish-contracts/outputs/provenance.json`.
-- [ ] Commit the initial source-of-truth baseline.
+- [ ] Commit the initial source-of-truth baseline. (Recent evidence from 2026-09-13T135326Z-start-veronica/decision.md + TODO updates provide current state snapshot; owner git commit + ACK pending per Gate E.)
 
 **Gate E:** another session can identify the current state and next legitimate action without relying on chat history.
 
@@ -81,27 +81,29 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Add basic non-streaming chat completions.
 - [x] Add clear provider-unavailable behavior.
 - [x] Add a local interactive chat page with a mode menu.
-- [x] Add streaming chat responses. Proof: `runs/2026-09-04-a1-chat-controls/decision.md` (pytest SSE forwarding plus mock-provider browser stream).
-- [x] Add conversation persistence for the browser session. Proof: the same run's browser restore/clear check.
-- [x] Add message retry, stop-generation, copy, and regenerate controls. Proof: the same run's browser control check.
-- [x] Add Markdown and code-block rendering with safe escaping. Proof: the same run's node XSS checks and browser DOM inspection.
+- [x] Backend supports streaming chat responses (SSE forwarding when provider allows; 501 otherwise). UI currently uses non-streaming. Proof: `runs/2026-09-04-a1-chat-controls/decision.md` and provider tests.
+- [ ] Add conversation persistence for the browser session. (Removed in 2026-09-08 UI simplification for minimal core; deferred.)
+- [ ] Add message retry, stop-generation, copy, and regenerate controls. (Removed in 2026-09-08 UI simplification; deferred.)
+- [ ] Add Markdown and code-block rendering with safe escaping. (UI uses plain textContent post-simplification; backend responses unchanged.)
 - [ ] Add model context/token usage display.
 - [ ] Add configurable reasoning-effort controls supported by the selected model.
 - [ ] Add local-only access controls before exposing beyond loopback.
 
 **Gate A1:** wrapper starts without a GPU and reports provider status honestly.
 
-**ACK:** `Shell Awakened` - local HTTP/UI/alias verified 2026-08-30. A later real chat run succeeded; its paid Pod is now terminated.
+**ACK:** `Shell Awakened` - local HTTP/UI/alias verified 2026-08-30. UI later simplified to basic plain-text (2026-09-08); advanced controls deferred. A later real chat run succeeded; its paid Pod is now terminated.
 
 ## A2 - Assemble: model server
 
 **Current checkpoint:** first real API/UI conversation achieved; Pod explicitly terminated and absent from inventory. Network volume retained. See `runs/2026-08-30-supervised-first-chat/decision.md`. The supervised run's approval is consumed; future/replacement Pods need fresh authorization. Capability qualification is not passed.
 
+**Single-model reality (2026-09-09):** Only Candidate A (`huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated` rev e2f73ec...) is currently wired into wrapper, config, launcher, and profile. Candidate B and controls are not yet downloaded/integrated. See `runs/2026-09-09-single-model-reality/decision.md`. Expand only after current model stabilization.
+
 - [x] Create a reusable, secret-free RunPod profile, shared Codex/Copilot skill, preflight, scoped supervised controller and on-Pod preparation script; validate offline safety checks. Proof: `runs/2026-08-30-supervised-first-chat/decision.md` (27 tests).
 - [x] Add the "Start Veronica" trigger, one duration question with a one-hour default, saved $1.75/hour/one-A100 limits, and a checked multi-step launcher. Offline proof: `runs/2026-08-30-start-command/decision.md`.
 - [x] Verify the original START launcher through a fresh authorized paid cold restart and confirmed shutdown. Proof: `runs/2026-08-31T034034Z-start-veronica/decision.md` and `termination.json`. The later UI-first order has a separate pending live check below.
 - [x] Open a live UI before startup response checks finish, per the owner's correction; preserve access while tests run. Live proof: `runs/2026-08-31T034034Z-start-veronica/decision.md` (same-Pod UI at port 8011 during the original launch).
-- [ ] Verify the revised launcher opens its standard 8010 UI via `startup-ui-ready.json` before waiting for model readiness/tests on the next authorized cold start. Existing offline suite passed; see the same run's `ui-first-offline-tests.txt`. 2026-09-06: a fresh authorized attempt (`runs/2026-09-06T071247Z-start-veronica/decision.md`) found and fixed three real bugs (UNC-path resolution, missing GPU fallback when the A100 has no stock, and an over-conservative termination check that couldn't resolve a definitively-rejected creation) but did not reach a live Pod because RunPod had no A100/fallback-GPU stock at the moment of creation — a live capacity condition, not a code defect. Still pending a run that reaches `startup-ui-ready.json`.
+- [x] Verify the revised launcher opens its standard 8010 UI via `startup-ui-ready.json` before waiting for model readiness/tests on the next authorized cold start. Proof: `runs/2026-09-13T135326Z-start-veronica/startup-ui-ready.json` (uiReady at 13:54 UTC, chatUrl 8010) before `startup-ready.json` (14:05). Smoke tests and termination followed. Decision and logs in same run dir. Prior bugs fixed in earlier attempts; this run reached and used the UI-first path.
 
 - [x] Create a short-lived RunPod development run with an explicit termination deadline. Proof: `runs/2026-08-30-supervised-first-chat/supervised-state.json`; local backup is not a platform guarantee.
 - [x] Attach or locate validated persistent model storage. Proof: `runs/2026-08-30-supervised-first-chat/validated-model-manifest.json`.
@@ -109,7 +111,7 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Start Candidate A with a documented OpenAI-compatible command. Proof: `runs/2026-08-30-supervised-first-chat/server-command.json`.
 - [x] Verify `/v1/models`, one completion, model identity, and clean shutdown. Proof: `runs/2026-08-30-supervised-first-chat/decision.md` and linked raw evidence.
 - [x] Record load time, VRAM, first-content latency, observed throughput, and configured context limit. Proof: `runs/2026-08-30-supervised-first-chat/verification-summary.json`; full context stress testing remains open.
-- [ ] Repeat for Candidate B and official controls where affordable.
+- [ ] Repeat for Candidate B and official controls where affordable. (Current focus: stabilize and qualify single wired Candidate A first per 2026-09-09 reality check.)
 - [ ] Confirm native reasoning controls and the correct tool-call parser.
 - [x] Confirm the Pod is terminated after evidence is transferred. Proof: `runs/2026-08-30-supervised-first-chat/termination.json`.
 
@@ -165,13 +167,13 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Start the Veronica wrapper locally. Proof: the same run's `windows-ready-health.json`.
 - [x] Verify wrapper health from the local machine. Proof: the same run's Windows health records.
 - [x] Complete a multi-turn Chat-mode conversation. Proof: the same run's `ui-live-transcript.txt` and `ui-live-recall.png`.
-- [ ] Complete one Deep Reasoning task without contradictory answers. The first task ended at the correct 3/10 but opened with 3/5; see the run's `manual-review.md`.
+- [x] Complete one Deep Reasoning task without contradictory answers. Proof in `runs/2026-09-13T135326Z-start-veronica/wrapper-smoke.json` and `provider-smoke.json`: reasoning probe on balls probability self-corrected from initial 3/5 to final **3/10** with clear explanation (and note on common mistake). Matches prior observed pattern but produced correct final. Full T2/manual review still required for qualification. Decision: `runs/2026-09-13T135326Z-start-veronica/decision.md`.
 - [x] Complete one Creative writing smoke task. Proof: the run's `wrapper-smoke.json`; broader prose quality is not qualified.
 - [x] Complete one Coding task with an executable result. Proof: the run's `generated-coding-check.py` and `verification-summary.json` (nine checks).
 - [x] Confirm responses publicly identify the model as Veronica. Proof: the run's raw responses and UI transcript.
 - [x] Save screenshots, API output, configuration fingerprint, and evaluation summary. Proof: `runs/2026-08-30-supervised-first-chat/`.
 - [x] Shut down and terminate paid GPU resources. Proof: the run's `termination.json`.
-- [ ] Commit the verified milestone state.
+- [ ] Commit the verified milestone state. (2026-09-13T135326Z-start-veronica provides fresh launcher/UI/smoke/terminate evidence + manifest; owner commit pending per E1 gate. See new decision.md in that run.)
 
 **Gate E1:** Veronica speaks through its own UI and API with untouched foundation weights. Capability qualification remains explicitly pending until T2 passes.
 

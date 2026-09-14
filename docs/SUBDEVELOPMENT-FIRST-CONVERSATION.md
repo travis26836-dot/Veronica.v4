@@ -48,6 +48,8 @@
 
 Achieved 2026-08-30 for real chat transport/UI. Next: unambiguous recall tests, reasoning consistency and unsupported-action claims; see the run's `manual-review.md`. UI polish should update the historical welcome notice and scroll the latest reply into view. Full model qualification is not passed.
 
+**Note on later UI simplification (2026-09-08):** The chat UI was reduced to minimal plain-text non-streaming for core focus (removed persistence, controls, Markdown). Historical first-chat evidence used richer version; current state documented in updated SOURCE-OF-TRUTH.md and TODO.md.
+
 ## Segment 5 — studio boundary, after core chat
 
 - [ ] Inspect the shared volume and reserve separate `veronica-core/` and `studio/` paths.

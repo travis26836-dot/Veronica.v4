@@ -47,7 +47,7 @@ Say **"Start Veronica"** in Codex/Copilot. The agent asks **"How long would you 
 ## Current verified state
 
 - The canonical repository and research artifacts exist.
-- A model-agnostic Veronica wrapper and basic chat interface are scaffolded.
+- A model-agnostic Veronica wrapper and basic plain-text chat interface (modes, non-streaming) are scaffolded. (Advanced UI features simplified away in 2026-09-08 for core focus.)
 - The wrapper can target an OpenAI-compatible local or RunPod model server.
 - Local tests use a mock provider and do not consume GPU credits.
 - No Veronica.v4 base model has passed the qualification suite yet.

@@ -253,7 +253,7 @@ def test_capability_report_separates_implemented_and_planned() -> None:
     assert "native_tool_execution" in body["planned"]
     assert "native_tool_execution" not in body["implemented"]
     assert body["local_access"].startswith("intended for loopback")
-    assert "localStorage_persistence" in body["browser_session"]
+    assert "basic plain-text chat" in body.get("browser_ui", "")
 
 
 def test_system_messages_and_native_tool_fields_are_preserved() -> None:
@@ -295,24 +295,21 @@ def test_static_chat_interface_is_served() -> None:
     css = client.get("/assets/styles.css")
     assert page.status_code == 200
     assert "No model-generated response" in page.text
-    assert "stopChat" in page.text
+    assert "stopChat" not in page.text
     assert "blackhole-background.js" not in page.text
     assert js.status_code == 200
     assert "drawStarfield" in js.text
-    assert "startVeronicaHorizon" not in js.text
-    assert "localStorage" in js.text
-    assert "AbortController" in js.text
-    assert "markdownToSafeHtml" in js.text
-    assert "data-action" in js.text
-    assert "streaming_chat" in js.text
+    assert "Veronica v4 chat interface loaded" in js.text
+    assert "refreshHealth" in js.text
     assert css.status_code == 200
-    assert "message-actions" in css.text
-    assert "cosmic-background.png" in css.text
+    assert "chat-log" in css.text
+    assert "composer-actions" in css.text
+    assert "cosmic-background" in css.text
     assert client.get("/assets/assets/cosmic-background.png").status_code == 200
     assert client.get("/assets/assets/veronica-logo-mark.png").status_code == 200
 
 
-def test_chat_javascript_parses_and_markdown_is_safe() -> None:
+def test_chat_javascript_parses() -> None:
     parsed = subprocess.run(
         ["node", "--check", str(ROOT / "src/veronica_core/static/app.js")],
         capture_output=True,
@@ -320,10 +317,4 @@ def test_chat_javascript_parses_and_markdown_is_safe() -> None:
         check=False,
     )
     assert parsed.returncode == 0, parsed.stderr
-    markdown = subprocess.run(
-        ["node", str(Path(__file__).with_name("test_chat_markdown.js"))],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert markdown.returncode == 0, markdown.stdout + markdown.stderr
+    # Current UI uses plain textContent (no Markdown rendering); safe escaping is via textContent.

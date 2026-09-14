@@ -1,0 +1,16 @@
+{
+  "runId": "2026-09-13-success-final",
+  "podName": "veronica-core-20260913-105940-e1fd5d9d",
+  "createdAttemptAtUtc": "2026-09-13T10:59:40.140192+00:00",
+  "deadlineUtc": "2026-09-13T11:59:40.140192+00:00",
+  "backupShutdownAtUtc": "2026-09-13T11:59:40.140192+00:00",
+  "maxHourlyUsd": 2.69,
+  "sshKey": "/home/dubs/.ssh/id_ed25519_runpod_noirworks",
+  "podId": "fkh9r0aqe54udr",
+  "gpuTypeId": "NVIDIA A100-SXM4-80GB",
+  "cloudType": "SECURE",
+  "usedFallbackGpu": false,
+  "platformTimer": false,
+  "creationAttempted": true,
+  "actualHourlyUsd": 1.59
+}

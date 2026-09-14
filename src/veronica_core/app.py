@@ -96,14 +96,7 @@ def create_app(
             "foundation_qualification": "pending",
             "local_access": "intended for loopback; no authentication yet",
             "loopback_client": host in LOOPBACK_HOSTS or host.startswith("127."),
-            "browser_session": [
-                "localStorage_persistence",
-                "message_retry",
-                "stop_generation",
-                "copy",
-                "regenerate",
-                "safe_markdown",
-            ],
+            "browser_ui": "basic plain-text chat (no persistence, markdown, or message controls yet; simplified for core)",
             "planned": [
                 "native_tool_execution",
                 "scoped_memory",

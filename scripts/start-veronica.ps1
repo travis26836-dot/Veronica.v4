@@ -39,9 +39,12 @@ if ($minutes -lt 1 -or $minutes -gt $profile.safety.maximumCustomDurationMinutes
 if ([double]::IsNaN($hourly) -or [double]::IsInfinity($hourly) -or $hourly -le 0 -or $hourly -gt $profile.safety.maximumHourlyUsd) {
     throw 'MaxHourlyUsd must be positive and cannot exceed the configured hourly ceiling.'
 }
-if ($profile.pod.gpuCount -ne 1 -or $profile.pod.gpuTypeId -ne 'NVIDIA A100-SXM4-80GB') {
-    throw 'START requires exactly one configured A100 80 GB GPU.'
+# GPU check relaxed post-revisions to support configured primary + fallbacks (A100 or H100 etc.)
+# The actual selection (with fallbacks on stock) is handled in the Python controller preflight/create.
+if ($profile.pod.gpuCount -ne 1) {
+    throw 'START requires exactly one GPU in the pod profile.'
 }
+# Note: gpuTypeId may be A100 or fallback; do not hard-fail here.
 if ($SshKey -notmatch '^/[A-Za-z0-9_./-]+$' -or $SshKey.Split('/') -contains '..') {
     throw 'SshKey must be an absolute WSL path without parent traversal.'
 }
@@ -97,11 +100,50 @@ $resolvedApproval = (Resolve-Path -LiteralPath $ApprovalFile).ProviderPath
 foreach ($artifact in @('supervised-state.json', 'expected-model-manifest.json', 'bootstrap-start.json', 'keep-awake-state.json', 'startup-ui-ready.json', 'startup-ready.json', 'startup-cancelled.json', 'termination.json')) {
     if (Test-Path -LiteralPath (Join-Path $resolvedRun $artifact)) { throw 'This run already contains startup evidence; use a new run and authorization. Creation is never retried.' }
 }
+
+# Write initial supervised-state.json immediately after the evidence check.
+# This ensures every run that reaches the launcher has a state file for reliable
+# inspection, diagnostics, and partial-failure handling (addresses "no state" cases
+# from incomplete or non-standard starts).
+$initialState = [ordered]@{
+    runId = [IO.Path]::GetFileName($resolvedRun)
+    podName = $null
+    createdAttemptAtUtc = [DateTimeOffset]::UtcNow.ToString('o')
+    deadlineUtc = ([DateTimeOffset]::UtcNow.AddMinutes($minutes)).ToString('o')
+    backupShutdownAtUtc = ([DateTimeOffset]::UtcNow.AddMinutes($minutes)).ToString('o')
+    maxHourlyUsd = $hourly
+    creationAttempted = $false
+    podId = $null
+    gpuTypeId = $profile.pod.gpuTypeId
+    networkVolumeId = $profile.pod.networkVolumeId
+    modelRevision = $profile.model.revision
+    shutdownMode = $profile.safety.defaultShutdownMode
+}
+Write-Record 'supervised-state.json' $initialState
+
 $python = Join-Path $projectRoot '.venv/Scripts/python.exe'
 if (-not (Test-Path -LiteralPath $python -PathType Leaf)) { throw 'The local wrapper environment is missing; run scripts/build.ps1 before START.' }
 if (-not (Get-Command wsl.exe -ErrorAction SilentlyContinue)) { throw 'WSL is required for RunPod credentials, SSH, and the local watchdog.' }
 if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'Run START with PowerShell 7 (pwsh); argument-safe process orchestration requires it.' }
 $shell = (Get-Process -Id $PID).Path
+
+# Early cleanup of stale ports/processes (robust against revisions and failed starts)
+Write-Host "Early cleanup of stale local ports and veronica processes..."
+$portsToClean = @(8010, 18000, 4173)
+foreach ($port in $portsToClean) {
+    Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue | ForEach-Object {
+        $pid = $_.OwningProcess
+        if ($pid) {
+            Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
+            Write-Host "Killed listener on port $port (PID $pid)"
+        }
+    }
+}
+Get-Process -Name python* -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -match 'veronica' -or $_.Path -match 'veronica' } | ForEach-Object {
+    Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
+    Write-Host "Killed stale veronica python (PID $($_.Id))"
+}
+
 $script:startupExpires = [DateTimeOffset]::UtcNow.AddMinutes([Math]::Min(30, $minutes))
 
 function Assert-StartupWindow {

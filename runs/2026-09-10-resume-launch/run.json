@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-10-resume-launch",
+  "recordedAt": "2026-09-12T02:54:31Z",
+  "owner": "Raine",
+  "stage": "launch",
+  "status": "in_progress",
+  "scope": "Supervised cold start with Python controllers",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "modelSelectionStatus": "benchmark_required",
+  "modelRevision": null,
+  "runtimeVersion": null,
+  "gpu": null,
+  "configurationFingerprint": null,
+  "lastDurableHandoff": "Run folder initialized; evidence pending.",
+  "nextAction": "Record decision.md and required evidence. Do not overwrite this folder."
+}
