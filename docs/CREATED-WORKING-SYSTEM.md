@@ -22,9 +22,9 @@ decisions requiring their own evidence and authorization.
 Read AGENTS.md, docs/SOURCE-OF-TRUTH.md, TODO.md, docs/CURRENT-STATE.md,
 and the decision records it names before choosing work.
 The reusable skill lives at C:/Users/raine/.codex/skills/travs-created-workflow/SKILL.md.
-The collaboration implementation is on origin/agents/multi-agent-collaboration-pr;
-it is not installed on this branch. Review and deliberately integrate it before
-claiming automated ownership locks or multi-agent coordination are available.
+The collaboration implementation is integrated on this milestone branch as of
+2026-09-17. Use scripts/collaboration.py for task claims and handoffs. Claims are
+per checkout, not globally synchronized across worktrees; retain one writer.
 
 ## E - Establish
 
