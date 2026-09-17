@@ -42,14 +42,16 @@ def fake_inventory(profile, price=1.75, pods=None):
 
 def test_saved_start_defaults_are_bounded_and_supervised():
     profile = core.profile_at(core.DEFAULT_PROFILE)
-    assert profile["safety"]["maximumHourlyUsd"] == 4.0
+    assert profile["safety"]["maximumHourlyUsd"] == 1.75
+    assert profile["pod"]["gpuTypeId"] == "NVIDIA A100-SXM4-80GB"
+    assert profile["pod"]["gpuFallbacks"] == []
     assert profile["safety"]["defaultDurationMinutes"] == 60
     assert profile["safety"]["defaultShutdownMode"] == "supervised-with-local-backup"
     assert profile["safety"]["durationSelectionRequired"] is True
     assert profile["safety"]["terminationGuard"] == "unavailable"
 
 
-@pytest.mark.parametrize("hourly", [4.00001, 5, 100])
+@pytest.mark.parametrize("hourly", [1.75001, 5, 100])
 def test_oversized_approval_fails_before_inventory(hourly):
     profile = core.profile_at(core.DEFAULT_PROFILE)
     with patch.object(core, "cli", side_effect=AssertionError("No inventory expected")):
@@ -99,22 +101,22 @@ def test_profile_cannot_drop_new_pod_approval_guards(field, value):
         core.validate_profile_safety(profile)
 
 
-@pytest.mark.parametrize("price", [None, True, False, 0, -1, "invalid", "", "NaN", "Infinity", float("nan"), float("inf"), 4.00001])
+@pytest.mark.parametrize("price", [None, True, False, 0, -1, "invalid", "", "NaN", "Infinity", float("nan"), float("inf"), 1.75001])
 def test_unverifiable_or_over_budget_price_blocks_creation(price):
     profile = core.profile_at(core.DEFAULT_PROFILE)
     with patch.object(core, "cli", fake_inventory(profile, price)):
-        result = core.preflight(profile, 4.0, 60, supervised=True)
+        result = core.preflight(profile, 1.75, 60, supervised=True)
     assert not result["safeToCreate"]
     assert any("price" in blocker for blocker in result["blockers"])
 
 
-@pytest.mark.parametrize("price", [3.5, 4.0, "4.0"])
+@pytest.mark.parametrize("price", [1.59, 1.75, "1.75"])
 def test_available_exact_gpu_at_or_below_saved_limit_passes_offline_preflight(price):
     profile = core.profile_at(core.DEFAULT_PROFILE)
     with patch.object(core, "cli", fake_inventory(profile, price)):
-        result = core.preflight(profile, 4.0, 180, supervised=True)
+        result = core.preflight(profile, 1.75, 180, supervised=True)
     assert result["safeToCreate"]
-    assert result["savedMaximumHourlyUsd"] == 4.0
+    assert result["savedMaximumHourlyUsd"] == 1.75
     assert result["gpuCount"] == 1
     assert not result["platformDeadlineEnforced"]
 

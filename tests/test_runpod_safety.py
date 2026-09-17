@@ -37,7 +37,7 @@ def test_legacy_timer_flag_does_not_authorize_creation():
         if args == ("network-volume", "get", "v53gj9flzs"):
             return json.dumps({"id": "v53gj9flzs", "dataCenterId": "EUR-IS-1", "size": 300})
         if args == ("gpu", "list", "--include-unavailable"):
-            return json.dumps([{"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 3.5, "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "Low"}]}])
+            return json.dumps([{"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 1.75, "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "Low"}]}])
         if args == ("pod", "list", "--all"):
             return "[]"
         if args == ("ssh", "list-keys"):
@@ -48,12 +48,12 @@ def test_legacy_timer_flag_does_not_authorize_creation():
             return "test-version"
         raise AssertionError(f"Unexpected/mutating command: {args}")
     with patch.object(core, "cli", fake_cli):
-        result = core.preflight(profile, 3.5, 120)
+        result = core.preflight(profile, 1.75, 120)
         assert not result["safeToCreate"]
         assert any("termination" in item for item in result["blockers"])
-        assert core.preflight(profile, 3.5, 120, supervised=True)["safeToCreate"]
-        assert not core.preflight(profile, 3.0, 120, supervised=True)["safeToCreate"]
-        with patch("sys.argv", ["runpod_core.py", "start", "--max-hourly-usd", "3.50", "--duration-minutes", "120"]):
+        assert core.preflight(profile, 1.75, 120, supervised=True)["safeToCreate"]
+        assert not core.preflight(profile, 1.60, 120, supervised=True)["safeToCreate"]
+        with patch("sys.argv", ["runpod_core.py", "start", "--max-hourly-usd", "1.75", "--duration-minutes", "120"]):
             with pytest.raises(RuntimeError, match="No Pod created"):
                 core.main()
 
@@ -63,14 +63,18 @@ def test_preflight_falls_back_to_approved_gpu_when_primary_has_no_stock():
     fallback GPU (config/runpod-core.json pod.gpuFallbacks) has stock within its
     own price cap; the reliability trade-off must be surfaced, not hidden."""
     profile = core.profile_at(core.DEFAULT_PROFILE)
-    fallback = profile["pod"]["gpuFallbacks"][0]
+    # Exercise optional fallback support with an explicit test-only profile.
+    fallback = {"gpuTypeId": "NVIDIA H100 80GB HBM3", "cloudType": "SECURE",
+                "minMemoryGb": 80, "maxHourlyUsd": 1.75,
+                "reliabilityNote": "Test-only explicit fallback"}
+    profile["pod"]["gpuFallbacks"] = [fallback]
 
     def fake_cli(*args):
         if args == ("network-volume", "get", "v53gj9flzs"):
             return json.dumps({"id": "v53gj9flzs", "dataCenterId": "EUR-IS-1", "size": 300})
         if args == ("gpu", "list", "--include-unavailable"):
             return json.dumps([
-                {"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 3.5,
+                {"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 1.75,
                  "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "none"}]},
                 {"gpuId": fallback["gpuTypeId"], "securePricePerHr": fallback["maxHourlyUsd"],
                  "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "Medium"}]},
@@ -86,7 +90,7 @@ def test_preflight_falls_back_to_approved_gpu_when_primary_has_no_stock():
         raise AssertionError(f"Unexpected/mutating command: {args}")
 
     with patch.object(core, "cli", fake_cli):
-        result = core.preflight(profile, 4.0, 60, supervised=True)
+        result = core.preflight(profile, 1.75, 60, supervised=True)
     assert result["safeToCreate"]
     assert result["usedFallbackGpu"] is True
     assert result["gpuTypeId"] == fallback["gpuTypeId"]
@@ -101,7 +105,7 @@ def test_preflight_blocks_when_primary_and_all_fallbacks_have_no_stock():
         if args == ("network-volume", "get", "v53gj9flzs"):
             return json.dumps({"id": "v53gj9flzs", "dataCenterId": "EUR-IS-1", "size": 300})
         if args == ("gpu", "list", "--include-unavailable"):
-            return json.dumps([{"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 3.5,
+            return json.dumps([{"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 1.75,
                                  "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "none"}]}])
         if args == ("pod", "list", "--all"):
             return "[]"
@@ -114,7 +118,7 @@ def test_preflight_blocks_when_primary_and_all_fallbacks_have_no_stock():
         raise AssertionError(f"Unexpected/mutating command: {args}")
 
     with patch.object(core, "cli", fake_cli):
-        result = core.preflight(profile, 4.0, 60, supervised=True)
+        result = core.preflight(profile, 1.75, 60, supervised=True)
     assert not result["safeToCreate"]
     assert any("no configured fallback GPU has stock" in item for item in result["blockers"])
 
