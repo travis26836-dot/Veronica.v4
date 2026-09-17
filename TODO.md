@@ -131,7 +131,7 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Test browser UI behavior in Chrome and narrow/mobile widths. Proof: `runs/2026-08-30-ui-layout-port/decision.md`.
 - [ ] Test interruption and restart with no false provider-ready state. Actual shutdown-to-offline transition verified in the supervised run; restart is still open.
 - [ ] Test wrapper logs redact authorization values.
-- [ ] Resolve the upstream Starlette TestClient HTTPX deprecation warning before upgrading test dependencies.
+- [ ] Resolve the upstream Starlette TestClient HTTPX deprecation warning before upgrading test dependencies. The specific warning is temporarily suppressed once in pyproject.toml; no dependency fix or upgrade is claimed.
 
 **Gate T1:** all local tests pass on a clean environment.
 
