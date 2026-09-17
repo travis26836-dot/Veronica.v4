@@ -1,0 +1,13 @@
+{
+  "runId": "2026-09-14T103624Z-start-veronica",
+  "authorizedAtUtc": "2026-09-14T10:36:24.994359+00:00",
+  "maxHourlyUsd": 1.75,
+  "durationMinutes": 60,
+  "resourceCount": 1,
+  "gpuTypeId": "NVIDIA A100-SXM4-80GB",
+  "networkVolumeId": "v53gj9flzs",
+  "modelRevision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+  "shutdownMode": "supervised-with-local-backup",
+  "authorizedBy": "user start request via chat",
+  "notes": "1 hour default per clarify response. Fresh authorization for this Pod only."
+}

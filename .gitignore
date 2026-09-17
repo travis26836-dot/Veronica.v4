@@ -54,3 +54,6 @@ Thumbs.db
 
 # Agent worktrees and parallel branch checkouts (intentionally uncommitted and preserved per AGENTS.md and run decisions)
 .worktrees/
+
+# Disposable pytest workspaces; retained run evidence stays versioned.
+runs/**/test-tmp*/
