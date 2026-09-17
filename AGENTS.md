@@ -1,5 +1,18 @@
 # Veronica.v4 project instructions
 
+## Working continuity
+
+- Apply Trav's CREATED skill for staged work. Read `docs/CURRENT-STATE.md` and
+  `docs/CREATED-WORKING-SYSTEM.md` alongside the product checklist.
+- Preserve the active branch's stated objective. A commit is a progress checkpoint;
+  a push, merge, and completed milestone are separate events. Do not introduce a
+  replacement branch for routine cleanup and lose the original workstream.
+- End each work increment with evidence, remaining work, and the next action.
+  Scheduled work may implement only an approved bounded item; roadmap existence
+  alone is not permission to build every remaining feature.
+
+## Product rules
+
 1. Read `docs/SOURCE-OF-TRUTH.md`, `TODO.md`, and the latest `runs/*/decision.md` before changing direction.
 2. Build one capable Veronica core first. Basic text/chat precedes specialized modules, fine-tuning, billing, and production deployment.
 3. Keep foundation weights unchanged during the initial alias/persona-wrapper stage.
