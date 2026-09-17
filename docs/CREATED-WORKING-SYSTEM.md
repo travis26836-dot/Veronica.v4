@@ -1,6 +1,8 @@
 # Trav's CREATED working system
 
-Status: proposed automation design; local workflow rules established.
+Status: proposed automation design; local workflow rules established. Scheduling
+implementation deferred as of 2026-09-17 behind the core completion sequence in
+docs/CORE-COMPLETION-PLAN.md. Retain this design for later use.
 Owner: Travis. Pilot: Veronica.v4.
 
 ## C - Capture
@@ -78,5 +80,6 @@ what changed, validation, limitations, failures, next action, and branch/commit.
 Keep project evidence in the repository. Personal memory updates require an
 explicit user request and do not substitute for repository evidence.
 
-Next: confirm pilot versus separate reusable project and execution cadence,
-then assemble and validate the three processes before enabling scheduled work.
+Next for the product: integrate collaboration and complete qualification
+readiness under docs/CORE-COMPLETION-PLAN.md. Resume scheduler design only after
+a useful product work cycle and an authorized scope/cadence decision.

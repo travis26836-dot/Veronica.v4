@@ -2,7 +2,7 @@
 
 This file is the execution source of truth. Check an item only when its stated proof exists. Each milestone ends with a named acknowledgment so progress is visible and memorable.
 
-**Immediate route:** candidate integrity -> model server -> first text/chat. The full roadmap below is not a prerequisite for that first conversation. Full qualification is required before final model selection and fine-tuning.
+**Current route (2026-09-17):** first text/chat is demonstrated. Integrate the collaboration workflow, finish qualification readiness, then earn T2 `Mind Proven` before persona/tools/memory/modules and release. See [Core completion plan](docs/CORE-COMPLETION-PLAN.md) for the proposed order and acceptance gates. The checklist below remains authoritative; no milestone is completed by planning.
 
 ## Status legend
 
