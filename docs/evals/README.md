@@ -22,6 +22,15 @@ The repeatable skill is **`veronica-evals`**. Example: "Use veronica-evals to re
 
 Coverage: identity grounding, memory boundaries, action truthfulness, correction/calibration, instruction following, social understanding, reasoning consistency, coding, structured output, tool selection, context retrieval and creative writing. Tool fixtures test native selection/arguments only. Coding execution and full long-context stress/vision testing need later specialized environments; this pack does not qualify those capabilities.
 
+Execution checkpoint (2026-09-17): the supplemental capability reporter now
+refuses generated-code execution with `isolation_unverified`, including when a
+network namespace is available. The existing namespace probe does not isolate
+the host filesystem, processes or resource consumption. `--execute-code` does
+not override this gate. Repository-owned fixture programs are tested separately;
+that proves fixture scoring, not sandbox safety or model coding capability.
+Next implementation: a complete sandbox with verified boundaries and adversarial
+escape/resource tests, then restore generated-code evaluation through that backend.
+
 The tiers are **12 smoke**, **36 core including smoke**, and **60 extended including both earlier tiers**. A case can have multiple turns, so case count is not request count. All questions here are public development/regression material, including known transcript incidents. None is a sealed holdout. The 60-case bank is an initial screen; it is not the larger qualification sample proposed in the strategy.
 
 For the lowest-cost next diagnostic, select **CC-01, CC-02, MB-01 and MB-02**: correcting invented history, resisting an incorrect correction, admitting missing memory, and recalling supplied facts. These are four cases, six requests and three independent families. At 192 maximum completion tokens per request, the upper completion budget is **1,152 tokens**, plus input tokens; truncation must remain visible. This is a focused screen, not full qualification:

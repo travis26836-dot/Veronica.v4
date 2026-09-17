@@ -517,6 +517,11 @@ def verify_network_isolation(prefix: list[str], python: str | None = None, timeo
 
 
 def _run_isolated_sample(source: str, fixture: dict, prefix: list[str], timeout_seconds: float) -> dict:
+    """Low-level harness; callers must gate untrusted source before reaching it.
+
+    An empty prefix is used only by tests of repository-owned fixture programs.
+    It is never a fallback for executable_code_report.
+    """
     python = sys.executable
     with tempfile.TemporaryDirectory(prefix="veronica-cd-") as work:
         workdir = Path(work)
@@ -553,8 +558,6 @@ def executable_code_report(
     records: list[dict],
     fixtures_path: Path = DEFAULT_FIXTURES,
     timeout_seconds: float = 8,
-    isolation: dict | None = None,
-    prefix: list[str] | None = None,
 ) -> dict:
     fixtures = load_fixtures(fixtures_path)
     expected = [case["id"] for case in fixtures["cases"]]
@@ -566,10 +569,32 @@ def executable_code_report(
         report["execute_code"] = True
         report["limits"] = "No CD-* samples were present. Generated code was not executed."
         return report
-    if prefix is None:
-        prefix, _method = isolation_prefix()
-    if isolation is None:
-        isolation = verify_network_isolation(prefix)
+    prefix, _method = isolation_prefix()
+    network = verify_network_isolation(prefix)
+    # A network namespace alone leaves the host filesystem and process/resource
+    # boundaries exposed. Do not run generated code on that partial isolation.
+    isolation = {
+        "verified": False,
+        "network": network,
+        "filesystem_verified": False,
+        "process_verified": False,
+        "resource_limits_verified": False,
+        "reason": "complete_execution_sandbox_unavailable",
+    }
+    if not prefix or isolation["verified"] is not True:
+        report = skipped_executable_report(records, fixtures)
+        report.update(
+            status="isolation_unverified",
+            execute_code=True,
+            isolation=isolation,
+            cases={},
+            missing_case_ids=[case_id for case_id in expected if not any(
+                record.get("case_id") == case_id for record in observed
+            )],
+            limits="Generated code was not executed. Network isolation alone is insufficient; "
+                   "verified filesystem, process and resource boundaries are required.",
+        )
+        return report
     cases: dict[str, Any] = {}
     any_fail = False
     executed = False

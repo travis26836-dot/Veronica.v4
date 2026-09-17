@@ -1,6 +1,8 @@
 """Post-hoc T2 capability reports without live inference or paid compute."""
 from pathlib import Path
 
+import pytest
+
 from veronica_core import capability_reports as cap
 from veronica_core import evaluation as ev
 
@@ -194,56 +196,64 @@ def test_executable_fixtures_match_case_notes():
     assert cd05["boolean-count"]["expect"]["raises"] == "ValueError"
 
 
-def test_execute_code_uses_fixtures_not_model_written_tests():
-    report = cap.executable_code_report([
-        cd_record("CD-01", GOOD_CD01),
-        cd_record("CD-02", GOOD_CD02),
-        cd_record("CD-03", GOOD_CD03),
-        cd_record("CD-04", GOOD_CD04),
-        cd_record("CD-05", GOOD_CD05),
-    ])
-    assert report["execute_code"] is True
-    assert report["tools_executed"] is False
-    assert report["generated_code_executed"] is True
-    assert report["missing_case_ids"] == []
-    assert all(report["cases"][case_id]["passed"] for case_id in report["expected_case_ids"])
-    if report["isolation"]["verified"]:
-        assert report["status"] == "collected_pass"
-    else:
-        assert report["status"] == "isolation_unverified"
+def test_trusted_fixture_programs_use_vectors_not_model_written_tests():
+    # These are repository-owned programs, not model outputs. This exercises
+    # fixture scoring independently and makes no sandbox-verification claim.
+    sources = [GOOD_CD01, GOOD_CD02, GOOD_CD03, GOOD_CD04, GOOD_CD05]
+    for fixture, source in zip(cap.load_fixtures()["cases"], sources, strict=True):
+        extracted = cap.extract_python({"content": source}, fixture["function"])
+        outcome = cap._run_isolated_sample(extracted, fixture, [], 8)
+        assert outcome["ok"] is True
+        assert len(outcome["vectors"]) == len(fixture["vectors"])
+        assert all(vector["passed"] for vector in outcome["vectors"])
 
 
-def test_execute_code_status_is_isolation_unverified_when_probe_fails(monkeypatch):
+@pytest.mark.parametrize("network_verified", [False, True])
+def test_execute_code_never_runs_without_complete_isolation(monkeypatch, tmp_path, network_verified):
+    monkeypatch.setattr(cap, "isolation_prefix", lambda: (["test-namespace"], "test"))
     monkeypatch.setattr(cap, "verify_network_isolation", lambda prefix, python=None, timeout_seconds=3: {
-        "verified": False, "method": None, "probe": "localhost-connect", "reason": "forced",
+        "verified": network_verified, "method": "test", "probe": "localhost-connect",
     })
+    def reject_execution(*args, **kwargs):
+        pytest.fail("Untrusted code reached the execution harness")
+    monkeypatch.setattr(cap, "_run_isolated_sample", reject_execution)
+    marker = tmp_path / "must-not-exist.txt"
+    source = f"marker = open({str(marker)!r}, 'w').write('ran')\n" + GOOD_CD01
     report = cap.executable_code_report([
-        cd_record("CD-01", GOOD_CD01),
-        cd_record("CD-02", GOOD_CD02),
-        cd_record("CD-03", GOOD_CD03),
-        cd_record("CD-04", GOOD_CD04),
-        cd_record("CD-05", GOOD_CD05),
+        cd_record("CD-01", source),
     ])
     assert report["status"] == "isolation_unverified"
     assert report["isolation_verified"] is False
-    assert all(report["cases"][case_id]["passed"] for case_id in report["expected_case_ids"])
+    assert report["generated_code_executed"] is False
+    assert report["isolation"]["network"]["verified"] is network_verified
+    assert report["cases"] == {}
+    assert not marker.exists()
 
 
-def test_execute_code_fails_sql_injection_and_wrong_page_count():
+def test_trusted_fixture_scoring_fails_sql_injection_and_wrong_page_count():
     bad_page = """
 def page_count(total, size):
     return total // size + 1
 """
-    report = cap.executable_code_report([
-        cd_record("CD-02", bad_page),
-        cd_record("CD-03", UNSAFE_CD03),
-    ])
-    assert report["status"] == "collected_fail"
-    assert report["cases"]["CD-02"]["passed"] is False
-    assert report["cases"]["CD-03"]["passed"] is False
-    malicious = report["cases"]["CD-03"]["samples"][0]["vectors"][0]
+    fixtures = {case["id"]: case for case in cap.load_fixtures()["cases"]}
+    page = cap._run_isolated_sample(bad_page, fixtures["CD-02"], [], 8)
+    sql = cap._run_isolated_sample(UNSAFE_CD03, fixtures["CD-03"], [], 8)
+    assert not all(vector["passed"] for vector in page["vectors"])
+    malicious = sql["vectors"][0]
     assert malicious["id"] == "literal-malicious-name"
     assert malicious["passed"] is False
+
+
+def test_report_execute_flag_writes_blocked_report_without_running_code(tmp_path, monkeypatch):
+    monkeypatch.setattr(cap, "isolation_prefix", lambda: ([], "unavailable"))
+    run = tmp_path / "run"
+    run.mkdir()
+    ev.write_jsonl(run / "results.jsonl", [cd_record("CD-01", GOOD_CD01)])
+    reports = cap.report_run(run, execute_code=True)
+    saved = ev.read_json(run / "executable-code-report.json")
+    assert reports["executable_code"] == saved
+    assert saved["status"] == "isolation_unverified"
+    assert saved["generated_code_executed"] is False
 
 
 def test_execute_code_not_collected_without_cd_samples():

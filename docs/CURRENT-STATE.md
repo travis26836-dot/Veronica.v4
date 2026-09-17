@@ -31,3 +31,9 @@ Next action: finish the T2 qualification-readiness packet. Scheduling automation
 is deferred behind core delivery. No CREATED automation has been installed;
 this checkpoint does not complete a product milestone or authorize paid compute.
 The integration decision records the separate remote PR status.
+
+Qualification execution checkpoint:
+runs/2026-09-17-qualification-execution-gate/decision.md. Generated-code reporting
+now refuses execution until a complete sandbox is verified. The previous network
+namespace alone was insufficient. Next local implementation: isolated execution
+backend and boundary tests, followed by schema and long-context readiness gaps.
