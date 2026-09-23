@@ -1,0 +1,34 @@
+{
+  "agent": "codex",
+  "branch": "feature/complete-todo-milestones",
+  "ended_at": "2026-09-23T03:01:49Z",
+  "evidence": [
+    "runs/2026-09-17-container-sandbox/decision.md"
+  ],
+  "files_changed": [
+    "TODO.md"
+  ],
+  "limitations": [
+    "No Mind Proven or model coding acceptance claimed"
+  ],
+  "model": null,
+  "next_action": "Complete schema qualification checks",
+  "paths": [
+    "TODO.md"
+  ],
+  "repo_commit_after": "772c5f487fcd156530d98e7c7eed6e412f4dc189",
+  "repo_commit_before": "96f01c4f1efb770af2fd74a2b55bf8fc7882b783",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T02:56:29Z",
+  "status": "completed",
+  "summary": "Record independently verified executable sandbox subtask and keep schema and context gates open",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "qualification-todo-sandbox-progress",
+  "tests": [
+    "Executable environment verified by real-container tests; unchecked schema/context items retained"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

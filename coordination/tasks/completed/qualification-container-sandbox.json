@@ -1,0 +1,52 @@
+{
+  "agent": "codex",
+  "branch": "feature/complete-todo-milestones",
+  "ended_at": "2026-09-23T03:01:48Z",
+  "evidence": [
+    "runs/2026-09-17-container-sandbox/decision.md",
+    "runs/2026-09-17-container-sandbox/validation.json"
+  ],
+  "files_changed": [
+    "config/execution-sandbox.json",
+    "docs/CURRENT-STATE.md",
+    "docs/evals/EXECUTION-SANDBOX.md",
+    "docs/evals/README.md",
+    "scripts/verify_execution_sandbox.py",
+    "src/veronica_core/capability_reports.py",
+    "src/veronica_core/execution_sandbox.py",
+    "tests/test_capability_reports.py",
+    "tests/test_execution_sandbox.py"
+  ],
+  "limitations": [
+    "Evaluator fixtures only; model qualification remains open; Docker/kernel and source-review trust boundaries documented"
+  ],
+  "model": null,
+  "next_action": "Complete schema qualification and actual-token context readiness",
+  "paths": [
+    "config/execution-sandbox.json",
+    "docs/CURRENT-STATE.md",
+    "docs/evals/EXECUTION-SANDBOX.md",
+    "docs/evals/README.md",
+    "runs/2026-09-17-container-sandbox",
+    "scripts/verify_execution_sandbox.py",
+    "src/veronica_core/capability_reports.py",
+    "src/veronica_core/execution_sandbox.py",
+    "tests/test_capability_reports.py",
+    "tests/test_execution_sandbox.py"
+  ],
+  "repo_commit_after": "772c5f487fcd156530d98e7c7eed6e412f4dc189",
+  "repo_commit_before": "96f01c4f1efb770af2fd74a2b55bf8fc7882b783",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-17T04:29:25Z",
+  "status": "completed",
+  "summary": "Implement resource-limited container evaluation with host-side fixture scoring and real boundary probes",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "qualification-container-sandbox",
+  "tests": [
+    "Full suite: 223 passed, 1 skipped; Docker recovery rerun: 40 passed; final targeted verification: 46 passed"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}
