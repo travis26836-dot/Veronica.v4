@@ -1,0 +1,17 @@
+{
+  "packetId": "t2-untouched-foundation-v2-readiness",
+  "packetSha256": "75267d1bcd19c4fe506895a91567346a778d2709cf39bfe7550b39791c0042d7",
+  "valid": false,
+  "ready": false,
+  "status": "hold",
+  "issues": [
+    "Packet SHA-256 does not match its content",
+    "Threshold manifest differs from the frozen protocol"
+  ],
+  "dependencies": {
+    "CP2": false,
+    "CP3": false
+  },
+  "paidComputeStarted": false,
+  "foundationQualified": false
+}

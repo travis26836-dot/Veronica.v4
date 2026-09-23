@@ -1,0 +1,14 @@
+{
+  "packetId": "t2-untouched-foundation-v2-readiness",
+  "packetSha256": "75267d1bcd19c4fe506895a91567346a778d2709cf39bfe7550b39791c0042d7",
+  "valid": true,
+  "ready": false,
+  "status": "hold",
+  "issues": [],
+  "dependencies": {
+    "CP2": false,
+    "CP3": false
+  },
+  "paidComputeStarted": false,
+  "foundationQualified": false
+}
