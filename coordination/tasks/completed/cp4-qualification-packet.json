@@ -1,0 +1,48 @@
+{
+  "agent": "codex",
+  "branch": "feature/complete-todo-milestones",
+  "ended_at": "2026-09-23T03:51:43Z",
+  "evidence": [
+    "runs/2026-09-23-t2-readiness-packet/decision.md",
+    "runs/2026-09-23-t2-readiness-packet/t2-readiness-report.json",
+    "runs/2026-09-23-t2-readiness-packet/negative-report.json"
+  ],
+  "files_changed": [
+    "docs/evals/T2-READINESS-PACKET.md",
+    "runs/2026-09-23-t2-readiness-packet",
+    "scripts/build_t2_readiness_packet.py",
+    "src/veronica_core/qualification_packet.py",
+    "tests/test_qualification_packet.py"
+  ],
+  "limitations": [
+    "CP2 and CP3 evidence are still pending; this packet does not qualify a foundation or authorize paid compute."
+  ],
+  "model": null,
+  "next_action": "Complete CP2 and CP3, then rebuild the packet with both hashed evidence records and review CP4.",
+  "paths": [
+    "docs/evals/T2-READINESS-PACKET.md",
+    "runs/2026-09-23-t2-readiness-packet",
+    "scripts/build_t2_readiness_packet.py",
+    "src/veronica_core/qualification_packet.py",
+    "tests/test_qualification_packet.py"
+  ],
+  "repo_commit_after": "28799f97271ca6f8a3fccdd3e78781713b83b0c6",
+  "repo_commit_before": "0ce396068c78bd81c23b4bcf8d989018db80db33",
+  "ruled_out": [
+    "No Pod, model inference, model selection, or foundation qualification."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T03:45:26Z",
+  "status": "completed",
+  "summary": "Prepare frozen T2 CP4 readiness packet validation, hash/report generation, tests, and evidence without paid compute",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "cp4-qualification-packet",
+  "tests": [
+    "uv run pytest tests -q -r a (151 passed, 8 skipped)",
+    "uv run python scripts/verify_t2_qualification.py protocol (protocol_ready=true)",
+    "git diff --check"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}
