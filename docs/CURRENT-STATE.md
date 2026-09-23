@@ -12,6 +12,7 @@ Update deliberately; timestamps do not determine authority.
 - Working-system plan: docs/CREATED-WORKING-SYSTEM.md.
 - Collaboration contract: docs/AGENT-COLLABORATION.md.
 - Collaboration integration: runs/2026-09-17-collaboration-integration/decision.md.
+- Selective milestone queue: docs/NEXT-MILESTONES.md.
 
 Cleanup commits 48645d1, d3f9e26, and 22b7140 were fast-forwarded onto the
 original milestone branch. They are local; no push occurred in this task.
@@ -39,5 +40,6 @@ host-side fixture scoring and verified boundaries/resource limits. It supersedes
 the temporary execution hold in runs/2026-09-17-qualification-execution-gate/decision.md;
 missing runtime or failed verification still blocks execution. Live tests use
 repository-owned programs, not model completions. Docker recovery was rechecked
-after the owner reported a crash. Next: complete schema qualification and
-actual-token long-context stress readiness; foundation qualification stays open.
+after the owner reported a crash. Next: M1 CP1 schema gate, then CP2 actual-token
+context packet, CP3 evaluator integrity, and CP4 frozen T2 readiness. Foundation
+qualification stays open.

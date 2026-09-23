@@ -3,6 +3,10 @@
 Date: 2026-09-17. Owner: Travis. Execution branch: `feature/complete-todo-milestones`.
 Status: proposed execution sequence; repository audit complete.
 
+The selective execution queue is [NEXT-MILESTONES.md](NEXT-MILESTONES.md). It
+limits the next increment to T2 readiness and places a named checkpoint between
+each later milestone.
+
 ## C - Capture
 
 Finish Veronica Core using the existing TODO gates and SOURCE-OF-TRUTH section 11.
@@ -111,6 +115,7 @@ action. A commit, push, merge, live verification and milestone are distinct.
 Preserve failed attempts and ruled-out approaches. Scheduling remains deferred
 until a useful end-to-end product work cycle succeeds and cadence is authorized.
 
-Immediate next action: accept this sequence and integrate PR #5; then complete
-the qualification-readiness packet. The final goal stays open until all core
-completion criteria have evidence and the owner's required decisions exist.
+Immediate next action: execute M1 CP1, the schema gate, then checkpoint the
+result before starting actual-token context work. The final goal stays open until
+all Core completion criteria have evidence and the owner's required decisions
+exist.

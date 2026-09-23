@@ -2,7 +2,7 @@
 
 This file is the execution source of truth. Check an item only when its stated proof exists. Each milestone ends with a named acknowledgment so progress is visible and memorable.
 
-**Current route (2026-09-17):** first text/chat is demonstrated. Integrate the collaboration workflow, finish qualification readiness, then earn T2 `Mind Proven` before persona/tools/memory/modules and release. See [Core completion plan](docs/CORE-COMPLETION-PLAN.md) for the proposed order and acceptance gates. The checklist below remains authoritative; no milestone is completed by planning.
+**Current route (2026-09-22):** first text/chat and the isolated executable evaluator are demonstrated. The next selective milestone is **M1 — T2 Qualification Readiness**: schema gate, actual-token context packet, evaluator-integrity check, and frozen qualification packet. Complete CP1–CP4 in order before any fresh paid run for **M2 — Mind Proven**. See [selective milestones](docs/NEXT-MILESTONES.md) and the [completion plan](docs/CORE-COMPLETION-PLAN.md). The checklist remains authoritative; planning does not complete a milestone.
 
 ## Status legend
 
@@ -138,6 +138,9 @@ This file is the execution source of truth. Check an item only when its stated p
 **ACK:** `Shell Proven` - 13 local tests passed; see `runs/2026-08-30-core-foundation/decision.md`.
 
 ## T2 - Test: untouched model baseline
+
+**Active milestone:** M1 — T2 Qualification Readiness. Work only through CP1–CP4
+in `docs/NEXT-MILESTONES.md`; then pause for review before M2 live qualification.
 
 - [x] Build an offline-validated evaluation runner, transcript intake/reporting, draft dataset linter, and reusable `veronica-evals` skill. Proof: `runs/2026-08-31-evaluation-foundation/decision.md`.
 - [x] Freeze a matched four-model T2 protocol and add a strict offline evidence verifier. Proof: `config/t2-qualification.json` and `runs/2026-09-01-t2-qualification/decision.md`; no live comparison is claimed.

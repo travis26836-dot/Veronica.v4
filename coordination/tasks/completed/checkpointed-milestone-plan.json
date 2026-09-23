@@ -1,0 +1,42 @@
+{
+  "agent": "codex",
+  "branch": "feature/complete-todo-milestones",
+  "ended_at": "2026-09-23T03:11:28Z",
+  "evidence": [
+    "runs/2026-09-22-checkpointed-milestone-plan/decision.md"
+  ],
+  "files_changed": [
+    "TODO.md",
+    "docs/CORE-COMPLETION-PLAN.md",
+    "docs/CURRENT-STATE.md",
+    "docs/NEXT-MILESTONES.md"
+  ],
+  "limitations": [
+    "Planning only; CP1 implementation and all live qualification remain open"
+  ],
+  "model": null,
+  "next_action": "Implement M1 CP1 schema gate and checkpoint its evidence",
+  "paths": [
+    "TODO.md",
+    "docs/CORE-COMPLETION-PLAN.md",
+    "docs/CURRENT-STATE.md",
+    "docs/NEXT-MILESTONES.md",
+    "runs/2026-09-22-checkpointed-milestone-plan"
+  ],
+  "repo_commit_after": "3f14e8a4a11d0a1c38bcc9d2473cab545c4977d4",
+  "repo_commit_before": "3f14e8a4a11d0a1c38bcc9d2473cab545c4977d4",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T03:08:53Z",
+  "status": "completed",
+  "summary": "Define selective next milestones and checkpointed TODO sequence without broadening implementation scope",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "checkpointed-milestone-plan",
+  "tests": [
+    "git diff --check passed",
+    "python scripts/collaboration.py validate passed before completion"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}
