@@ -13,6 +13,7 @@ Update deliberately; timestamps do not determine authority.
 - Collaboration contract: docs/AGENT-COLLABORATION.md.
 - Collaboration integration: runs/2026-09-17-collaboration-integration/decision.md.
 - Selective milestone queue: docs/NEXT-MILESTONES.md.
+- Detailed verified status and execution plan: docs/CORE-STATUS-AND-EXECUTION-PLAN.md.
 
 Cleanup commits 48645d1, d3f9e26, and 22b7140 were fast-forwarded onto the
 original milestone branch. They are local; no push occurred in this task.

@@ -115,7 +115,8 @@ action. A commit, push, merge, live verification and milestone are distinct.
 Preserve failed attempts and ruled-out approaches. Scheduling remains deferred
 until a useful end-to-end product work cycle succeeds and cadence is authorized.
 
-Immediate next action: execute M1 CP1, the schema gate, then checkpoint the
-result before starting actual-token context work. The final goal stays open until
-all Core completion criteria have evidence and the owner's required decisions
-exist.
+Immediate next action: execute M1 CP2, the actual-token context packet, then
+checkpoint the result before starting evaluator-integrity work. The detailed
+status and dependency plan is [CORE-STATUS-AND-EXECUTION-PLAN.md](CORE-STATUS-AND-EXECUTION-PLAN.md).
+The final goal stays open until all Core completion criteria have evidence and
+the owner's required decisions exist.
