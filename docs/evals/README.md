@@ -1,6 +1,6 @@
 # Veronica response evaluation
 
-This is an offline-ready development evaluation system, not a training job or a qualified model. The Pod remains off. It uses original questions, recorded conversations, explicit expected behavior, and full-answer review. There is no paid judge, automatic cloud start, code execution, or automatic training.
+This is an offline-ready development evaluation system, not a training job or a qualified model. It uses original questions, recorded conversations, explicit expected behavior, and full-answer review. There is no paid judge, automatic cloud start, or automatic training. Default collection does not execute code; the separate supplemental reporter supports explicit isolated code evaluation as described below. Historical Pod state is not a current inventory check.
 
 ## Start here
 
@@ -22,14 +22,13 @@ The repeatable skill is **`veronica-evals`**. Example: "Use veronica-evals to re
 
 Coverage: identity grounding, memory boundaries, action truthfulness, correction/calibration, instruction following, social understanding, reasoning consistency, coding, structured output, tool selection, context retrieval and creative writing. Tool fixtures test native selection/arguments only. Coding execution and full long-context stress/vision testing need later specialized environments; this pack does not qualify those capabilities.
 
-Execution checkpoint (2026-09-17): the supplemental capability reporter now
-refuses generated-code execution with `isolation_unverified`, including when a
-network namespace is available. The existing namespace probe does not isolate
-the host filesystem, processes or resource consumption. `--execute-code` does
-not override this gate. Repository-owned fixture programs are tested separately;
-that proves fixture scoring, not sandbox safety or model coding capability.
-Next implementation: a complete sandbox with verified boundaries and adversarial
-escape/resource tests, then restore generated-code evaluation through that backend.
+Execution checkpoint (2026-09-22): the supplemental capability reporter supports
+explicit `--execute-code` through a pinned local Docker sandbox, with host-side
+fixture scoring. Its live boundary and resource tests use repository-owned
+programs, not model responses. Missing runtime or failed isolation remains
+`isolation_unverified` without executing generated source. See
+[sandbox operation and limits](EXECUTION-SANDBOX.md). Long-context, full schema,
+holdout and live foundation qualification remain unfinished.
 
 The tiers are **12 smoke**, **36 core including smoke**, and **60 extended including both earlier tiers**. A case can have multiple turns, so case count is not request count. All questions here are public development/regression material, including known transcript incidents. None is a sealed holdout. The 60-case bank is an initial screen; it is not the larger qualification sample proposed in the strategy.
 
@@ -118,6 +117,6 @@ The first checks the illustrative records; the second **must fail** because thei
 
 The installed `hugging-face:huggingface-community-evals` skill covers Inspect/Lighteval benchmark workflows. Use it for a later authorized benchmark run. This small runner covers the current Veronica API and transcript format without adding heavyweight evaluation dependencies. Inspect offers objective, rubric and model-based scorers; graders must be validated against the intended criteria. [Inspect scoring](https://inspect.aisi.org.uk/scorers.html)
 
-For executable code tests, later use a verified isolated sandbox. Merely configuring a sandbox does not move all custom scorer code into it; code must be explicitly executed through the sandbox interface. [Inspect sandboxing](https://inspect.aisi.org.uk/sandboxing.html)
+For the project's Python fixtures, use the [verified local execution sandbox](EXECUTION-SANDBOX.md). Future benchmark frameworks must explicitly execute submitted code through their sandbox interface; a configured sandbox alone does not move custom scorer code into it. [Inspect sandboxing](https://inspect.aisi.org.uk/sandboxing.html)
 
 The installed Hugging Face LLM trainer skill can support a future approved SFT/DPO/adapter experiment. The custom skill handles evidence and decisions; it does not create training permission, continually change weights, or install missing runtime capabilities.

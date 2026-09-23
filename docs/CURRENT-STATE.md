@@ -33,7 +33,11 @@ this checkpoint does not complete a product milestone or authorize paid compute.
 The integration decision records the separate remote PR status.
 
 Qualification execution checkpoint:
-runs/2026-09-17-qualification-execution-gate/decision.md. Generated-code reporting
-now refuses execution until a complete sandbox is verified. The previous network
-namespace alone was insufficient. Next local implementation: isolated execution
-backend and boundary tests, followed by schema and long-context readiness gaps.
+runs/2026-09-17-container-sandbox/decision.md (completed 2026-09-22). A pinned
+local Docker sandbox now supports explicit supplemental code evaluation with
+host-side fixture scoring and verified boundaries/resource limits. It supersedes
+the temporary execution hold in runs/2026-09-17-qualification-execution-gate/decision.md;
+missing runtime or failed verification still blocks execution. Live tests use
+repository-owned programs, not model completions. Docker recovery was rechecked
+after the owner reported a crash. Next: complete schema qualification and
+actual-token long-context stress readiness; foundation qualification stays open.

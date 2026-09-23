@@ -1,0 +1,32 @@
+{
+  "verified": true,
+  "backend": "docker",
+  "image": "python@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+  "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+  "image_id": "sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+  "probe": {
+    "ok": true,
+    "error": null,
+    "cleanup_verified": true,
+    "container": "veronica-eval-a0f822b9253f444fade477a4b8f88bbc",
+    "observation": {
+      "network_blocked": true,
+      "interfaces": [
+        "lo"
+      ],
+      "root_readonly": true,
+      "root_write_blocked": true,
+      "uid": 65534,
+      "pid": 1,
+      "caps": 0,
+      "no_new_privs": "1",
+      "seccomp": "2",
+      "memory_max": "268435456",
+      "swap_max": "0",
+      "pids_max": "32",
+      "cpu_max": "100000 100000",
+      "docker_socket_absent": true
+    }
+  },
+  "foundation_qualified": false
+}

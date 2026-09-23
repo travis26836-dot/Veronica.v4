@@ -143,7 +143,9 @@ This file is the execution source of truth. Check an item only when its stated p
 - [x] Freeze a matched four-model T2 protocol and add a strict offline evidence verifier. Proof: `config/t2-qualification.json` and `runs/2026-09-01-t2-qualification/decision.md`; no live comparison is claimed.
 - [x] Preserve and import the retained first conversation for evaluation, with assistant findings labeled advisory and training consent absent. Proof: `runs/2026-08-31-recorded-conversation-eval/report.md`.
 - [x] Adjudicate the transcript's advisory findings and approve the next bounded evaluation selection. Proof: `runs/2026-08-31-recorded-conversation-eval/reviews-owner.jsonl` and regenerated `report.json` (human_reviewed=3, human_critical_failures=2, gate `blocked_on_observed_failures`). Next bounded live selection (CC-01, CC-02, MB-01, MB-02) approved per the run's `owner-adjudication-packet.md` section 4; not yet executed — needs a fresh authorized Pod start.
-- [ ] Extend short context probes into long-context stress tests and add complete schema/executable-code qualification environments; the current runner never executes tools or generated code.
+- [x] Implement and locally verify the isolated executable-code qualification environment with independent host scoring. Proof: `runs/2026-09-17-container-sandbox/decision.md` and September 22 real-container tests; repository-owned fixture programs prove the evaluator, not model coding capability. Explicit supplemental `--execute-code` is required; default collection never executes code or tools.
+- [ ] Extend short context probes into actual-token long-context stress tests.
+- [ ] Add complete schema qualification checks; current reports only aggregate existing JSON checks.
 - [ ] Run the frozen evaluation pack against each candidate and control.
 - [ ] Save every raw response and machine-readable score.
 - [ ] Manually review sarcasm, personality fit, prose, and conversational intuition.

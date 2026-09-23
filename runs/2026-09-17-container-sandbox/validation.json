@@ -1,0 +1,37 @@
+{
+  "validated_on": "2026-09-22",
+  "source_sha256": {
+    "src/veronica_core/execution_sandbox.py": "b041ed951e02cb1f586dd15eb43488df863c982987e690dab1e4678c157db755",
+    "src/veronica_core/capability_reports.py": "4b1efae68b080660fd1ae389a01b5568bef1cde75d2a449ab27491dab3ce56d5",
+    "tests/test_execution_sandbox.py": "131e9590cb703a77cc2d23ebe8299390a5d84c78ace3ba750cfef5a0132151e4",
+    "tests/test_capability_reports.py": "51996c8c3b269ddcb7bef76956bffa526caad80c6403e472427a119e42272d7e",
+    "config/execution-sandbox.json": "1ebf4e0f7c8c840bef9314413305b1406fce3c0e470bc87282fc27fedbb8098c",
+    "scripts/verify_execution_sandbox.py": "53cc2ad0063a28f5214acb89c717adccb659c6e8878cec62fdf95ff7236f10b9"
+  },
+  "reports": {
+    "tests-2026-09-22.xml": {
+      "tests": "224",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "1",
+      "time": "70.956"
+    },
+    "tests-after-docker-recovery-2026-09-22.xml": {
+      "tests": "40",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "27.349"
+    },
+    "tests-final-2026-09-22.xml": {
+      "tests": "46",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "27.571"
+    }
+  },
+  "remaining_sandbox_containers": [],
+  "foundation_qualified": false,
+  "paid_compute_started": false
+}

@@ -196,27 +196,14 @@ def test_executable_fixtures_match_case_notes():
     assert cd05["boolean-count"]["expect"]["raises"] == "ValueError"
 
 
-def test_trusted_fixture_programs_use_vectors_not_model_written_tests():
-    # These are repository-owned programs, not model outputs. This exercises
-    # fixture scoring independently and makes no sandbox-verification claim.
-    sources = [GOOD_CD01, GOOD_CD02, GOOD_CD03, GOOD_CD04, GOOD_CD05]
-    for fixture, source in zip(cap.load_fixtures()["cases"], sources, strict=True):
-        extracted = cap.extract_python({"content": source}, fixture["function"])
-        outcome = cap._run_isolated_sample(extracted, fixture, [], 8)
-        assert outcome["ok"] is True
-        assert len(outcome["vectors"]) == len(fixture["vectors"])
-        assert all(vector["passed"] for vector in outcome["vectors"])
-
-
 @pytest.mark.parametrize("network_verified", [False, True])
 def test_execute_code_never_runs_without_complete_isolation(monkeypatch, tmp_path, network_verified):
-    monkeypatch.setattr(cap, "isolation_prefix", lambda: (["test-namespace"], "test"))
-    monkeypatch.setattr(cap, "verify_network_isolation", lambda prefix, python=None, timeout_seconds=3: {
-        "verified": network_verified, "method": "test", "probe": "localhost-connect",
-    })
-    def reject_execution(*args, **kwargs):
-        pytest.fail("Untrusted code reached the execution harness")
-    monkeypatch.setattr(cap, "_run_isolated_sample", reject_execution)
+    class IncompleteSandbox:
+        def verify(self):
+            return {"verified": False, "network": {"verified": network_verified}}
+        def run_fixture(self, *args):
+            pytest.fail("Untrusted code reached the execution sandbox")
+    monkeypatch.setattr(cap, "DockerSandbox", IncompleteSandbox)
     marker = tmp_path / "must-not-exist.txt"
     source = f"marker = open({str(marker)!r}, 'w').write('ran')\n" + GOOD_CD01
     report = cap.executable_code_report([
@@ -230,22 +217,11 @@ def test_execute_code_never_runs_without_complete_isolation(monkeypatch, tmp_pat
     assert not marker.exists()
 
 
-def test_trusted_fixture_scoring_fails_sql_injection_and_wrong_page_count():
-    bad_page = """
-def page_count(total, size):
-    return total // size + 1
-"""
-    fixtures = {case["id"]: case for case in cap.load_fixtures()["cases"]}
-    page = cap._run_isolated_sample(bad_page, fixtures["CD-02"], [], 8)
-    sql = cap._run_isolated_sample(UNSAFE_CD03, fixtures["CD-03"], [], 8)
-    assert not all(vector["passed"] for vector in page["vectors"])
-    malicious = sql["vectors"][0]
-    assert malicious["id"] == "literal-malicious-name"
-    assert malicious["passed"] is False
-
-
 def test_report_execute_flag_writes_blocked_report_without_running_code(tmp_path, monkeypatch):
-    monkeypatch.setattr(cap, "isolation_prefix", lambda: ([], "unavailable"))
+    class MissingSandbox:
+        def verify(self):
+            return {"verified": False, "error": "unavailable"}
+    monkeypatch.setattr(cap, "DockerSandbox", MissingSandbox)
     run = tmp_path / "run"
     run.mkdir()
     ev.write_jsonl(run / "results.jsonl", [cd_record("CD-01", GOOD_CD01)])
@@ -260,6 +236,21 @@ def test_execute_code_not_collected_without_cd_samples():
     report = cap.executable_code_report([so_record("SO-01", "{}", [{"kind": "json_keys", "required": []}])])
     assert report["status"] == "not_collected"
     assert report["generated_code_executed"] is False
+
+
+def test_cleanup_failure_revokes_report_attestation(monkeypatch):
+    class CleanupFailure:
+        attestation = {"verified": True}
+        def verify(self):
+            return dict(self.attestation)
+        def run_fixture(self, *args):
+            self.attestation["verified"] = False
+            return {"ok": False, "error": "cleanup_unverified", "vectors": [],
+                    "executions": [{"cleanup_verified": False}]}
+    monkeypatch.setattr(cap, "DockerSandbox", CleanupFailure)
+    report = cap.executable_code_report([cd_record("CD-01", GOOD_CD01)])
+    assert report["status"] == "collected_fail"
+    assert report["isolation_verified"] is False
 
 
 def test_synthesize_long_context_places_needles_and_records_word_count():

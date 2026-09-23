@@ -6,18 +6,13 @@ import ast
 from collections import defaultdict
 import hashlib
 import json
-import os
 from pathlib import Path
 import re
-import shutil
-import socket
-import subprocess
-import sys
-import tempfile
 import textwrap
 from typing import Any
 
 from .evaluation import DEFAULT_SUITE, read_json, read_jsonl, write_json
+from .execution_sandbox import DockerSandbox, SandboxError
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -32,118 +27,6 @@ FILLER = (
     "Cedar archive padding note. Juniper lantern review remains unrelated. "
     "No secret project token appears in this sentence. Room eight is fictional."
 )
-
-# Isolated child: load extracted.py by path, score only parent-supplied fixture vectors.
-HARNESS_SOURCE = r'''
-import copy
-import importlib.util
-import json
-import sqlite3
-import sys
-from pathlib import Path
-
-def equal(left, right):
-    if type(left) in (int, float) and type(right) in (int, float):
-        return left == right
-    if type(left) is not type(right):
-        return False
-    if isinstance(left, dict):
-        return left.keys() == right.keys() and all(equal(left[k], right[k]) for k in left)
-    if isinstance(left, list):
-        return len(left) == len(right) and all(equal(a, b) for a, b in zip(left, right))
-    return left == right
-
-def unwrap(value):
-    if hasattr(value, "fetchall") and callable(value.fetchall):
-        return unwrap(list(value.fetchall()))
-    return value
-
-def as_rows(value):
-    value = unwrap(value)
-    if value is None:
-        return None
-    if not isinstance(value, list):
-        return value
-    rows = []
-    for row in value:
-        if isinstance(row, dict) and "id" in row and "display_name" in row:
-            rows.append([row["id"], row["display_name"]])
-        elif isinstance(row, (list, tuple)):
-            rows.append(list(row))
-        else:
-            rows.append(row)
-    return rows
-
-def matches_raise(exc, name):
-    if type(exc).__name__ == name:
-        return True
-    base = getattr(__builtins__, name, None)
-    return isinstance(base, type) and isinstance(exc, base)
-
-def open_conn(setup):
-    if not setup or setup.get("kind") != "sqlite_users":
-        return None
-    conn = sqlite3.connect(":memory:")
-    conn.execute(setup["schema"])
-    for row in setup.get("rows") or []:
-        conn.execute("INSERT INTO users (id, display_name) VALUES (?, ?)", (row["id"], row["display_name"]))
-    conn.commit()
-    return conn
-
-def load_extracted(path, name):
-    spec = importlib.util.spec_from_file_location("extracted", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    fn = getattr(module, name, None)
-    if not callable(fn):
-        raise RuntimeError("missing_function")
-    return fn
-
-def main():
-    job = json.loads(Path("job.json").read_text(encoding="utf-8"))
-    fn = load_extracted(Path("extracted.py"), job["function"])
-    results = []
-    for vector in job["vectors"]:
-        conn = open_conn(job.get("setup"))
-        args = copy.deepcopy(vector.get("args") or [])
-        if vector.get("inject_conn"):
-            call_args = [conn, *args]
-            original = None
-        else:
-            call_args = args
-            original = copy.deepcopy(args)
-        expect = vector.get("expect") or {}
-        row = {"id": vector.get("id"), "passed": False}
-        try:
-            actual = fn(*call_args)
-            if original is not None and vector.get("assert_input_unchanged") and call_args != original:
-                row["error"] = "input_mutated"
-            elif "raises" in expect:
-                row["error"] = "expected_exception"
-            elif "rows" in expect:
-                row["passed"] = equal(as_rows(actual), expect["rows"])
-                if not row["passed"]:
-                    row["error"] = "rows_mismatch"
-            elif "equals" in expect:
-                row["passed"] = equal(unwrap(actual), expect["equals"])
-                if not row["passed"]:
-                    row["error"] = "value_mismatch"
-            else:
-                row["error"] = "invalid_expect"
-        except Exception as exc:
-            if "raises" in expect and matches_raise(exc, expect["raises"]):
-                row["passed"] = True
-            else:
-                row["error"] = type(exc).__name__
-        if conn is not None:
-            conn.close()
-        results.append(row)
-    print(json.dumps({"results": results}, ensure_ascii=False))
-
-if __name__ == "__main__":
-    main()
-'''
-
 
 def case_ids_with_prefix(prefix: str, suite: dict | None = None) -> list[str]:
     suite = suite if suite is not None else read_json(DEFAULT_SUITE)
@@ -427,133 +310,6 @@ def extract_python(message: dict | None, function_name: str) -> str | None:
     return isolated
 
 
-def _minimal_env(workdir: Path) -> dict[str, str]:
-    env = {
-        "PATH": "/usr/bin:/bin",
-        "HOME": str(workdir),
-        "TMPDIR": str(workdir),
-        "TMP": str(workdir),
-        "TEMP": str(workdir),
-        "LANG": "C.UTF-8",
-        "LC_ALL": "C.UTF-8",
-        "PYTHONIOENCODING": "utf-8",
-        "PYTHONDONTWRITEBYTECODE": "1",
-    }
-    if os.name == "nt":
-        for key in ("SYSTEMROOT", "WINDIR"):
-            if os.environ.get(key):
-                env[key] = os.environ[key]
-        env["PATH"] = os.environ.get("PATH", env["PATH"])
-    return env
-
-
-def isolation_prefix(python: str | None = None) -> tuple[list[str], str]:
-    python = python or sys.executable
-    unshare = shutil.which("unshare")
-    if not unshare:
-        return [], "unshare_unavailable"
-    candidates = [
-        [unshare, "--user", "--map-root-user", "--net"],
-        [unshare, "--net"],
-    ]
-    for prefix in candidates:
-        try:
-            with tempfile.TemporaryDirectory(prefix="veronica-unshare-") as work:
-                workdir = Path(work)
-                result = subprocess.run(
-                    [*prefix, python, "-c", "pass"],
-                    cwd=workdir,
-                    env=_minimal_env(workdir),
-                    capture_output=True,
-                    timeout=3,
-                )
-        except (OSError, subprocess.TimeoutExpired):
-            continue
-        if result.returncode == 0:
-            return prefix, " ".join(prefix)
-    return [], "unshare_failed"
-
-
-def verify_network_isolation(prefix: list[str], python: str | None = None, timeout_seconds: float = 3) -> dict:
-    python = python or sys.executable
-    if not prefix:
-        return {"verified": False, "method": None, "probe": "localhost-connect", "reason": "no_isolation_prefix"}
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    try:
-        server.bind(("127.0.0.1", 0))
-        server.listen(1)
-        port = server.getsockname()[1]
-        probe = (
-            "import socket\n"
-            "s=socket.socket(); s.settimeout(0.5)\n"
-            "try:\n"
-            f"    s.connect(('127.0.0.1', {port}))\n"
-            "    print('CONNECTED')\n"
-            "except OSError:\n"
-            "    print('BLOCKED')\n"
-        )
-        with tempfile.TemporaryDirectory(prefix="veronica-iso-") as work:
-            workdir = Path(work)
-            result = subprocess.run(
-                [*prefix, python, "-c", probe],
-                cwd=workdir,
-                env=_minimal_env(workdir),
-                capture_output=True,
-                text=True,
-                timeout=timeout_seconds,
-            )
-        blocked = "BLOCKED" in result.stdout and "CONNECTED" not in result.stdout
-        return {
-            "verified": bool(blocked and result.returncode == 0),
-            "method": " ".join(prefix),
-            "probe": "localhost-connect",
-            "reason": None if blocked else "child_reached_parent_listener",
-        }
-    except (OSError, subprocess.TimeoutExpired):
-        return {"verified": False, "method": " ".join(prefix), "probe": "localhost-connect", "reason": "probe_failed"}
-    finally:
-        server.close()
-
-
-def _run_isolated_sample(source: str, fixture: dict, prefix: list[str], timeout_seconds: float) -> dict:
-    """Low-level harness; callers must gate untrusted source before reaching it.
-
-    An empty prefix is used only by tests of repository-owned fixture programs.
-    It is never a fallback for executable_code_report.
-    """
-    python = sys.executable
-    with tempfile.TemporaryDirectory(prefix="veronica-cd-") as work:
-        workdir = Path(work)
-        (workdir / "extracted.py").write_text(source + "\n", encoding="utf-8")
-        (workdir / "harness.py").write_text(textwrap.dedent(HARNESS_SOURCE).lstrip() + "\n", encoding="utf-8")
-        write_json(workdir / "job.json", {
-            "function": fixture["function"],
-            "setup": fixture.get("setup"),
-            "vectors": fixture["vectors"],
-        })
-        command = [*prefix, python, str(workdir / "harness.py")] if prefix else [python, str(workdir / "harness.py")]
-        try:
-            result = subprocess.run(
-                command,
-                cwd=workdir,
-                env=_minimal_env(workdir),
-                capture_output=True,
-                text=True,
-                timeout=timeout_seconds,
-            )
-        except subprocess.TimeoutExpired:
-            return {"ok": False, "error": "timeout", "vectors": []}
-        if result.returncode != 0:
-            return {"ok": False, "error": "subprocess_error", "detail": (result.stderr or result.stdout)[-500:], "vectors": []}
-        try:
-            payload = json.loads(result.stdout.splitlines()[-1])
-            vectors = payload["results"]
-        except (json.JSONDecodeError, KeyError, IndexError):
-            return {"ok": False, "error": "invalid_harness_output", "vectors": []}
-        return {"ok": True, "error": None, "vectors": vectors}
-
-
 def executable_code_report(
     records: list[dict],
     fixtures_path: Path = DEFAULT_FIXTURES,
@@ -569,19 +325,12 @@ def executable_code_report(
         report["execute_code"] = True
         report["limits"] = "No CD-* samples were present. Generated code was not executed."
         return report
-    prefix, _method = isolation_prefix()
-    network = verify_network_isolation(prefix)
-    # A network namespace alone leaves the host filesystem and process/resource
-    # boundaries exposed. Do not run generated code on that partial isolation.
-    isolation = {
-        "verified": False,
-        "network": network,
-        "filesystem_verified": False,
-        "process_verified": False,
-        "resource_limits_verified": False,
-        "reason": "complete_execution_sandbox_unavailable",
-    }
-    if not prefix or isolation["verified"] is not True:
+    try:
+        sandbox = DockerSandbox()
+        isolation = sandbox.verify()
+    except (OSError, ValueError, SandboxError) as exc:
+        isolation = {"verified": False, "error": str(exc)}
+    if isolation.get("verified") is not True:
         report = skipped_executable_report(records, fixtures)
         report.update(
             status="isolation_unverified",
@@ -591,8 +340,8 @@ def executable_code_report(
             missing_case_ids=[case_id for case_id in expected if not any(
                 record.get("case_id") == case_id for record in observed
             )],
-            limits="Generated code was not executed. Network isolation alone is insufficient; "
-                   "verified filesystem, process and resource boundaries are required.",
+            limits="Generated code was not executed. The pinned local container and "
+                   "verified filesystem, process, network and resource boundaries are required.",
         )
         return report
     cases: dict[str, Any] = {}
@@ -616,8 +365,8 @@ def executable_code_report(
                 case_fail = True
                 sample_rows.append(row)
                 continue
-            executed = True
-            outcome = _run_isolated_sample(source, fixture, prefix, timeout_seconds)
+            outcome = sandbox.run_fixture(source, fixture, timeout_seconds)
+            executed = executed or bool(outcome.get("executions"))
             vectors = outcome.get("vectors") or []
             passed_n = sum(bool(item.get("passed")) for item in vectors)
             failed_n = len(fixture["vectors"]) - passed_n
@@ -628,6 +377,8 @@ def executable_code_report(
                 vectors_passed=passed_n,
                 vectors_failed=failed_n,
                 vectors=vectors,
+                executions=outcome.get("executions", []),
+                source_sha256=outcome.get("source_sha256"),
             )
             if not ok:
                 case_fail = True
@@ -643,6 +394,7 @@ def executable_code_report(
         }
         if case_fail:
             any_fail = True
+    isolation = dict(sandbox.attestation or isolation)
     missing_ids = [case_id for case_id in expected if cases[case_id]["missing"]]
     if any_fail:
         status = "collected_fail"
@@ -665,7 +417,8 @@ def executable_code_report(
         "missing_case_ids": missing_ids,
         "cases": cases,
         "foundation_qualified": False,
-        "limits": "Independent fixture vectors only. Model-written tests are stripped and never scored. collected_pass requires verified network isolation.",
+        "limits": "Host-scored independent fixture vectors. No expected answers are sent to the container. "
+                  "Collected pass requires verified container boundaries; this is not proof against kernel exploits.",
     }
 
 
