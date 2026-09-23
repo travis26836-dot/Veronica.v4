@@ -1,0 +1,55 @@
+{
+  "agent": "codex",
+  "branch": "feature/complete-todo-milestones",
+  "ended_at": "2026-09-23T03:53:55Z",
+  "evidence": [
+    "runs/2026-09-22-cp3-evaluator-integrity/decision.md",
+    "runs/2026-09-22-cp3-evaluator-integrity/docker-attestation.json",
+    "runs/2026-09-22-cp3-evaluator-integrity/tests-offline.txt",
+    "runs/2026-09-22-cp3-evaluator-integrity/tests-docker.txt",
+    "runs/2026-09-22-cp3-evaluator-integrity/container-inventory.txt"
+  ],
+  "files_changed": [
+    "docs/evals/EXECUTION-SANDBOX.md",
+    "docs/evals/README.md",
+    "runs/2026-09-22-cp3-evaluator-integrity",
+    "src/veronica_core/evaluation.py",
+    "src/veronica_core/execution_sandbox.py",
+    "tests/test_evaluator_integrity.py"
+  ],
+  "limitations": [
+    "Docker and host kernel remain trusted; public fixtures are not a sealed holdout; runtime metadata still requires serving-run matching during CP4/M2; no model capability or foundation qualification claimed"
+  ],
+  "model": null,
+  "next_action": "Combine CP2, CP3, and CP4 evidence in the frozen readiness review before any fresh paid-run authorization",
+  "paths": [
+    "docs/evals/EXECUTION-SANDBOX.md",
+    "docs/evals/README.md",
+    "runs/2026-09-22-cp3-evaluator-integrity",
+    "src/veronica_core/evaluation.py",
+    "src/veronica_core/execution_sandbox.py",
+    "tests/test_evaluation.py",
+    "tests/test_evaluator_integrity.py",
+    "tests/test_execution_sandbox.py"
+  ],
+  "repo_commit_after": "82e4be7d4e8c25cad14923bb4959e9af19b52df8",
+  "repo_commit_before": "0ce396068c78bd81c23b4bcf8d989018db80db33",
+  "ruled_out": [
+    "No Pod, model inference, model selection, external push, or release action"
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T03:45:09Z",
+  "status": "completed",
+  "summary": "Implement and verify M1 CP3 evaluator integrity: host-side scoring, raw retention, redaction, provenance, fail-closed cleanup, and no leftover containers",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "evaluator-integrity-cp3",
+  "tests": [
+    "uv run pytest tests/test_evaluator_integrity.py tests/test_evaluation.py tests/test_execution_sandbox.py -ra",
+    "VERONICA_TEST_DOCKER=1 uv run pytest tests/test_execution_sandbox.py tests/test_capability_reports.py tests/test_evaluator_integrity.py -ra",
+    "uv run python scripts/verify_execution_sandbox.py",
+    "git diff --check"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}
