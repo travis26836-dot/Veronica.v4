@@ -151,7 +151,10 @@ def _docker(*args: str, timeout: float = 15) -> subprocess.CompletedProcess:
 
 class DockerSandbox:
     def __init__(self, config_path: Path = DEFAULT_CONFIG):
-        self.config = strict_json(Path(config_path).read_text(encoding="utf-8"))
+        self.config_path = Path(config_path).resolve()
+        self.config_bytes = self.config_path.read_bytes()
+        self.config_sha256 = hashlib.sha256(self.config_bytes).hexdigest()
+        self.config = strict_json(self.config_bytes.decode("utf-8"))
         self.image = self.config.get("image", "")
         if not re.fullmatch(r"python@sha256:[0-9a-f]{64}", self.image):
             raise SandboxError("Pinned official Python image digest required")
@@ -241,7 +244,16 @@ class DockerSandbox:
         if len(raw) > INPUT_LIMIT:
             raise ValueError("sandbox_input_too_large")
         name = "veronica-eval-" + uuid.uuid4().hex
-        outcome = {"ok": False, "error": "not_started", "cleanup_verified": False, "container": name}
+        outcome = {
+            "ok": False,
+            "error": "not_started",
+            "cleanup_verified": False,
+            "container": name,
+            # Retain the untrusted worker result for post-hoc audit. The host
+            # still parses and scores it independently; this is not a pass flag.
+            "raw_output": None,
+            "raw_output_sha256": None,
+        }
         proc = None
         try:
             created = self._call(*self._create_args(name, program))
@@ -272,6 +284,9 @@ class DockerSandbox:
                     else:
                         with (path / "output").open("rb") as output_file:
                             data = output_file.read(OUTPUT_LIMIT + 1)
+                        if len(data) <= OUTPUT_LIMIT:
+                            outcome["raw_output_sha256"] = hashlib.sha256(data).hexdigest()
+                            outcome["raw_output"] = data.decode("utf-8", errors="replace")
                         if len(data) > OUTPUT_LIMIT or (path / "error").stat().st_size > OUTPUT_LIMIT:
                             outcome["error"] = "output_limit"
                         elif proc.returncode:
@@ -304,7 +319,12 @@ class DockerSandbox:
         return outcome
 
     def verify(self) -> dict:
-        self.attestation = {"verified": False, "backend": "docker", "image": self.image}
+        self.attestation = {
+            "verified": False,
+            "backend": "docker",
+            "image": self.image,
+            "config_sha256": self.config_sha256,
+        }
         try:
             self._resolve_endpoint()
             self.attestation["endpoint"] = self.endpoint
@@ -336,7 +356,10 @@ class DockerSandbox:
             payload = {"source": source, "function": fixture["function"], "args": vector["args"],
                        "setup": fixture.get("setup"), "inject_conn": bool(vector.get("inject_conn"))}
             outcome = self._execute(WORKER, payload, timeout)
-            executions.append({k: outcome[k] for k in ("ok", "error", "cleanup_verified", "container")})
+            executions.append({k: outcome.get(k) for k in (
+                "ok", "error", "cleanup_verified", "container",
+                "raw_output", "raw_output_sha256",
+            )})
             row = score_observation(outcome["observation"], vector) if outcome["ok"] else {
                 "id": vector["id"], "passed": False, "error": outcome["error"]}
             rows.append(row)

@@ -50,8 +50,15 @@ worker. Expected answers stay on the host. The host parses one strict JSON
 observation and compares values, exception names and declared input mutation
 against independent fixtures. Extra pass/fail fields, duplicate JSON keys,
 malformed output and model-written tests cannot count as grading evidence.
-Reports retain source hashes, vector results, container identities and cleanup
-status. Raw worker observations are untrusted output.
+Reports retain source hashes, vector results, container identities, cleanup
+status, and bounded raw worker output with its SHA-256. Raw worker observations
+are untrusted output and never determine the host-side score. The Docker
+attestation also records the pinned sandbox configuration hash and image
+identity so a later report can be tied to the exact local boundary that ran it.
+
+Live evaluation records retain the response body hash and a bounded redacted
+body for audit. API-key values and credential-shaped fields are omitted from
+saved evidence; raw prompt/response artifacts remain local review material.
 
 Docker and its host kernel are trusted. These controls are not a guarantee
 against kernel vulnerabilities. The Python worker shares an interpreter with

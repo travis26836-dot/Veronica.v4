@@ -1,0 +1,3 @@
+Command: docker ps -a --filter label=veronica.execution-sandbox=1 --format "{{.ID}} {{.Names}}"
+Result: no output
+Interpretation: no labeled evaluator containers remained after verification.

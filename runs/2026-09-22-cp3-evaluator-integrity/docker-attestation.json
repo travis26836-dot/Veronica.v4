@@ -1,0 +1,25 @@
+{
+  "verified": true,
+  "backend": "docker",
+  "image": "python@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+  "image_id": "sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+  "config_sha256": "1ebf4e0f7c8c840bef9314413305b1406fce3c0e470bc87282fc27fedbb8098c",
+  "endpoint_kind": "local_docker_desktop_linux_engine",
+  "probe_checks": {
+    "network_blocked": true,
+    "interfaces": ["lo"],
+    "root_readonly": true,
+    "root_write_blocked": true,
+    "uid": 65534,
+    "pid": 1,
+    "capabilities": 0,
+    "no_new_privileges": "1",
+    "seccomp": "2",
+    "memory_max": "268435456",
+    "swap_max": "0",
+    "pids_max": "32",
+    "cpu_max": "100000 100000",
+    "docker_socket_absent": true
+  },
+  "foundation_qualified": false
+}

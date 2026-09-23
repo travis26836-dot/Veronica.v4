@@ -22,6 +22,12 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SUITE = ROOT / "data/evals/veronica-core-v1.json"
 TIERS = {"smoke": 0, "core": 1, "extended": 2}
 CHECKS = {"exact", "contains", "excludes", "max_words", "json_equals", "json_keys", "no_tool_calls", "tool_call"}
+RAW_RESPONSE_LIMIT = 4 * 1024 * 1024
+SECRET_FIELD_RE = re.compile(r"(?:api[_-]?key|token|secret|password|passwd|authorization|bearer|private[_-]?key|credential)", re.I)
+SECRET_VALUE_RE = re.compile(
+    r"(?i)([\"'](?:api[_-]?key|token|secret|password|passwd|authorization|bearer|private[_-]?key|credential)[\"']\s*:\s*[\"'])(.*?)([\"'])"
+)
+REDACTED = "[REDACTED]"
 
 
 def utcnow() -> str:
@@ -46,6 +52,49 @@ def write_jsonl(path: Path, values: list[dict]) -> None:
 
 def fingerprint(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _redact_evidence(value: Any, secrets: tuple[str, ...] = ()) -> Any:
+    """Remove known credentials while preserving raw-result structure for review."""
+    if isinstance(value, dict):
+        cleaned = {}
+        for key, item in value.items():
+            if SECRET_FIELD_RE.search(str(key)):
+                cleaned[key] = REDACTED
+            else:
+                cleaned[key] = _redact_evidence(item, secrets)
+        return cleaned
+    if isinstance(value, list):
+        return [_redact_evidence(item, secrets) for item in value]
+    if isinstance(value, str):
+        cleaned = SECRET_VALUE_RE.sub(r"\1" + REDACTED + r"\3", value)
+        cleaned = re.sub(r"(?i)\bBearer\s+[^\s\"']+", "Bearer " + REDACTED, cleaned)
+        for secret in secrets:
+            if secret:
+                cleaned = cleaned.replace(secret, REDACTED)
+        return cleaned
+    return value
+
+
+def _capture_raw_response(response: httpx.Response, api_key: str = "") -> dict:
+    """Retain a bounded, redacted response body plus its exact byte hash."""
+    raw = response.content
+    body = raw[:RAW_RESPONSE_LIMIT].decode("utf-8", errors="replace")
+    return {
+        "raw_response": _redact_evidence(body, (api_key,)),
+        "raw_response_sha256": hashlib.sha256(raw).hexdigest(),
+        "raw_response_truncated": len(raw) > RAW_RESPONSE_LIMIT,
+    }
+
+
+def _runtime_identity(runtime: dict) -> dict[str, str]:
+    model = runtime.get("model")
+    if not isinstance(model, dict):
+        raise ValueError("Runtime model identity must be an object")
+    identity = {key: model.get(key) for key in ("repository", "revision")}
+    if any(not isinstance(value, str) or not value.strip() for value in identity.values()):
+        raise ValueError("Runtime model identity requires repository and revision")
+    return identity
 
 
 def strict_json(text: str) -> Any:
@@ -321,9 +370,7 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
     if not isinstance(runtime, dict):
         raise ValueError("Runtime record must be a JSON object")
     # Copy only known, non-secret identity fields, not arbitrary environment data.
-    if not isinstance(runtime.get("model", {}), dict):
-        raise ValueError("Runtime model identity must be an object")
-    identity = {key: runtime.get("model", {}).get(key) for key in ("repository", "revision")}
+    identity = _runtime_identity(runtime)
     key = os.environ.get(args.api_key_env, "") if args.api_key_env else ""
     if args.api_key_env and not key:
         raise ValueError("Requested API key environment variable is not set")
@@ -331,7 +378,8 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
     manifest = {"schema_version": 1, "suite_id": suite["suite_id"], "suite_sha256": fingerprint(args.suite),
                 "source_kind": "live_endpoint", "started_at": utcnow(), "surface": args.surface,
                 "base_url": endpoint, "model_alias": args.model, "mode": args.mode,
-                "identity": identity, "identity_status": "supplied metadata; confirm against serving-run provenance",
+                "identity": identity,
+                "identity_status": "supplied metadata; confirm against serving-run provenance",
                 "runtime_record_sha256": fingerprint(args.runtime_record), "plan": execution_plan,
                 "max_seconds": args.max_seconds, "temperature": args.temperature, "top_p": args.top_p,
                 "thinking": args.thinking, "seed": args.seed,
@@ -378,6 +426,7 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
                         call_start = time.monotonic()
                         try:
                             response = client.post(endpoint + "/chat/completions", json=payload, timeout=min(args.timeout_seconds, remaining))
+                            record.update(_capture_raw_response(response, key))
                             response.raise_for_status()
                             raw = response.json()
                             message = raw["choices"][0]["message"]
@@ -385,7 +434,7 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
                                 raise ValueError("Malformed assistant response")
                             if not message.get("content") and not message.get("tool_calls"):
                                 raise ValueError("Empty assistant response")
-                            record.update(status="response", response=raw, message=message,
+                            record.update(status="response", response=_redact_evidence(raw, (key,)), message=_redact_evidence(message, (key,)),
                                           automatic_checks=automatic_checks(message, turn["checks"]))
                             consecutive_errors = 0
                             history.append({k: message[k] for k in ("role", "content", "tool_calls") if k in message})

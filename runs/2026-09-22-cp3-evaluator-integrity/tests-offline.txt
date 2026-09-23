@@ -1,0 +1,3 @@
+Command: uv run pytest tests/test_evaluator_integrity.py tests/test_evaluation.py tests/test_execution_sandbox.py -ra
+Result: 41 passed, 7 skipped in 0.21s
+Skips: opt-in real-container tests, because VERONICA_TEST_DOCKER was not set.
