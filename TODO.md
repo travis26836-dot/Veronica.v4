@@ -148,7 +148,7 @@ in `docs/NEXT-MILESTONES.md`; then pause for review before M2 live qualification
 - [x] Adjudicate the transcript's advisory findings and approve the next bounded evaluation selection. Proof: `runs/2026-08-31-recorded-conversation-eval/reviews-owner.jsonl` and regenerated `report.json` (human_reviewed=3, human_critical_failures=2, gate `blocked_on_observed_failures`). Next bounded live selection (CC-01, CC-02, MB-01, MB-02) approved per the run's `owner-adjudication-packet.md` section 4; not yet executed — needs a fresh authorized Pod start.
 - [x] Implement and locally verify the isolated executable-code qualification environment with independent host scoring. Proof: `runs/2026-09-17-container-sandbox/decision.md` and September 22 real-container tests; repository-owned fixture programs prove the evaluator, not model coding capability. Explicit supplemental `--execute-code` is required; default collection never executes code or tools.
 - [ ] Extend short context probes into actual-token long-context stress tests.
-- [ ] Add complete schema qualification checks; current reports only aggregate existing JSON checks.
+- [x] Add complete schema qualification checks. Proof: `src/veronica_core/schema_gate.py`, `tests/test_schema_gate.py`, `data/evals/schema-gate-negative.json`, and `runs/2026-09-22-cp1-schema-gate/decision.md`; independent strict checks reject malformed/duplicate/nonfinite/wrong-root JSON, missing or unexpected keys, fabricated prose tool results, and multiple native calls. Semantic human review remains required.
 - [ ] Run the frozen evaluation pack against each candidate and control.
 - [ ] Save every raw response and machine-readable score.
 - [ ] Manually review sarcasm, personality fit, prose, and conversational intuition.

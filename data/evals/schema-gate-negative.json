@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "id": "schema-gate-negative-v1",
+  "cases": [
+    {"id": "duplicate-json-key", "kind": "json_equals", "content": "{\"name\":\"Veronica\",\"name\":\"forged\"}", "expected_error": "duplicate_json_key"},
+    {"id": "wrong-json-type", "kind": "json_equals", "content": "[1,2,3]", "expected_error": "json_root_must_be_object"},
+    {"id": "malformed-json", "kind": "json_equals", "content": "{", "expected_error": "Expecting property name"},
+    {"id": "nonfinite-json", "kind": "json_equals", "content": "{\"count\":1e999}", "expected_error": "nonfinite_json_number"},
+    {"id": "fabricated-tool-result", "kind": "tool_call", "message": {"role": "assistant", "content": "The tool returned 42."}, "expected_error": "exactly_one_native_function_call_required"},
+    {"id": "extra-tool-call", "kind": "tool_call", "message": {"role": "assistant", "content": null, "tool_calls": [{"type": "function", "function": {"name": "multiply", "arguments": "{\"a\":17,\"b\":23}"}}, {"type": "function", "function": {"name": "multiply", "arguments": "{\"a\":17,\"b\":23}"}}]}, "expected_error": "exactly_one_native_function_call_required"}
+  ]
+}

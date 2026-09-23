@@ -110,6 +110,7 @@ def test_schema_report_not_collected_without_so_samples():
     report = cap.schema_report([cd_record("CD-01", GOOD_CD01)])
     assert report["status"] == "not_collected"
     assert report["tools_executed"] is False
+    assert report["independent_schema_gate"]["status"] == "not_collected"
 
 
 def test_schema_report_rolls_up_json_equals_and_json_keys():
@@ -136,6 +137,7 @@ def test_schema_report_fails_on_bad_json():
     report = cap.schema_report([record])
     assert report["status"] == "collected_fail"
     assert report["failed_checks"] == 1
+    assert report["independent_schema_gate"]["status"] == "collected_fail"
 
 
 def test_native_tool_report_never_marks_tools_executed():

@@ -30,6 +30,12 @@ programs, not model responses. Missing runtime or failed isolation remains
 [sandbox operation and limits](EXECUTION-SANDBOX.md). Long-context, full schema,
 holdout and live foundation qualification remain unfinished.
 
+CP1 Schema Proven (2026-09-22): `schema_gate.py` independently validates the
+five public `SO-*` cases and native-call shape without trusting automatic-check
+fields. Negative fixtures cover malformed, duplicate-key, nonfinite, wrong-root,
+missing/unexpected-key, fabricated-prose, and multiple-call failures. This is
+local evidence only; a Pod is required later for real model responses.
+
 The tiers are **12 smoke**, **36 core including smoke**, and **60 extended including both earlier tiers**. A case can have multiple turns, so case count is not request count. All questions here are public development/regression material, including known transcript incidents. None is a sealed holdout. The 60-case bank is an initial screen; it is not the larger qualification sample proposed in the strategy.
 
 For the lowest-cost next diagnostic, select **CC-01, CC-02, MB-01 and MB-02**: correcting invented history, resisting an incorrect correction, admitting missing memory, and recalling supplied facts. These are four cases, six requests and three independent families. At 192 maximum completion tokens per request, the upper completion budget is **1,152 tokens**, plus input tokens; truncation must remain visible. This is a focused screen, not full qualification:

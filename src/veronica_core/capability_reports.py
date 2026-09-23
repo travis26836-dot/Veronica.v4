@@ -13,6 +13,7 @@ from typing import Any
 
 from .evaluation import DEFAULT_SUITE, read_json, read_jsonl, write_json
 from .execution_sandbox import DockerSandbox, SandboxError
+from .schema_gate import schema_report as independent_schema_report
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -135,7 +136,7 @@ def _roll_up_checks(records: list[dict], expected_ids: list[str], kinds: set[str
 
 
 def schema_report(records: list[dict], suite: dict | None = None) -> dict:
-    return _roll_up_checks(
+    report = _roll_up_checks(
         records,
         case_ids_with_prefix("SO-", suite),
         JSON_CHECK_KINDS,
@@ -146,6 +147,13 @@ def schema_report(records: list[dict], suite: dict | None = None) -> dict:
             "limits": "Roll-up of existing automatic JSON checks only. Semantic review still required.",
         },
     )
+    # Preserve the historical automatic-check rollup for comparison, but expose
+    # the independent host-side gate as the authoritative structural result.
+    report["independent_schema_gate"] = independent_schema_report(
+        records, suite if suite is not None else read_json(DEFAULT_SUITE)
+    )
+    report["limits"] = "Independent strict schema gate is authoritative; automatic checks are advisory and semantic review remains required."
+    return report
 
 
 def native_tool_report(records: list[dict], suite: dict | None = None) -> dict:

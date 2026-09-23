@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-22-cp1-schema-gate",
+  "recordedAt": "2026-09-23T03:27:53Z",
+  "owner": "Travis",
+  "stage": "T",
+  "status": "in_progress",
+  "scope": "CP1 strict schema and native-call gate",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "modelSelectionStatus": "benchmark_required",
+  "modelRevision": null,
+  "runtimeVersion": null,
+  "gpu": null,
+  "configurationFingerprint": "aa5a7e9a20513d4dcc229222780ef971be2d0fa064b2570f862cfb91e259f99a",
+  "lastDurableHandoff": "Run folder initialized; evidence pending.",
+  "nextAction": "Record decision.md and required evidence. Do not overwrite this folder."
+}

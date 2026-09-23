@@ -40,6 +40,7 @@ host-side fixture scoring and verified boundaries/resource limits. It supersedes
 the temporary execution hold in runs/2026-09-17-qualification-execution-gate/decision.md;
 missing runtime or failed verification still blocks execution. Live tests use
 repository-owned programs, not model completions. Docker recovery was rechecked
-after the owner reported a crash. Next: M1 CP1 schema gate, then CP2 actual-token
-context packet, CP3 evaluator integrity, and CP4 frozen T2 readiness. Foundation
-qualification stays open.
+after the owner reported a crash. M1 CP1 Schema Proven is now complete with
+local evidence in runs/2026-09-22-cp1-schema-gate/decision.md. Next: M1 CP2
+actual-token context packet, then CP3 evaluator integrity and CP4 frozen T2
+readiness. Foundation qualification stays open; no Pod is required for M1.
