@@ -1,0 +1,35 @@
+{
+  "checkpoint": "actual-token-context-packet",
+  "status": "complete",
+  "decision": {
+    "path": "runs/2026-09-22-cp2-context-packet/decision.md",
+    "sha256": "2e451730a9fc127da65600c9cd4861d00a9b40781792748ef0ed4fbca6a3efc2"
+  },
+  "artifacts": [
+    {
+      "path": "config/t2-context.json",
+      "sha256": "ec474d3474e7e0f33f1da6b3ced6e343b09bd935e09dd512a65c159978c21f44",
+      "kind": "config"
+    },
+    {
+      "path": "runs/2026-09-22-cp2-context-packet/metadata.json",
+      "sha256": "1d5238410b9c67b5c89598a0bcd73f69bc2a38053e4033505df84517905cfb6d",
+      "kind": "metadata"
+    },
+    {
+      "path": "runs/2026-09-22-cp2-context-packet/probes.jsonl",
+      "sha256": "51ebcac5c6d003a864fffda90a46fcffb46b5fdf6ac3341537ae5659733f6208",
+      "kind": "probes"
+    },
+    {
+      "path": "runs/2026-09-22-cp2-context-packet/report.json",
+      "sha256": "13df88f9eff4d04e64b2189886fab2744589c4b46fd49b37492a94d0920a2382",
+      "kind": "report"
+    },
+    {
+      "path": "runs/2026-09-22-cp2-context-packet/validation.json",
+      "sha256": "a25aaee95050e28b06de3bc4b8b285dd45fe2365dfa7da4ec49163f49d333d37",
+      "kind": "validation"
+    }
+  ]
+}

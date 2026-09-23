@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-23-cp4-dependency-repair",
+  "recordedAt": "2026-09-23T08:44:08Z",
+  "owner": "Travis",
+  "stage": "T2",
+  "status": "completed",
+  "scope": "CP4 transitive dependency validation repair",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "modelSelectionStatus": "benchmark_required",
+  "modelRevision": null,
+  "runtimeVersion": null,
+  "gpu": null,
+  "configurationFingerprint": "3f666c3b22dbc0397f9518cefe98c8ac0316fc202b5a947b20d1f36d1d829620",
+  "lastDurableHandoff": "CP4 dependency repair implemented and validated with transitive evidence; no model inference performed.",
+  "nextAction": "Parent review: preserve historical hold, resolve matched live runtime and chat-template provenance before T2 qualification."
+}

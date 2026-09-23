@@ -14,9 +14,7 @@ def _dependency(path_value: str | None, root: Path) -> dict | None:
     path = (root / path_value).resolve()
     if not path.is_relative_to(root.resolve()):
         raise ValueError(f"Evidence path escapes project root: {path_value}")
-    payload = json.loads(path.read_text(encoding="utf-8-sig"))
-    status = payload.get("status", payload.get("checkpointStatus", "pending"))
-    return {"status": status, "path": path_value}
+    return {"path": path_value}
 
 
 def main() -> int:

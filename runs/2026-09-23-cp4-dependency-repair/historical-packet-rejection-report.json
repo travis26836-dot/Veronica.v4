@@ -1,0 +1,17 @@
+{
+  "packetId": "t2-untouched-foundation-v2-readiness",
+  "packetSha256": "fcf54a2c0dcd7ed4b6fcc41ac75364250ea3f578b38a4fafb00336a0c780ecba",
+  "valid": false,
+  "ready": false,
+  "status": "hold",
+  "issues": [
+    "Dependency CP2 complete-only wrapper rejected; decision and artifact refs are required",
+    "Dependency CP3 complete-only wrapper rejected; decision and artifact refs are required"
+  ],
+  "dependencies": {
+    "CP2": false,
+    "CP3": false
+  },
+  "paidComputeStarted": false,
+  "foundationQualified": false
+}

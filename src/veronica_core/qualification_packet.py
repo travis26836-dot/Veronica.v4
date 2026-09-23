@@ -11,6 +11,7 @@ from copy import deepcopy
 import hashlib
 import json
 from pathlib import Path
+import re
 from typing import Any, Mapping
 
 from . import qualification as q
@@ -19,6 +20,10 @@ ROOT = q.ROOT
 PACKET_SCHEMA_VERSION = 1
 PACKET_ID = "t2-untouched-foundation-v2-readiness"
 DEPENDENCY_STATUSES = {"pending", "complete", "blocked"}
+DEPENDENCY_ARTIFACTS = {
+    "CP2": {"config", "metadata", "probes", "report", "validation"},
+    "CP3": {"attestation", "tests-offline", "tests-docker", "inventory"},
+}
 REQUIRED_TOP_LEVEL = {
     "schemaVersion",
     "packetId",
@@ -110,28 +115,53 @@ def _sampling_snapshot(protocol: dict[str, Any], registry: dict[str, Any]) -> li
 
 
 def _dependency(name: str, checkpoint: str, value: Mapping[str, Any] | None, root: Path) -> dict[str, Any]:
+    """Normalize a wrapper while preserving its transitive evidence refs.
+
+    A status-only wrapper is retained as an invalid complete dependency so the
+    packet validator can explain why it is not ready.  It is never promoted by
+    this builder merely because its status says ``complete``.
+    """
     value = dict(value or {})
-    status = value.get("status", "pending")
+    wrapper_value = value.get("path")
+    if not wrapper_value:
+        return {
+            "checkpoint": checkpoint,
+            "status": "pending",
+            "evidence": None,
+            "requiredForReady": True,
+        }
+    wrapper_path = _project_path(str(wrapper_value), root)
+    wrapper_ref = {"path": _relative(wrapper_path, root), "sha256": file_hash(wrapper_path)} if wrapper_path.is_file() else {
+        "path": str(wrapper_value), "sha256": None
+    }
+    try:
+        payload = q.read_json(wrapper_path)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return {
+            "checkpoint": checkpoint,
+            "status": "blocked",
+            "evidence": {"wrapper": wrapper_ref},
+            "requiredForReady": True,
+            "validationIssues": [f"Unreadable {name} dependency wrapper: {type(exc).__name__}"],
+        }
+    status = payload.get("status", "pending")
     if status not in DEPENDENCY_STATUSES:
-        raise ValueError(f"{name} dependency has unsupported status: {status}")
-    evidence_path = value.get("path")
-    evidence_hash = value.get("sha256")
-    if evidence_path:
-        path = _project_path(str(evidence_path), root)
-        if not path.is_file():
-            raise ValueError(f"{name} dependency evidence does not exist: {evidence_path}")
-        actual = file_hash(path)
-        if evidence_hash and evidence_hash != actual:
-            raise ValueError(f"{name} dependency evidence hash does not match: {evidence_path}")
-        evidence_hash = actual
-        evidence_path = _relative(path, root)
-    elif status == "complete":
-        raise ValueError(f"{name} cannot be complete without evidence path")
+        status = "blocked"
+        validation_issues = [f"{name} dependency wrapper has unsupported status"]
+    else:
+        validation_issues = []
+    evidence = {"wrapper": wrapper_ref}
+    if status == "complete":
+        evidence["decision"] = payload.get("decision")
+        evidence["artifacts"] = payload.get("artifacts")
+        if payload.get("checkpoint") != checkpoint:
+            validation_issues.append(f"{name} wrapper checkpoint does not match {checkpoint}")
     return {
         "checkpoint": checkpoint,
         "status": status,
-        "evidence": {"path": evidence_path, "sha256": evidence_hash},
+        "evidence": evidence,
         "requiredForReady": True,
+        **({"validationIssues": validation_issues} if validation_issues else {}),
     }
 
 
@@ -192,7 +222,131 @@ def build_packet(
     return packet
 
 
-def _validate_dependency(name: str, value: Any, root: Path, issues: list[str]) -> bool:
+def _read_ref(name: str, value: Any, root: Path, issues: list[str]) -> tuple[Path | None, Any]:
+    if not isinstance(value, dict):
+        issues.append(f"{name} requires a path and SHA-256")
+        return None, None
+    path_value, expected_hash = value.get("path"), value.get("sha256")
+    if not isinstance(path_value, str) or not isinstance(expected_hash, str):
+        issues.append(f"{name} requires a path and SHA-256")
+        return None, None
+    try:
+        path = _project_path(path_value, root)
+        if not path.is_file():
+            issues.append(f"{name} evidence file is missing")
+            return None, expected_hash
+        actual_hash = file_hash(path)
+        if actual_hash != expected_hash:
+            issues.append(f"{name} evidence hash does not match")
+            return None, expected_hash
+        return path, expected_hash
+    except (OSError, ValueError) as exc:
+        issues.append(f"{name} evidence is invalid: {exc}")
+        return None, expected_hash
+
+
+def _artifact_map(name: str, evidence: dict[str, Any], root: Path, issues: list[str]) -> dict[str, Path]:
+    artifacts = evidence.get("artifacts")
+    if not isinstance(artifacts, list):
+        issues.append(f"{name} complete dependency requires an artifacts list")
+        return {}
+    result: dict[str, Path] = {}
+    for index, artifact in enumerate(artifacts):
+        if not isinstance(artifact, dict) or not isinstance(artifact.get("kind"), str):
+            issues.append(f"{name} artifact {index} requires a kind")
+            continue
+        kind = artifact["kind"]
+        if kind in result:
+            issues.append(f"{name} contains duplicate artifact kind: {kind}")
+            continue
+        path, _ = _read_ref(f"{name} artifact {kind}", artifact, root, issues)
+        if path is not None:
+            result[kind] = path
+    missing = DEPENDENCY_ARTIFACTS[name] - result.keys()
+    if missing:
+        issues.append(f"{name} missing required artifacts: {sorted(missing)}")
+    return result
+
+
+def _validate_cp2_artifacts(artifacts: dict[str, Path], suite_sha256: str | None, issues: list[str]) -> None:
+    try:
+        config = q.read_json(artifacts["config"])
+        metadata = q.read_json(artifacts["metadata"])
+        report = q.read_json(artifacts["report"])
+        validation = q.read_json(artifacts["validation"])
+    except (KeyError, OSError, ValueError, json.JSONDecodeError) as exc:
+        issues.append(f"CP2 artifact JSON is unreadable: {type(exc).__name__}")
+        return
+    if config.get("packet_id") != "t2-actual-token-context-v1" or config.get("in_frozen_suite") is not False:
+        issues.append("CP2 config is not the actual-token context packet contract")
+    if config.get("targets") != [8192, 16384, 32768] or config.get("positions") != ["begin", "mid", "end"]:
+        issues.append("CP2 config does not freeze the nine required probes")
+    if config.get("frozen_suite", {}).get("sha256") != suite_sha256:
+        issues.append("CP2 config frozen-suite hash differs from the T2 packet")
+    if metadata.get("packet_id") != "t2-actual-token-context-v1" or metadata.get("model_behavior_claim") is not False:
+        issues.append("CP2 metadata does not prove packet-only behavior")
+    runtime = metadata.get("runtime", {})
+    if runtime.get("model_server_started") is not False or runtime.get("pod_started") is not False:
+        issues.append("CP2 metadata claims model or Pod execution")
+    required_report = {
+        "kind": "actual_token_context_report",
+        "status": "ready",
+        "probe_count": 9,
+        "expected_probe_count": 9,
+        "all_probes_outside_frozen_suite": True,
+        "primary_exact_targets": True,
+        "model_behavior_claim": False,
+        "model_retrieval_accuracy": None,
+        "model_latency_collected": False,
+        "truncation_is_reported_per_tokenizer": True,
+    }
+    for key, expected in required_report.items():
+        if report.get(key) != expected:
+            issues.append(f"CP2 report field {key} is not {expected!r}")
+    if validation.get("valid") is not True or validation.get("model_behavior_claim") is not False:
+        issues.append("CP2 validation report is not a valid packet-only result")
+    try:
+        probe_rows = [json.loads(line) for line in artifacts["probes"].read_text(encoding="utf-8-sig").splitlines() if line.strip()]
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        issues.append(f"CP2 probes artifact is unreadable: {type(exc).__name__}")
+        return
+    if len(probe_rows) != 9 or any(row.get("in_frozen_suite") is not False for row in probe_rows):
+        issues.append("CP2 probes artifact is not exactly nine synthetic out-of-suite probes")
+
+
+def _validate_cp3_artifacts(artifacts: dict[str, Path], issues: list[str]) -> None:
+    try:
+        attestation = q.read_json(artifacts["attestation"])
+    except (KeyError, OSError, ValueError, json.JSONDecodeError) as exc:
+        issues.append(f"CP3 attestation is unreadable: {type(exc).__name__}")
+        return
+    if attestation.get("verified") is not True or attestation.get("backend") != "docker":
+        issues.append("CP3 attestation is not a verified Docker result")
+    if attestation.get("foundation_qualified") is not False:
+        issues.append("CP3 attestation cannot claim foundation qualification")
+    checks = attestation.get("probe_checks", {})
+    for key in ("network_blocked", "root_readonly", "docker_socket_absent"):
+        if checks.get(key) is not True:
+            issues.append(f"CP3 attestation probe {key} did not pass")
+    for kind in ("tests-offline", "tests-docker"):
+        try:
+            text = artifacts[kind].read_text(encoding="utf-8-sig")
+        except (KeyError, OSError) as exc:
+            issues.append(f"CP3 {kind} artifact is unreadable: {type(exc).__name__}")
+            continue
+        if not re.search(r"\b\d+\s+passed\b", text) or re.search(r"\b\d+\s+failed\b", text):
+            issues.append(f"CP3 {kind} artifact does not show a passing test result")
+    try:
+        inventory = artifacts["inventory"].read_text(encoding="utf-8-sig")
+    except (KeyError, OSError) as exc:
+        issues.append(f"CP3 inventory artifact is unreadable: {type(exc).__name__}")
+    else:
+        if "Result: no output" not in inventory or "no labeled evaluator containers remained" not in inventory:
+            issues.append("CP3 inventory does not prove clean evaluator-container state")
+
+
+def _validate_dependency(name: str, value: Any, root: Path, issues: list[str], suite_sha256: str | None) -> bool:
+    start_issue_count = len(issues)
     if not isinstance(value, dict):
         issues.append(f"Dependency {name} must be an object")
         return False
@@ -202,28 +356,40 @@ def _validate_dependency(name: str, value: Any, root: Path, issues: list[str]) -
     if status not in DEPENDENCY_STATUSES:
         issues.append(f"Dependency {name} has invalid status")
         return False
+    for issue in value.get("validationIssues", []):
+        issues.append(str(issue))
     evidence = value.get("evidence")
-    if not isinstance(evidence, dict):
-        issues.append(f"Dependency {name} requires evidence metadata")
+    if status == "complete" and not isinstance(evidence, dict):
+        issues.append(f"Dependency {name} complete status requires transitive evidence metadata")
         return False
-    path_value, expected_hash = evidence.get("path"), evidence.get("sha256")
     if status == "complete":
-        if not isinstance(path_value, str) or not isinstance(expected_hash, str):
-            issues.append(f"Dependency {name} complete status requires path and SHA-256")
+        if "wrapper" not in evidence or "decision" not in evidence or "artifacts" not in evidence:
+            issues.append(f"Dependency {name} complete-only wrapper rejected; decision and artifact refs are required")
+            return False
+        wrapper_path, _ = _read_ref(f"{name} wrapper", evidence.get("wrapper"), root, issues)
+        decision_path, _ = _read_ref(f"{name} decision", evidence.get("decision"), root, issues)
+        if wrapper_path is None or decision_path is None:
             return False
         try:
-            path = _project_path(path_value, root)
-            if not path.is_file():
-                issues.append(f"Dependency {name} evidence file is missing")
-                return False
-            if file_hash(path) != expected_hash:
-                issues.append(f"Dependency {name} evidence hash does not match")
-                return False
-        except (OSError, ValueError) as exc:
-            issues.append(f"Dependency {name} evidence is invalid: {exc}")
+            wrapper = q.read_json(wrapper_path)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            issues.append(f"{name} wrapper JSON is unreadable: {type(exc).__name__}")
             return False
-        return True
-    if path_value is not None or expected_hash is not None:
+        expected_checkpoint = value.get("checkpoint")
+        if wrapper.get("status") != "complete" or wrapper.get("checkpoint") != expected_checkpoint:
+            issues.append(f"{name} wrapper is not a matching complete checkpoint record")
+        if wrapper.get("decision") != evidence.get("decision") or wrapper.get("artifacts") != evidence.get("artifacts"):
+            issues.append(f"{name} packet refs differ from the hashed wrapper contents")
+        decision_text = decision_path.read_text(encoding="utf-8-sig", errors="replace")
+        if f"{name} " not in decision_text or "complete" not in decision_text.lower():
+            issues.append(f"{name} decision artifact does not record completion")
+        artifacts = _artifact_map(name, evidence, root, issues)
+        if name == "CP2":
+            _validate_cp2_artifacts(artifacts, suite_sha256, issues)
+        else:
+            _validate_cp3_artifacts(artifacts, issues)
+        return len(issues) == start_issue_count
+    if evidence is not None:
         issues.append(f"Dependency {name} pending/blocked status cannot carry evidence")
     return False
 
@@ -303,7 +469,7 @@ def validate_packet(
 
     dependencies = packet.get("dependencies", {})
     dependency_results = {
-        name: _validate_dependency(name, dependencies.get(name), root, issues)
+        name: _validate_dependency(name, dependencies.get(name), root, issues, packet.get("suite", {}).get("sha256"))
         for name in ("CP2", "CP3")
     }
     ready = not issues and all(dependency_results.values())

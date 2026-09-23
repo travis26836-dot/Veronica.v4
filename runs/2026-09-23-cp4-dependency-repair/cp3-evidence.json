@@ -1,0 +1,30 @@
+{
+  "checkpoint": "evaluator-integrity",
+  "status": "complete",
+  "decision": {
+    "path": "runs/2026-09-22-cp3-evaluator-integrity/decision.md",
+    "sha256": "509741f18c66d3804804f9194d703c9974852778dfbd49749da365d8c3fff9ee"
+  },
+  "artifacts": [
+    {
+      "path": "runs/2026-09-22-cp3-evaluator-integrity/docker-attestation.json",
+      "sha256": "ffcd0b87b317f670c6b43048bd33bf38ccdbb144a5dcee1190d1dae1b72bb9fa",
+      "kind": "attestation"
+    },
+    {
+      "path": "runs/2026-09-22-cp3-evaluator-integrity/tests-offline.txt",
+      "sha256": "e226bdad0a4f21ba696dd4d5d26627513fdf9ed90205417568e570b8694d43a7",
+      "kind": "tests-offline"
+    },
+    {
+      "path": "runs/2026-09-22-cp3-evaluator-integrity/tests-docker.txt",
+      "sha256": "2b01422bffbb6bd4daf52c30ac832c1dabfe06076a766301b1b934e14202ac1c",
+      "kind": "tests-docker"
+    },
+    {
+      "path": "runs/2026-09-22-cp3-evaluator-integrity/container-inventory.txt",
+      "sha256": "243682859e4813484e9323453a941bc85133dd7940a859bbde9273461b8d3d3f",
+      "kind": "inventory"
+    }
+  ]
+}
