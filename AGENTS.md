@@ -1,6 +1,12 @@
 # Veronica.v4 project instructions
 
-1. Read `docs/SOURCE-OF-TRUTH.md`, `TODO.md`, and the latest `runs/*/decision.md` before changing direction.
+## Mandatory multi-agent collaboration preflight
+
+These rules apply to Codex, Hermes, GitHub Copilot, and every model or agent surface used in this repository.
+
+Before changing any file, read `docs/AGENT-COLLABORATION.md`, `docs/CURRENT-STATE.md`, `docs/SOURCE-OF-TRUTH.md`, `TODO.md`, and the decision record named by `docs/CURRENT-STATE.md`; then run `python scripts/collaboration.py preflight`. Claim non-trivial work with `python scripts/collaboration.py claim` before editing. Do not edit paths claimed by another active task. Finish with `handoff` or `complete`, including files changed, tests, evidence, limitations, and the next safe action. Repository records override private chat history or assumed memory.
+
+1. Read `docs/SOURCE-OF-TRUTH.md`, `TODO.md`, and the authoritative decision named by `docs/CURRENT-STATE.md` before changing direction. Do not select a decision by filesystem modification time.
 2. Build one capable Veronica core first. Basic text/chat precedes specialized modules, fine-tuning, billing, and production deployment.
 3. Keep foundation weights unchanged during the initial alias/persona-wrapper stage.
 4. Treat UI mode names as prompt presets until native model behavior has been verified.
