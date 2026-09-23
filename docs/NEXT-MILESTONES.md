@@ -1,7 +1,7 @@
 # Veronica Core: selective milestones and checkpoints
 
-Date: 2026-09-22  
-Owner: Travis  
+Date: 2026-09-22
+Owner: Travis
 Branch: `feature/complete-todo-milestones`
 
 This is the short execution queue for the unfinished Core. `TODO.md` remains the
