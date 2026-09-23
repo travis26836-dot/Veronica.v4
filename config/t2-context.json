@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "packet_id": "t2-actual-token-context-v1",
+  "targets": [8192, 16384, 32768],
+  "positions": ["begin", "mid", "end"],
+  "primary_tokenizer": "qwen3-30b-a3b-2507-abliterated",
+  "in_frozen_suite": false,
+  "frozen_suite": {
+    "path": "data/evals/veronica-core-v1.json",
+    "sha256": "ce1644f045953b66cd9b98883570d7404cac832cf06a6085453259af86aecf90"
+  },
+  "runtime": {
+    "image_digest": "sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+    "vllm_version": "0.28.0",
+    "transformers_version": "5.8.0",
+    "tokenizers_version": "0.22.2",
+    "dtype": "bfloat16",
+    "max_model_len": 32768,
+    "max_num_seqs": 1,
+    "server_arguments": ["--enable-auto-tool-choice", "--tool-call-parser", "hermes"],
+    "model_behavior_claim": false
+  },
+  "tokenizers": [
+    {
+      "model_id": "qwen3-30b-a3b-2507-abliterated",
+      "repository": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
+      "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+      "artifacts": {
+        "tokenizer_json": {
+          "url": "https://huggingface.co/huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated/resolve/e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f/tokenizer.json",
+          "sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4"
+        },
+        "tokenizer_config_json": {
+          "path": "runs/2026-09-01-t2-qualification/provenance/candidate-a/tokenizer_config.json",
+          "sha256": "a5036bfb48523661f15d50c664e8dfc0e9b0b4c9a20eba3180782d52a1b94a8d"
+        },
+        "chat_template": {
+          "source": "standalone",
+          "path": "runs/2026-09-01-t2-qualification/provenance/candidate-a/chat_template.jinja",
+          "sha256": "40c21f34cf67d8c760ef72f8ad3ae5afad514299d4b06e91dd9a8d705af7b541"
+        }
+      }
+    },
+    {
+      "model_id": "qwen3-30b-a3b-2507-control",
+      "repository": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+      "revision": "0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe",
+      "artifacts": {
+        "tokenizer_json": {
+          "url": "https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct-2507/resolve/0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe/tokenizer.json",
+          "sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4"
+        },
+        "tokenizer_config_json": {
+          "path": "runs/2026-09-01-t2-qualification/provenance/candidate-a-control/tokenizer_config.json",
+          "sha256": "a62ff0a2472a0fa1b8eaabcb57c59b58afa42a22831dc141400b6e0cf2b65ce3"
+        },
+        "chat_template": {
+          "source": "embedded",
+          "path": "runs/2026-09-01-t2-qualification/provenance/candidate-a-control/tokenizer_config.json"
+        }
+      }
+    },
+    {
+      "model_id": "qwen3.8-27b-abliterated",
+      "repository": "huihui-ai/Huihui-Qwen3.8-27B-abliterated",
+      "revision": "739e3c5b89849f6c238ce1e5b70008612ae42cdd",
+      "artifacts": {
+        "tokenizer_json": {
+          "url": "https://huggingface.co/huihui-ai/Huihui-Qwen3.8-27B-abliterated/resolve/739e3c5b89849f6c238ce1e5b70008612ae42cdd/tokenizer.json",
+          "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        "tokenizer_config_json": {
+          "path": "runs/2026-09-01-t2-qualification/provenance/candidate-b/tokenizer_config.json",
+          "sha256": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27"
+        },
+        "chat_template": {
+          "source": "standalone",
+          "path": "runs/2026-09-01-t2-qualification/provenance/candidate-b/chat_template.jinja",
+          "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+        }
+      }
+    },
+    {
+      "model_id": "qwen3.8-27b-control",
+      "repository": "Qwen/Qwen3.8-27B",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "artifacts": {
+        "tokenizer_json": {
+          "url": "https://huggingface.co/Qwen/Qwen3.8-27B/resolve/1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0/tokenizer.json",
+          "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        "tokenizer_config_json": {
+          "path": "runs/2026-09-01-t2-qualification/provenance/candidate-b-control/tokenizer_config.json",
+          "sha256": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27"
+        },
+        "chat_template": {
+          "source": "standalone",
+          "path": "runs/2026-09-01-t2-qualification/provenance/candidate-b-control/chat_template.jinja",
+          "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+        }
+      }
+    }
+  ]
+}

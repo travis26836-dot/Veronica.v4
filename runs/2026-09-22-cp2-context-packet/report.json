@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "kind": "actual_token_context_report",
+  "status": "ready",
+  "probe_count": 9,
+  "expected_probe_count": 9,
+  "primary_tokenizer": "qwen3-30b-a3b-2507-abliterated",
+  "all_probes_outside_frozen_suite": true,
+  "primary_exact_targets": true,
+  "model_behavior_claim": false,
+  "model_retrieval_accuracy": null,
+  "model_latency_collected": false,
+  "truncation_is_reported_per_tokenizer": true,
+  "tokenizer_artifacts": [
+    {
+      "model_id": "qwen3-30b-a3b-2507-abliterated",
+      "repository": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
+      "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+      "tokenizer_json_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "source": "local_verified",
+      "source_url": "https://huggingface.co/huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated/resolve/e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f/tokenizer.json"
+    },
+    {
+      "model_id": "qwen3-30b-a3b-2507-control",
+      "repository": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+      "revision": "0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe",
+      "tokenizer_json_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "source": "local_verified",
+      "source_url": "https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct-2507/resolve/0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe/tokenizer.json"
+    },
+    {
+      "model_id": "qwen3.8-27b-abliterated",
+      "repository": "huihui-ai/Huihui-Qwen3.8-27B-abliterated",
+      "revision": "739e3c5b89849f6c238ce1e5b70008612ae42cdd",
+      "tokenizer_json_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "source": "local_verified",
+      "source_url": "https://huggingface.co/huihui-ai/Huihui-Qwen3.8-27B-abliterated/resolve/739e3c5b89849f6c238ce1e5b70008612ae42cdd/tokenizer.json"
+    },
+    {
+      "model_id": "qwen3.8-27b-control",
+      "repository": "Qwen/Qwen3.8-27B",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "tokenizer_json_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "source": "local_verified",
+      "source_url": "https://huggingface.co/Qwen/Qwen3.8-27B/resolve/1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0/tokenizer.json"
+    }
+  ]
+}

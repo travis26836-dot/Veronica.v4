@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "packet_id": "t2-actual-token-context-v1",
+  "generated_at": "2026-09-23T07:34:53.334787+00:00",
+  "config_sha256": "e88270bfaa8db190326e6f5f7ac87cc69233e6a184e4d36869d6227f934e90bf",
+  "frozen_suite": {
+    "path": "data/evals/veronica-core-v1.json",
+    "sha256": "ce1644f045953b66cd9b98883570d7404cac832cf06a6085453259af86aecf90"
+  },
+  "runtime": {
+    "configured": {
+      "image_digest": "sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
+      "vllm_version": "0.28.0",
+      "transformers_version": "5.8.0",
+      "tokenizers_version": "0.22.2",
+      "dtype": "bfloat16",
+      "max_model_len": 32768,
+      "max_num_seqs": 1,
+      "server_arguments": [
+        "--enable-auto-tool-choice",
+        "--tool-call-parser",
+        "hermes"
+      ],
+      "model_behavior_claim": false
+    },
+    "observed": {
+      "python_version": "3.12.10",
+      "platform": "Windows-11-10.0.26220-SP0",
+      "tokenizers_version": "0.22.2",
+      "backend": "huggingface-tokenizers"
+    },
+    "model_server_started": false,
+    "pod_started": false,
+    "model_behavior_claim": false
+  },
+  "tokenizers": [
+    {
+      "model_id": "qwen3-30b-a3b-2507-abliterated",
+      "repository": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
+      "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+      "tokenizer_json_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "source": "local_verified",
+      "source_url": "https://huggingface.co/huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated/resolve/e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f/tokenizer.json"
+    },
+    {
+      "model_id": "qwen3-30b-a3b-2507-control",
+      "repository": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+      "revision": "0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe",
+      "tokenizer_json_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "source": "local_verified",
+      "source_url": "https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct-2507/resolve/0d7cf23991f47feeb3a57ecb4c9cee8ea4a17bfe/tokenizer.json"
+    },
+    {
+      "model_id": "qwen3.8-27b-abliterated",
+      "repository": "huihui-ai/Huihui-Qwen3.8-27B-abliterated",
+      "revision": "739e3c5b89849f6c238ce1e5b70008612ae42cdd",
+      "tokenizer_json_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "source": "local_verified",
+      "source_url": "https://huggingface.co/huihui-ai/Huihui-Qwen3.8-27B-abliterated/resolve/739e3c5b89849f6c238ce1e5b70008612ae42cdd/tokenizer.json"
+    },
+    {
+      "model_id": "qwen3.8-27b-control",
+      "repository": "Qwen/Qwen3.8-27B",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "tokenizer_json_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "source": "local_verified",
+      "source_url": "https://huggingface.co/Qwen/Qwen3.8-27B/resolve/1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0/tokenizer.json"
+    }
+  ],
+  "targets": [
+    8192,
+    16384,
+    32768
+  ],
+  "positions": [
+    "begin",
+    "mid",
+    "end"
+  ],
+  "probe_count": 9,
+  "model_behavior_claim": false,
+  "limits": [
+    "Synthetic literal retrieval is a packet-integrity check, not model evidence.",
+    "model_retrieval_accuracy remains null until a live qualification run.",
+    "tokenization latency is measured only for the tokenizer backend; model latency is uncollected."
+  ]
+}
