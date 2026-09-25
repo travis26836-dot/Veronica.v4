@@ -23,7 +23,7 @@ def valid_module_manifest() -> dict:
         "name": "General Assistant",
         "version": "0.0.0",
         "status": "planned",
-        "publicAlias": "Veronica",
+        "publicAlias": "Veronica.v.4.1-30B-A3B-BF16",
         "description": "Conversation, questions, planning, and summaries through the Veronica alias.",
         "capabilities": ["conversation", "questions", "planning", "summaries"],
         "tools": [],
@@ -73,7 +73,7 @@ def test_fingerprint_is_stable_and_omits_secrets(tmp_path, monkeypatch):
     monkeypatch.setenv("VERONICA_UPSTREAM_API_KEY", "super-secret-key")
     source = tmp_path / "profile.json"
     write_json(source, {
-        "publicAlias": "Veronica",
+        "publicAlias": "Veronica.v.4.1-30B-A3B-BF16",
         "apiKey": "super-secret-key",
         "runtime": {"vllmVersion": "0.11.0", "privateKeyFile": "/tmp/key.json"},
         "token": "abcd",
@@ -88,7 +88,7 @@ def test_fingerprint_is_stable_and_omits_secrets(tmp_path, monkeypatch):
     assert "/tmp/key.json" not in dumped
     assert any(key.endswith("apiKey") or "apiKey" in key for key in first["redactedKeys"])
     mutated = tmp_path / "mutated.json"
-    write_json(mutated, {"publicAlias": "Veronica", "runtime": {"vllmVersion": "0.12.0"}})
+    write_json(mutated, {"publicAlias": "Veronica.v.4.1-30B-A3B-BF16", "runtime": {"vllmVersion": "0.12.0"}})
     changed = c.generate_fingerprint([mutated], include_identity=False, root=tmp_path)
     assert changed["digest"] != first["digest"]
 
@@ -99,7 +99,7 @@ def test_default_fingerprint_identity_matches_wrapper_defaults(monkeypatch):
     monkeypatch.delenv("VERONICA_UPSTREAM_MODEL", raising=False)
     settings = Settings.from_environment()
     identity = c.identity_block()
-    assert identity["publicAlias"] == "Veronica"
+    assert identity["publicAlias"] == "Veronica.v.4.1-30B-A3B-BF16"
     assert identity["publicModel"] == settings.public_model
     assert identity["upstreamModel"] == settings.upstream_model
     assert "upstream_api_key" not in json.dumps(identity)
@@ -135,7 +135,7 @@ def test_init_run_folder_creates_stubs_and_refuses_overwrite(tmp_path):
 
 
 def test_init_run_folder_can_embed_configuration_fingerprint(tmp_path):
-    write_json(tmp_path / "config/model-registry.json", {"publicAlias": "Veronica"})
+    write_json(tmp_path / "config/model-registry.json", {"publicAlias": "Veronica.v.4.1-30B-A3B-BF16"})
     write_json(tmp_path / "config/runpod-core.json", {"runtime": {"vllmVersion": "0.11.0"}})
     write_json(tmp_path / "config/workflow.json", {"projectName": "Veronica.v4"})
     write_json(tmp_path / "config/status-states.json", {"states": ["hold"]})
@@ -192,8 +192,8 @@ def test_provenance_reports_missing_readme_license_and_revision(tmp_path):
 def test_current_registry_snapshots_satisfy_provenance_checklist():
     result = c.check_license_provenance()
     assert result["ok"] is True
-    assert result["checked"] == 4
-    assert result["complete"] == 4
+    assert result["checked"] == 1
+    assert result["complete"] == 1
     assert result["weightsDownloaded"] is False
     assert result["paidComputeStarted"] is False
 

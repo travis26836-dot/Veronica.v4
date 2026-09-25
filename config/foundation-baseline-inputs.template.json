@@ -1,0 +1,37 @@
+{
+  "protocolId": "foundation-baseline-v1",
+  "runs": [
+    {
+      "modelId": "foundation-baseline",
+      "trackId": "neutral-deterministic",
+      "runDir": "runs/REPLACE-foundation-baseline-deterministic",
+      "reviews": "runs/REPLACE-foundation-baseline-deterministic/reviews-adjudicated.jsonl"
+    },
+    {
+      "modelId": "foundation-baseline",
+      "trackId": "neutral-sampled",
+      "runDir": "runs/REPLACE-foundation-baseline-sampled",
+      "reviews": "runs/REPLACE-foundation-baseline-sampled/reviews-adjudicated.jsonl"
+    }
+  ],
+  "supplementalEvidence": {
+    "artifactManifests": [
+      "runs/REPLACE/artifact-manifest.json"
+    ],
+    "runtimeAttestations": [
+      "runs/REPLACE/runtime-attestation.json"
+    ],
+    "executableCodeReports": [
+      "runs/REPLACE/executable-code-report.json"
+    ],
+    "longContextReports": [
+      "runs/REPLACE/long-context-report.json"
+    ],
+    "nativeToolReports": [
+      "runs/REPLACE/native-tool-report.json"
+    ],
+    "humanAdjudication": [
+      "runs/REPLACE/human-adjudication.md"
+    ]
+  }
+}

@@ -63,7 +63,7 @@ def test_ready_uses_private_auth_but_does_not_claim_inference(tmp_path, capsys):
         assert request.get_header("Authorization") == "Bearer test-only-private-key"
         assert request.full_url == "http://127.0.0.1:18000/v1/models"
         assert timeout == 5
-        return io.BytesIO(b'{"data":[{"id":"Veronica"}]}')
+        return io.BytesIO(b'{"data":[{"id":"Veronica.v.4.1-30B-A3B-BF16"}]}')
     with patch.object(controller, "urlopen", side_effect=server):
         assert controller.ready(tmp_path)
     result = core.read_json(tmp_path / "provider-ready.json")
@@ -98,7 +98,7 @@ def test_unsafe_run_is_rejected_before_endpoint_probe(tmp_path, reason):
 def test_wrong_alias_or_auth_failure_is_fatal_not_retryable(tmp_path):
     setup_ready(tmp_path)
     with patch.object(controller, "urlopen", return_value=io.BytesIO(b'{"data":[{"id":"other"}]}')):
-        with pytest.raises(RuntimeError, match="Veronica alias"):
+        with pytest.raises(RuntimeError, match="Veronica.v.4.1-30B-A3B-BF16 alias"):
             controller.ready(tmp_path)
     with patch.object(controller, "urlopen", side_effect=HTTPError("local", 401, "unauthorized", {}, None)):
         with pytest.raises(RuntimeError, match="HTTP 401"):

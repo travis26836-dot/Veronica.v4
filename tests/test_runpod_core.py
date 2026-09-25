@@ -122,8 +122,8 @@ def test_available_exact_gpu_at_or_below_saved_limit_passes_offline_preflight(pr
 @pytest.mark.parametrize(
     "profile_path,existing_name",
     [
-        (core.DEFAULT_PROFILE, "veronica-t2-existing"),
-        (ROOT / "config/runpod-t2-candidate-b.json", "veronica-core-existing"),
+        (core.DEFAULT_PROFILE, "veronica-foundation-baseline-existing"),
+        (ROOT / "config/runpod-foundation-baseline.json", "veronica-core-existing"),
     ],
 )
 def test_all_profiles_block_a_second_veronica_pod(profile_path, existing_name):

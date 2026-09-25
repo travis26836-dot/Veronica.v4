@@ -39,7 +39,7 @@ CANONICAL_INSTANCES = (
     ("evaluation-case", "data/evals/veronica-core-v1.json"),
 )
 IDENTITY_DEFAULTS = {
-    "publicModel": "Veronica",
+    "publicModel": "Veronica.v.4.1-30B-A3B-BF16",
     "upstreamBaseUrl": "http://127.0.0.1:8000/v1",
     "upstreamModel": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
     "providerTimeoutSeconds": 180,
@@ -272,7 +272,7 @@ def validate_canonical_contracts(root: Path = ROOT) -> dict:
 
 def identity_block() -> dict:
     return {
-        "publicAlias": "Veronica",
+        "publicAlias": "Veronica.v.4.1-30B-A3B-BF16",
         "packageVersion": __version__,
         "personaSha256": hashlib.sha256(CORE_PERSONA.encode("utf-8")).hexdigest(),
         "modes": sorted(MODE_PROMPTS),
@@ -441,7 +441,13 @@ def _snapshot_status(snapshot: Path) -> dict:
 def check_license_provenance(registry_path: Path | None = None, root: Path = ROOT) -> dict:
     registry_path = registry_path or (root / "config" / "model-registry.json")
     registry = read_json(registry_path)
-    rows = list(registry.get("candidates", [])) + list(registry.get("controls", []))
+    foundation = registry.get("foundation")
+    if isinstance(foundation, dict):
+        rows = [foundation]
+    else:
+        # Retain tolerant input handling for isolated negative tests and old external
+        # reports; the canonical registry is the one-foundation schema above.
+        rows = list(registry.get("candidates", [])) + list(registry.get("controls", []))
     models = []
     issues: list[str] = []
     for row in rows:

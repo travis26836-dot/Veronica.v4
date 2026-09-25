@@ -16,7 +16,10 @@ class Settings:
     def from_environment(cls) -> "Settings":
         api_key = os.getenv("VERONICA_UPSTREAM_API_KEY", "").strip() or None
         return cls(
-            public_model=os.getenv("VERONICA_PUBLIC_MODEL", "Veronica").strip() or "Veronica",
+            public_model=os.getenv(
+                "VERONICA_PUBLIC_MODEL", "Veronica.v.4.1-30B-A3B-BF16"
+            ).strip()
+            or "Veronica.v.4.1-30B-A3B-BF16",
             upstream_base_url=os.getenv(
                 "VERONICA_UPSTREAM_BASE_URL", "http://127.0.0.1:8000/v1"
             ).rstrip("/"),

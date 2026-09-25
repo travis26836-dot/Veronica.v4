@@ -372,7 +372,7 @@ def ready(run):
         if not isinstance(models, dict) or not isinstance(models.get("data"), list):
             raise RuntimeError("Unexpected model-list response")
         if not any(isinstance(model, dict) and model.get("id") == profile["publicAlias"] for model in models["data"]):
-            raise RuntimeError("Model server did not advertise the Veronica alias")
+            raise RuntimeError("Model server did not advertise the Veronica.v.4.1-30B-A3B-BF16 alias")
         result["ready"] = True
         result["publicAlias"] = profile["publicAlias"]
     write(run / "provider-ready.json", result)
@@ -383,7 +383,7 @@ def ready(run):
 def benchmark(run):
     profile = core.read_json(run / "profile.json")
     key = core.read_json(core.read_json(run / "bootstrap-start.json")["privateKeyFile"])["apiKey"]
-    payload = {"model": "Veronica", "messages": [{"role": "user", "content": "In about 100 words, explain how a lighthouse helps ships navigate."}],
+    payload = {"model": profile["publicAlias"], "messages": [{"role": "user", "content": "In about 100 words, explain how a lighthouse helps ships navigate."}],
                "max_tokens": 160, "temperature": 0, "stream": True, "stream_options": {"include_usage": True}}
     request = Request(f"http://127.0.0.1:{profile['runtime']['localTunnelPort']}/v1/chat/completions",
                       data=json.dumps(payload).encode(), headers={"Content-Type": "application/json", "Authorization": "Bearer " + key})

@@ -45,7 +45,7 @@ The remedies named in cases are hypotheses:
 - `prompt`: clarify grounded identity, instruction scope, pacing, or truthful wording.
 - `implementation`: add or repair real memory, retrieval, telemetry, schema handling, permissions, or tools.
 - `dataset`: curate reviewed demonstrations/preferences after the root cause is understood.
-- `base-model`: compare the untouched candidate and official control before adding adapters.
+- `base-model`: qualify the installed foundation before adding adapters.
 - `mixed`: isolate the responsible layer before choosing a remedy.
 
 ## Identity and evidence

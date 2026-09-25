@@ -35,7 +35,7 @@ Owner-configured defaults (2026-08-30):
 | Compute | **One NVIDIA A100-SXM4-80GB** preferred; if it has no stock in `EUR-IS-1`, an approved fallback GPU from `config/runpod-core.json`'s `pod.gpuFallbacks` may be substituted for that same single Pod (see "GPU fallback" below). No automatic *replacement Pod* after a failed/cancelled attempt. |
 | Hourly ceiling | **$1.75/hour maximum**; check the live offer and actual Pod rate |
 | Persistent storage | Existing **300 GB volume `v53gj9flzs` in `EUR-IS-1`**, mounted at `/workspace`; preserve it on shutdown |
-| Model | Pinned Candidate A from `config/runpod-core.json`, reused and hash-checked on the volume |
+| Model | Installed foundation from `config/runpod-core.json`, reused and hash-checked on the volume; public alias `Veronica.v.4.1-30B-A3B-BF16` |
 | Shutdown | Supervised local watchdog; keep this Windows computer awake and connected until confirmed termination |
 | Chat | Local `http://127.0.0.1:8010`, reaching the Pod model privately through an SSH tunnel |
 
@@ -98,7 +98,7 @@ Read identifiers from the current profile when creating the record. These placeh
 
 The phrase-triggered START launcher completed a real paid cold restart on 2026-08-31; the owner subsequently requested STOP and exact Pod absence was confirmed at 04:40:57 UTC, with persistent storage retained. See `runs/2026-08-31T034034Z-start-veronica/decision.md`. The owner then required the UI to open before tests finish; that revised order passed offline checks and awaits its next authorized cold start. That run used an early UI on port 8011 without interrupting the original launcher's port 8010 checks; its model is now offline. Historical configuration-only evidence remains in `runs/2026-08-30-start-command/decision.md`.
 
-The reusable startup worked: Candidate A produced real API and UI responses, and the Pod was terminated at 23:11:49 UTC on 2026-08-30. The persistent volume remains. See `runs/2026-08-30-supervised-first-chat/decision.md`. Model-quality qualification is still open because the run exposed inconsistent math and unsupported execution claims.
+The reusable startup worked: the installed foundation produced real API and UI responses, and the Pod was terminated at 23:11:49 UTC on 2026-08-30. The persistent volume remains. See `runs/2026-08-30-supervised-first-chat/decision.md`. Model-quality qualification is still open because the run exposed inconsistent math and unsupported execution claims.
 
 On 2026-08-30, RunPod CLI was updated from 2.9.0 to 2.12.0. The official [removal report](https://github.com/runpod/runpodctl/pull/330) confirms that `--stop-after` and `--terminate-after` never enforced shutdown: the backend accepted them and continued billing. [Restoration PR 331](https://github.com/runpod/runpodctl/pull/331) depends on a backend fix. Old instructions claiming these flags protect a run are superseded.
 
@@ -112,7 +112,7 @@ On 2026-09-06, a fresh authorized START attempt (`runs/2026-09-06T064841Z-start-
 
 ## Reusable configuration
 
-- `config/runpod-core.json`: pinned candidate/control revisions, image digest, GPU, existing network volume, runtime, and termination guard. No keys or spending authorization.
+- `config/runpod-core.json`: pinned installed-foundation revision, image digest, GPU, existing network volume, runtime, and termination guard. No keys or spending authorization.
 - `scripts/start-veronica.ps1`: Windows entrypoint for an offline plan or a complete, explicitly authorized startup using the existing controllers.
 - `.agents/skills/veronica-runpod-core/SKILL.md`: project guidance for Codex and Copilot.
 - `scripts/runpod_core.py`: provenance capture, live preflight, default fail-closed startup, explicitly authorized supervised startup, and real API smoke tests.

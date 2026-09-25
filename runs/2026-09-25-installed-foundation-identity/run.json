@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-09-25-installed-foundation-identity",
+  "recordedAt": "2026-09-25T21:44:31Z",
+  "updatedAt": "2026-09-25T22:00:00Z",
+  "owner": "Travis",
+  "stage": "establish",
+  "status": "completed",
+  "scope": "Replace active Candidate A/B planning with the installed-foundation identity and public alias Veronica.v.4.1-30B-A3B-BF16. No inference, Pod creation, model download, or weight change.",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "modelSelectionStatus": "benchmark_required",
+  "publicAlias": "Veronica.v.4.1-30B-A3B-BF16",
+  "installedFoundationId": "foundation-baseline",
+  "modelRevision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+  "runtimeVersion": null,
+  "gpu": null,
+  "configurationFingerprint": null,
+  "lastDurableHandoff": "Identity decision recorded. Active docs/configs/tests now use the installed-foundation alias. Live baseline remains pending.",
+  "nextAction": "Finish offline tests for this identity branch, then wait for a fresh bounded owner START before any live baseline collection. Do not overwrite this folder."
+}

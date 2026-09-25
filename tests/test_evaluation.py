@@ -131,7 +131,7 @@ def test_live_runner_isolates_cases_but_keeps_generated_history_within_case(tmp_
     requests = []
     def handler(request):
         if request.url.path.endswith("/models"):
-            return httpx.Response(200, json={"data": [{"id": "Veronica"}]})
+            return httpx.Response(200, json={"data": [{"id": "Veronica.v.4.1-30B-A3B-BF16"}]})
         body = json.loads(request.content)
         requests.append(body)
         return httpx.Response(200, json={"choices": [{"message": {"role": "assistant", "content": f"reply-{len(requests)}"}}]})
@@ -141,7 +141,7 @@ def test_live_runner_isolates_cases_but_keeps_generated_history_within_case(tmp_
     args = SimpleNamespace(execute=True, base_url="http://127.0.0.1:9999/v1", allow_remote=False,
                            temperature=0, top_p=1, thinking="disabled", max_seconds=10, timeout_seconds=5,
                            runtime_record=runtime, api_key_env=None,
-                           run_dir=tmp_path / "results", suite=suite_path, surface="direct", model="Veronica",
+                           run_dir=tmp_path / "results", suite=suite_path, surface="direct", model="Veronica.v.4.1-30B-A3B-BF16",
                            mode="chat", seed=1, repeats=1, max_tokens=10)
     report = ev.collect(args, data, data["cases"], ev.plan(data["cases"], 1, 10, 10, 100))
     assert requests[1]["messages"][-2] == {"role": "assistant", "content": "reply-1"}
@@ -162,7 +162,7 @@ def test_live_runner_rejects_invalid_sampling_or_thinking_before_network(tmp_pat
     args = SimpleNamespace(execute=True, base_url="http://127.0.0.1:9999/v1", allow_remote=False,
                            temperature=0, top_p=top_p, thinking=thinking, max_seconds=10, timeout_seconds=5,
                            runtime_record=runtime, api_key_env=None, run_dir=tmp_path / "results", suite=suite_path,
-                           surface="direct", model="Veronica", mode="chat", seed=1, repeats=1, max_tokens=10)
+                           surface="direct", model="Veronica.v.4.1-30B-A3B-BF16", mode="chat", seed=1, repeats=1, max_tokens=10)
     if thinking == "invalid":
         # argparse enforces this in normal CLI use; collect defensively rejects it too.
         with pytest.raises(ValueError, match="Thinking"):

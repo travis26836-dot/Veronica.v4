@@ -9,7 +9,7 @@ from veronica_core.provider import OpenAICompatibleProvider, ProviderError, Stre
 
 
 SETTINGS = Settings(
-    public_model="Veronica",
+    public_model="Veronica.v.4.1-30B-A3B-BF16",
     upstream_base_url="http://provider.test/v1",
     upstream_model="candidate/model",
     upstream_api_key="test-secret",

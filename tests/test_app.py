@@ -12,7 +12,7 @@ from veronica_core.provider import ProviderError, StreamingNotSupported
 
 
 SETTINGS = Settings(
-    public_model="Veronica",
+    public_model="Veronica.v.4.1-30B-A3B-BF16",
     upstream_base_url="http://provider.test/v1",
     upstream_model="candidate/model",
     upstream_api_key=None,
@@ -98,7 +98,7 @@ def test_health_distinguishes_wrapper_and_provider() -> None:
 def test_models_exposes_only_stable_veronica_alias() -> None:
     response = TestClient(create_app(SETTINGS, MockProvider())).get("/v1/models")
     assert response.status_code == 200
-    assert response.json()["data"][0]["id"] == "Veronica"
+    assert response.json()["data"][0]["id"] == "Veronica.v.4.1-30B-A3B-BF16"
     assert "candidate/model" not in response.text
 
 
@@ -108,14 +108,14 @@ def test_chat_injects_persona_mode_and_maps_model() -> None:
     response = client.post(
         "/v1/chat/completions",
         json={
-            "model": "Veronica",
+            "model": "Veronica.v.4.1-30B-A3B-BF16",
             "messages": [{"role": "user", "content": "Be sarcastic."}],
             "veronica_mode": "creative",
         },
     )
 
     assert response.status_code == 200
-    assert response.json()["model"] == "Veronica"
+    assert response.json()["model"] == "Veronica.v.4.1-30B-A3B-BF16"
     assert provider.last_payload is not None
     assert provider.last_payload["model"] == "candidate/model"
     assert provider.last_payload["stream"] is False
@@ -132,7 +132,7 @@ def test_chat_applies_mode_sampling_defaults() -> None:
     response = client.post(
         "/v1/chat/completions",
         json={
-            "model": "Veronica",
+            "model": "Veronica.v.4.1-30B-A3B-BF16",
             "messages": [{"role": "user", "content": "hi"}],
             "veronica_mode": "chat",
         },
@@ -151,7 +151,7 @@ def test_chat_client_sampling_overrides_mode_defaults() -> None:
     response = client.post(
         "/v1/chat/completions",
         json={
-            "model": "Veronica",
+            "model": "Veronica.v.4.1-30B-A3B-BF16",
             "messages": [{"role": "user", "content": "hi"}],
             "veronica_mode": "chat",
             "temperature": 1.0,
@@ -169,7 +169,7 @@ def test_invalid_requests_stop_before_provider() -> None:
     provider = MockProvider()
     client = TestClient(create_app(SETTINGS, provider))
 
-    missing = client.post("/v1/chat/completions", json={"model": "Veronica"})
+    missing = client.post("/v1/chat/completions", json={"model": "Veronica.v.4.1-30B-A3B-BF16"})
     assert missing.status_code == 422
     assert provider.last_payload is None
 
@@ -206,7 +206,7 @@ def test_streaming_forwards_sse_and_rewrites_model() -> None:
     assert response.status_code == 200
     assert "text/event-stream" in response.headers["content-type"]
     assert "candidate/model" not in response.text
-    assert '"model":"Veronica"' in response.text
+    assert '"model":"Veronica.v.4.1-30B-A3B-BF16"' in response.text
     assert "Core" in response.text
     assert "response" in response.text
     assert "data: [DONE]" in response.text
@@ -236,12 +236,12 @@ def test_streaming_unsupported_is_not_faked() -> None:
 def test_rewrite_sse_line_maps_public_alias() -> None:
     rewritten = rewrite_sse_line(
         'data: {"model":"candidate/model","choices":[{"delta":{"content":"Hi"}}]}',
-        "Veronica",
+        "Veronica.v.4.1-30B-A3B-BF16",
     )
-    assert '"model":"Veronica"' in rewritten
+    assert '"model":"Veronica.v.4.1-30B-A3B-BF16"' in rewritten
     assert "candidate/model" not in rewritten
-    assert rewrite_sse_line("data: [DONE]", "Veronica") == "data: [DONE]"
-    assert rewrite_sse_line("event: delta", "Veronica") == "event: delta"
+    assert rewrite_sse_line("data: [DONE]", "Veronica.v.4.1-30B-A3B-BF16") == "data: [DONE]"
+    assert rewrite_sse_line("event: delta", "Veronica.v.4.1-30B-A3B-BF16") == "event: delta"
 
 
 def test_capability_report_separates_implemented_and_planned() -> None:

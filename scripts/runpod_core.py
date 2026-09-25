@@ -22,7 +22,7 @@ from urllib.error import HTTPError, URLError
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_PROFILE = ROOT / "config/runpod-core.json"
-VERONICA_POD_PREFIXES = ("veronica-core-", "veronica-t2-")
+VERONICA_POD_PREFIXES = ("veronica-core-", "veronica-foundation-baseline-")
 
 
 def read_json(path):
@@ -85,9 +85,9 @@ def cli(*args):
 def profile_at(path):
     profile = read_json(path)
     model, pod = profile["model"], profile["pod"]
-    if profile["publicAlias"] != "Veronica":
-        raise ValueError("Public alias must remain Veronica")
-    for field in ("revision", "controlRevision"):
+    if profile["publicAlias"] != "Veronica.v.4.1-30B-A3B-BF16":
+        raise ValueError("Public alias must remain Veronica.v.4.1-30B-A3B-BF16")
+    for field in ("revision",):
         if not re.fullmatch(r"[0-9a-f]{40}", model[field]):
             raise ValueError(f"{field} must be an immutable 40-character commit")
     if not re.fullmatch(r"[\w./-]+@sha256:[0-9a-f]{64}", pod["image"]):
@@ -146,31 +146,27 @@ def prepare(profile, output):
     if (output / "expected-model-manifest.json").exists():
         raise ValueError("This run already has a manifest; preserve it and use a new run directory")
     model = profile["model"]
-    for label, repo, revision in (
-        ("candidate", model["repository"], model["revision"]),
-        ("control", model["controlRepository"], model["controlRevision"]),
-    ):
-        url = f"https://huggingface.co/api/models/{repo}/revision/{revision}?blobs=true"
-        metadata = json.loads(fetch(url))
-        if metadata["sha"] != revision:
-            raise ValueError("Hub returned a different revision")
-        destination = output / "provenance" / label
-        destination.mkdir(parents=True, exist_ok=True)
-        save_json(destination / "hub-metadata.json", metadata)
-        for filename in ("README.md", "LICENSE", "config.json"):
-            content = fetch(f"https://huggingface.co/{repo}/resolve/{revision}/{filename}")
-            (destination / filename).write_bytes(content)
-        if label == "candidate":
-            manifest = []
-            for file in metadata["siblings"]:
-                name = file["rfilename"]
-                if PurePosixPath(name).is_absolute() or ".." in PurePosixPath(name).parts:
-                    raise ValueError("Unsafe Hub filename")
-                manifest.append({"path": name, "bytes": file["size"], "sha256": file.get("lfs", {}).get("sha256"), "gitBlob": file["blobId"]})
-            save_json(output / "expected-model-manifest.json", {
-                "repository": repo, "revision": revision, "files": manifest,
-                "expectedBytes": sum(f["bytes"] for f in manifest),
-            })
+    repository, revision = model["repository"], model["revision"]
+    url = f"https://huggingface.co/api/models/{repository}/revision/{revision}?blobs=true"
+    metadata = json.loads(fetch(url))
+    if metadata["sha"] != revision:
+        raise ValueError("Hub returned a different revision")
+    destination = output / "provenance" / "foundation-baseline"
+    destination.mkdir(parents=True, exist_ok=True)
+    save_json(destination / "hub-metadata.json", metadata)
+    for filename in ("README.md", "LICENSE", "config.json"):
+        content = fetch(f"https://huggingface.co/{repository}/resolve/{revision}/{filename}")
+        (destination / filename).write_bytes(content)
+    manifest = []
+    for file in metadata["siblings"]:
+        name = file["rfilename"]
+        if PurePosixPath(name).is_absolute() or ".." in PurePosixPath(name).parts:
+            raise ValueError("Unsafe Hub filename")
+        manifest.append({"path": name, "bytes": file["size"], "sha256": file.get("lfs", {}).get("sha256"), "gitBlob": file["blobId"]})
+    save_json(output / "expected-model-manifest.json", {
+        "repository": repository, "revision": revision, "files": manifest,
+        "expectedBytes": sum(f["bytes"] for f in manifest),
+    })
     save_json(output / "profile.json", profile)
     print(f"Saved pinned model cards, licenses, configuration, and expected hashes: {output}")
 
@@ -333,7 +329,7 @@ def verify(profile, base_url, output, wrapper=False):
     models = json.loads(fetch_with_retries(base_url + "/models", key=key))
     results["advertisedModels"] = models
     if not any(m.get("id") == profile["publicAlias"] for m in models.get("data", [])):
-        raise RuntimeError("Expected Veronica model alias was not advertised")
+        raise RuntimeError("Expected Veronica.v.4.1-30B-A3B-BF16 model alias was not advertised")
     turns = [{"role": "user", "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."}]
     cases = [
         ("introduction", "chat", None),

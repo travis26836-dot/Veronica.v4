@@ -56,21 +56,21 @@ Assistant-produced reviews must say `reviewer_type: "assistant"`; they are advis
 
 The runner does not provision, start, extend or terminate compute. Start Veronica through its existing skill only under a fresh request/duration approval. Open the UI early. Run evals as a separate workload, not by injecting messages into the owner's chat. The A100 runtime currently allows one sequence, so evaluation requests can delay interactive replies; keep concurrency at one and agree on the short test window.
 
-For T2 foundation qualification, first validate the frozen four-model protocol offline:
+For installed-foundation baseline qualification, first validate the frozen one-model protocol offline:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/verify_t2_qualification.py protocol
 ```
 
-The protocol is `config/t2-qualification.json`. It pins both candidates and both official controls, matched runtime requirements, selected cases, sampling settings and evidence gates. Its verifier never starts compute or selects a model. The prior Candidate A smoke run cannot be substituted because it used an older runtime and did not include the other three models.
+The protocol is `config/foundation-baseline-qualification.json`. It pins the one installed foundation, matched runtime requirements, selected cases, sampling settings, and evidence gates. Its verifier never starts compute or qualifies a model. Prior smoke conversations cannot be substituted because they used an older serving runtime and did not collect the required evidence.
 
-After all live runs and human reviews exist, copy `config/t2-comparison-inputs.template.json`, replace every placeholder with the actual evidence paths, and audit the complete matrix:
+After all live runs and human reviews exist, copy `config/foundation-baseline-inputs.template.json`, replace every placeholder with the actual evidence paths, and audit the complete baseline:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/verify_t2_qualification.py compare --inputs runs/ACTUAL-T2-COMPARISON/comparison-inputs.json
+.\.venv\Scripts\python.exe scripts/verify_t2_qualification.py baseline --inputs runs/ACTUAL-BASELINE/comparison-inputs.json
 ```
 
-The comparison remains `hold` if a required run, paired sample, human review, artifact manifest, runtime attestation, executable-code report, long-context report, native-tool report or adjudication record is absent.
+The baseline remains `hold` if a required run, human review, artifact manifest, runtime attestation, executable-code report, long-context report, native-tool report, or adjudication record is absent.
 
 First preview the selected pack. The plan counts completion calls and the configured maximum completion tokens. It does **not** estimate input tokens, elapsed time or dollars; full conversation history is resent each turn. Choose limits compatible with the remaining Pod deadline, with a cleanup margin. `max_seconds` stops new requests once elapsed; HTTP phase timeouts bound in-flight I/O but are not a cloud billing timer. A disconnected client does not prove server work stopped.
 

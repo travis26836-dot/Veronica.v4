@@ -19,12 +19,12 @@
 
 ## Segment 2 — model artifact gate
 
-- [x] Save full card/license snapshots for Candidate A and its official control at pinned revisions. Proof: `runs/2026-08-30-reusable-runpod-core/provenance/`. Remote integrity is now verified in the supervised run's actual manifest.
-- [x] Inspect existing Candidate A files on the persistent volume; reuse a complete matching copy or resume/download the pinned revision during an approved, bounded setup run. Proof: `runs/2026-08-30-supervised-first-chat/storage-preflight.json` and `validated-model-manifest.json`.
+- [x] Save full card/license snapshots for the installed foundation at its pinned revision. Proof: `runs/2026-08-30-reusable-runpod-core/provenance/` and `runs/2026-09-25-installed-foundation-identity/`. Remote integrity is now verified in the supervised run's actual manifest.
+- [x] Inspect existing installed-foundation files on the persistent volume; reuse a complete matching copy or resume/download the pinned revision during an approved, bounded setup run. Proof: `runs/2026-08-30-supervised-first-chat/storage-preflight.json` and `validated-model-manifest.json`.
 - [x] Keep incomplete transfer files under `.uploading`; promote only after manifest validation. Proof: `runs/2026-08-30-supervised-first-chat/validated-model-manifest.json` and executed bootstrap snapshot.
 - [ ] Configure a dedicated read-only model mount. The validated directory is recorded in `runs/2026-08-30-supervised-first-chat/validated-model-manifest.json`; this run served unchanged weights from the writable persistent volume.
 
-**Checkpoint 2:** a dated storage-manifest run proves the complete candidate is intact. Do not assume the copy is already on the volume. A bounded setup Pod may precede this checkpoint, but serving must follow validated hashes.
+**Checkpoint 2:** a dated storage-manifest run proves the installed foundation is intact. Do not assume the copy is already on the volume. A bounded setup Pod may precede this checkpoint, but serving must follow validated hashes.
 
 ## Segment 3 — bounded model server
 

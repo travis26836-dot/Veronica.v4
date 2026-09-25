@@ -1,31 +1,23 @@
 # Technical evidence and limits
 
-Reviewed 2026-08-30. These are primary sources, not proof that this project has already reproduced the reported performance.
+## Active foundation evidence
 
-## Foundation candidates
+The active foundation is an internal installed-baseline record, not a public API name. Its provenance is recorded in `config/model-registry.json` and [the 2026-09-25 identity decision](../runs/2026-09-25-installed-foundation-identity/decision.md): pinned repository/revision, persistent storage path, Apache-2.0 declaration, Qwen3MoeForCausalLM architecture, BF16 format, and no quantization. Pinned card/license snapshots are local evidence only; they do not replace legal review.
 
-- [Qwen3-30B-A3B-Instruct-2507 official card](https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct-2507): 30.5B total / 3.3B active parameters, Apache-2.0, text generation, and non-thinking-only mode. This supports using it as a first-chat/cost comparison, not promising a native thinking switch.
-- [Huihui Qwen3-30B-A3B uncensored derivative](https://huggingface.co/huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated): publisher identifies an abliterated derivative. Capability retention must be tested independently.
-- [Qwen3.8-27B official card](https://huggingface.co/Qwen/Qwen3.8-27B): dense language model with vision encoder, thinking controls, and agent-oriented capabilities. These are the base publisher's reports, not verified Veronica results.
-- [Huihui Qwen3.8-27B uncensored derivative](https://huggingface.co/huihui-ai/Huihui-Qwen3.8-27B-abliterated): publisher identifies an abliterated derivative and describes partial-layer changes. It remains a qualification candidate.
+## What is verified
 
-## Wrapper and adaptation
+- The Python environment resolves through `uv.lock`.
+- The wrapper has offline mock-provider tests.
+- Historical records preserve prior storage integrity, smoke transport/UI, and clean termination evidence.
+- The public API/UI identity is `Veronica.v.4.1-30B-A3B-BF16` and forwards to an internal configurable upstream.
 
-- Both official Qwen cards document OpenAI-compatible serving via vLLM or SGLang. This supports a stable Veronica API layer that is independent of the foundation repository.
-- [Hugging Face PEFT LoRA guide](https://huggingface.co/docs/peft/main/en/conceptual_guides/lora): LoRA adapts a model through additional low-rank parameters while freezing the pretrained weights. This supports a separately stored, removable personality adapter; it does not guarantee zero capability regression.
+## What remains unverified
 
-## What is actually verified here
+- Full live baseline capability: reasoning, writing, coding, factuality, social understanding, and action truthfulness.
+- Native tool reliability, executable-code isolation, long-context behavior, JSON/schema performance, latency, throughput, and cost.
+- Full legal/license obligations beyond the declared snapshot record.
+- Fine-tuning quality, capability retention, production security, and Serverless behavior.
 
-- Python 3.12 environment resolves from `uv.lock`.
-- Wrapper tests pass against mocked providers.
-- The wrapper builds as a Python wheel and source distribution.
-- Local HTTP serves the chat page, the Veronica alias, and honest provider-offline state.
+> A successful model list, HTTP response, storage manifest, model-card claim, mock test, or smoke conversation is **not** full foundation qualification.
 
-## What is not yet verified
-
-- Candidate file integrity, immutable revisions, and full license review.
-- Actual model inference, sarcasm comprehension, writing quality, reasoning, coding, or native tool reliability.
-- Fine-tuning quality or capability retention.
-- GPU latency, memory, hourly cost, or Serverless cold-start behavior.
-
-Do not use a UI mode name, model-card benchmark, or successful package build as evidence that these capabilities are already working in Veronica.
+No inference, paid GPU start, model download, or weight modification occurred during the 2026-09-25 installed-foundation identity migration.

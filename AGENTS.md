@@ -10,7 +10,7 @@ Before changing any file, read `docs/AGENT-COLLABORATION.md`, `docs/CURRENT-STAT
 2. Build one capable Veronica core first. Basic text/chat precedes specialized modules, fine-tuning, billing, and production deployment.
 3. Keep foundation weights unchanged during the initial alias/persona-wrapper stage.
 4. Treat UI mode names as prompt presets until native model behavior has been verified.
-5. Preserve the `Veronica` API alias and keep the upstream model configurable.
+5. Preserve the `Veronica.v.4.1-30B-A3B-BF16` API alias and keep the upstream model configurable.
 6. Keep donor projects read-only unless a specific component is deliberately ported and tested.
 7. Keep source in `src/`, evidence in `runs/`, documentation in `docs/`, and prior research/media in `NON-SOURCE CODE/`.
 8. Never mark a TODO item complete without evidence. Never call a mock response real model inference.

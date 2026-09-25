@@ -89,4 +89,4 @@ catch {
     throw
 }
 
-Write-Output '{"continue":true,"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Codex-to-Copilot handoff archived to docs/COMPLETED/copilot-handoff-2026-08-30/. Read it, then continue with Candidate A artifact integrity only."}}'
+Write-Output '{"continue":true,"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Codex-to-Copilot handoff archived to docs/COMPLETED/copilot-handoff-2026-08-30/. Read it, then continue from docs/CURRENT-STATE.md using the installed-foundation identity. Do not start paid compute without a fresh bounded request."}}'

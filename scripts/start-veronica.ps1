@@ -19,8 +19,8 @@ Set-StrictMode -Version Latest
 $projectRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $configRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot 'config'))
 $profilePath = if ($ProfilePath) { [IO.Path]::GetFullPath($ProfilePath) } else { Join-Path $configRoot 'runpod-core.json' }
-if ([IO.Path]::GetDirectoryName($profilePath) -ne $configRoot -or [IO.Path]::GetFileName($profilePath) -notmatch '^runpod-(core|t2-[a-z0-9-]+)\.json$') {
-    throw 'ProfilePath must be runpod-core.json or a runpod-t2-*.json direct child of this project config directory.'
+if ([IO.Path]::GetDirectoryName($profilePath) -ne $configRoot -or [IO.Path]::GetFileName($profilePath) -notin @('runpod-core.json', 'runpod-foundation-baseline.json')) {
+    throw 'ProfilePath must be runpod-core.json or runpod-foundation-baseline.json as a direct child of this project config directory.'
 }
 if (-not (Test-Path -LiteralPath $profilePath -PathType Leaf)) { throw 'ProfilePath does not exist.' }
 $profileItem = Get-Item -Force -LiteralPath $profilePath

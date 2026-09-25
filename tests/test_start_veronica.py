@@ -22,7 +22,7 @@ def launcher(tmp_path):
     (root / "config").mkdir()
     shutil.copyfile(ROOT / "scripts/start-veronica.ps1", root / "scripts/start-veronica.ps1")
     shutil.copyfile(ROOT / "config/runpod-core.json", root / "config/runpod-core.json")
-    shutil.copyfile(ROOT / "config/runpod-t2-candidate-a.json", root / "config/runpod-t2-candidate-a.json")
+    shutil.copyfile(ROOT / "config/runpod-foundation-baseline.json", root / "config/runpod-foundation-baseline.json")
     return root
 
 
@@ -61,8 +61,8 @@ def test_explicit_options_override_defaults_without_raising_saved_ceiling(launch
     assert plan["maximumHourlyUsd"] == 4.0
 
 
-def test_t2_profile_is_explicit_and_visible_in_plan(launcher):
-    profile = launcher / "config/runpod-t2-candidate-a.json"
+def test_foundation_baseline_profile_is_explicit_and_visible_in_plan(launcher):
+    profile = launcher / "config/runpod-foundation-baseline.json"
     result = invoke(launcher, "-PlanOnly", "-ProfilePath", profile)
     assert result.returncode == 0, result.stderr
     plan = json.loads(result.stdout)
@@ -70,7 +70,7 @@ def test_t2_profile_is_explicit_and_visible_in_plan(launcher):
     assert plan["modelRepository"] == "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated"
 
 
-@pytest.mark.parametrize("relative", ["outside.json", "config/other.json", "config/../runpod-t2-candidate-a.json"])
+@pytest.mark.parametrize("relative", ["outside.json", "config/other.json", "config/../runpod-foundation-baseline.json"])
 def test_profile_path_cannot_escape_or_use_an_unapproved_name(launcher, relative):
     result = invoke(launcher, "-PlanOnly", "-ProfilePath", launcher / relative)
     assert result.returncode != 0

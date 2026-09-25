@@ -26,9 +26,9 @@ $registry = Get-Content -Raw "config/model-registry.json" | ConvertFrom-Json
 $states = Get-Content -Raw "config/status-states.json" | ConvertFrom-Json
 
 if ($workflow.projectName -ne "Veronica.v4") { throw "Project identity mismatch." }
-if ($registry.publicAlias -ne "Veronica") { throw "Public model alias changed." }
+if ($registry.publicAlias -ne "Veronica.v.4.1-30B-A3B-BF16") { throw "Public model alias changed." }
 if ($states.states -notcontains "hold") { throw "Workflow hold state is missing." }
-if ($registry.candidates.Count -lt 1) { throw "No model candidates registered." }
+if (-not $registry.foundation -or $registry.installedFoundationId -ne "foundation-baseline") { throw "Installed foundation baseline is missing." }
 
 Write-Host "Project contract validated: required artifacts, JSON, identity, alias, hold state, and schema files."
 Write-Host "Instance validation is scripts/validate_contracts.py; verify-local.ps1 runs it after uv sync."

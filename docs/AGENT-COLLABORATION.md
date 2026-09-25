@@ -72,7 +72,7 @@ Never use `git add .` in a dirty worktree. Stage exact paths or reviewed hunks. 
 
 Fresh owner authorization is required for paid compute, purchases, publishing, sending messages, external commits or pushes, destructive data changes, releases, and other consequential external actions. Authorization is scoped to the stated action and is never reusable.
 
-For Veronica, preserve the `Veronica` API alias, configurable upstream model, unchanged foundation weights during the wrapper/persona stage, prompt-preset status of unverified modes, evidence-first qualification, `src/` for source, `docs/` for documentation, `runs/` for evidence, and `NON-SOURCE CODE/` for retained non-source material.
+For Veronica, preserve the `Veronica.v.4.1-30B-A3B-BF16` API alias, configurable upstream model, unchanged foundation weights during the wrapper/persona stage, prompt-preset status of unverified modes, evidence-first qualification, `src/` for source, `docs/` for documentation, `runs/` for evidence, and `NON-SOURCE CODE/` for retained non-source material.
 
 ## 8. Completion gate
 

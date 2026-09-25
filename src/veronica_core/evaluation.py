@@ -480,7 +480,7 @@ def main() -> None:
             command.add_argument("--execute", action="store_true")
             command.add_argument("--base-url", default="http://127.0.0.1:8010/v1")
             command.add_argument("--allow-remote", action="store_true")
-            command.add_argument("--model", default="Veronica")
+            command.add_argument("--model", default="Veronica.v.4.1-30B-A3B-BF16")
             command.add_argument("--surface", choices=("wrapper", "direct"), default="wrapper")
             command.add_argument("--mode", choices=("chat", "creative", "coding", "deep-reasoning"), default="chat")
             command.add_argument("--runtime-record", type=Path, required=True)

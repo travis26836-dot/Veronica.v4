@@ -1,24 +1,30 @@
 {
   "schemaVersion": 1,
-  "publicAlias": "Veronica",
+  "publicAlias": "Veronica.v.4.1-30B-A3B-BF16",
   "model": {
-    "repository": "Qwen/Qwen3.8-27B",
-    "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
-    "controlRepository": "huihui-ai/Huihui-Qwen3.8-27B-abliterated",
-    "controlRevision": "739e3c5b89849f6c238ce1e5b70008612ae42cdd",
-    "directory": "/workspace/veronica-core/models/Qwen3.8-27B/1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
-    "existingCopyDirectory": "/workspace/models/Qwen3.8-27B"
+    "repository": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
+    "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+    "directory": "/workspace/veronica-core/models/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated/e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+    "existingCopyDirectory": "/workspace/models/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
+    "licenseDeclared": "Apache-2.0",
+    "architecture": "Qwen3MoeForCausalLM",
+    "weightFormat": "BF16",
+    "quantization": "none",
+    "weightsModified": false
   },
   "pod": {
-    "namePrefix": "veronica-t2-",
+    "namePrefix": "veronica-foundation-baseline-",
     "networkVolumeId": "v53gj9flzs",
     "networkVolumeSizeGb": 300,
     "dataCenterId": "EUR-IS-1",
     "gpuTypeId": "NVIDIA A100-SXM4-80GB",
     "gpuCount": 1,
     "cloudType": "SECURE",
+    "gpuFallbacks": [],
     "containerDiskInGb": 30,
-    "ports": ["22/tcp"],
+    "ports": [
+      "22/tcp"
+    ],
     "volumeMountPath": "/workspace",
     "image": "runpod/pytorch@sha256:0a360022e8de4375af99430f84e8b38951acc397252163a37ceac7204d01be35",
     "imageSourceTag": "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404"
@@ -28,7 +34,6 @@
     "transformersVersion": "5.8.0",
     "hfCliVersion": "1.29.0",
     "constraintsFile": "config/runpod-runtime-t2-0.28.0.txt",
-    "isolatedEnvironment": true,
     "maxModelLen": 32768,
     "maxNumSeqs": 1,
     "gpuMemoryUtilization": 0.92,
@@ -36,8 +41,13 @@
     "host": "127.0.0.1",
     "port": 8000,
     "localTunnelPort": 18000,
-    "serverArguments": ["--enable-auto-tool-choice", "--tool-call-parser", "qwen3_coder", "--reasoning-parser", "qwen3"],
-    "qualification": "t2_compatibility_and_matched_comparison_pending"
+    "serverArguments": [
+      "--enable-auto-tool-choice",
+      "--tool-call-parser",
+      "hermes"
+    ],
+    "qualification": "foundation_baseline_live_qualification_pending",
+    "isolatedEnvironment": true
   },
   "safety": {
     "terminationGuard": "unavailable",
@@ -47,7 +57,11 @@
     "maximumHourlyUsd": 1.75,
     "defaultShutdownMode": "supervised-with-local-backup",
     "defaultDurationMinutes": 60,
-    "presetDurationMinutes": [60, 120, 180],
+    "presetDurationMinutes": [
+      60,
+      120,
+      180
+    ],
     "maximumCustomDurationMinutes": 1440,
     "durationSelectionRequired": true
   }
