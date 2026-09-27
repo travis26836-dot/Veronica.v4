@@ -132,6 +132,7 @@ def test_workflow_preserves_controller_labels_and_does_not_use_hosted_runner():
     assert "authorized_start" in workflow
     assert "plan_only" in workflow
     assert "./scripts/start-veronica.ps1 -PlanOnly" in workflow
+    assert "if: ${{ always() && inputs.plan_only == false }}" in workflow
 
 
 def test_windows_controller_and_one_click_adapter_delegate_to_the_checked_launcher():
