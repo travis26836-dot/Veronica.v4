@@ -22,7 +22,7 @@
         "gpuTypeId": "NVIDIA H100 80GB HBM3",
         "cloudType": "SECURE",
         "minMemoryGb": 80,
-        "maxHourlyUsd": 4.0,
+        "maxHourlyUsd": 1.75,
         "reliabilityNote": "H100 SXM - close to A100 in VRAM and superior tensor performance for the chosen model."
       }
     ],
@@ -52,7 +52,7 @@
   "terminationEvidence": "https://github.com/runpod/runpodctl/pull/330",
   "requirePerRunApproval": true,
   "allowAutomaticReplacementPod": false,
-  "maximumHourlyUsd": 4.0,
+  "maximumHourlyUsd": 1.75,
   "defaultShutdownMode": "supervised-with-local-backup",
   "defaultDurationMinutes": 60,
   "presetDurationMinutes": [60, 120, 180],
