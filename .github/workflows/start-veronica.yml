@@ -22,6 +22,11 @@ on:
         required: true
         default: "Current owner request routed through the universal Veronica start command."
         type: string
+      plan_only:
+        description: "Validate the controller and launch profile without creating approval evidence or a Runpod Pod."
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -58,17 +63,23 @@ jobs:
           wsl.exe -e bash -lc 'command -v runpodctl >/dev/null && test -f /home/dubs/.ssh/id_ed25519_runpod_noirworks && test -f /home/dubs/.ssh/id_ed25519_runpod_noirworks.pub'
           if ($LASTEXITCODE -ne 0) { throw 'The runner service account cannot access the required WSL Runpod credentials and SSH key.' }
 
-      - name: Start the approved one-Pod supervised Veronica run
+      - name: Run the checked plan or approved one-Pod supervised Veronica start
         shell: pwsh
         env:
           DURATION_MINUTES: ${{ inputs.duration_minutes }}
           REQUESTED_BY: ${{ inputs.requested_by }}
           AUTHORIZATION_CONTEXT: ${{ inputs.authorization_context }}
+          PLAN_ONLY: ${{ inputs.plan_only }}
         run: |
-          ./scripts/start-veronica-universal.ps1 `
-            -DurationMinutes ([int]$env:DURATION_MINUTES) `
-            -RequestedBy $env:REQUESTED_BY `
-            -AuthorizationContext $env:AUTHORIZATION_CONTEXT
+          if ($env:PLAN_ONLY -eq 'true') {
+            ./scripts/start-veronica.ps1 -PlanOnly
+          }
+          else {
+            ./scripts/start-veronica-universal.ps1 `
+              -DurationMinutes ([int]$env:DURATION_MINUTES) `
+              -RequestedBy $env:REQUESTED_BY `
+              -AuthorizationContext $env:AUTHORIZATION_CONTEXT
+          }
 
       - name: Upload non-secret run evidence
         if: always()

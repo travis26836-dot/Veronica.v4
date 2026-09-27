@@ -121,4 +121,5 @@ Do not run this adapter on a sandbox, a hosted Linux runner, or a machine missin
 ## Current validation status
 
 - **Implemented and locally tested:** universal plan, explicit-authorization gate, runner-label selection, no-runner failure, and dispatch payload construction.
-- **Not yet live verified:** GitHub controller dispatch and Windows controller launch. There are currently zero repository self-hosted runners, so no paid resource was created while adding this architecture.
+- **Protected plan-only verification:** the manual **Start Veronica** workflow accepts `plan_only: true`; it checks the controller path and runs `scripts/start-veronica.ps1 -PlanOnly` without creating an approval record or a Runpod Pod.
+- **Not yet live verified:** the controller’s protected plan-only workflow dispatch and a paid Windows controller launch. A paid run still requires a separate current owner authorization and protected-environment approval.
