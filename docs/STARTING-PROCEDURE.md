@@ -27,6 +27,27 @@ setup, and do not claim setup is complete from a command's exit code alone.
 
 In Codex or Copilot, **"Start Veronica"**, **"launch Veronica"**, or **"boot Veronica"** invokes the `veronica-runpod-core` skill and its checked launcher. No manual Pod deployment is needed. This is an agent command, not a microphone listener or a new PowerShell `start` alias.
 
+### Universal cross-agent command
+
+The same owner wording now works across Codex, Copilot, Hermes, Manus, and a
+human terminal. Each agent routes the request through:
+
+```bash
+uv run veronica-start --authorize-start --duration-minutes 60 \
+  --requested-by <agent-name> \
+  --authorization-context "Owner requested Start Veronica for one hour."
+```
+
+`veronica-start` is a fail-closed router, not another deployment implementation.
+On the approved Windows controller it invokes the existing checked launcher;
+elsewhere it dispatches a protected GitHub Actions workflow to that controller.
+The controller is the only host that may create a Veronica Pod because it owns
+the Windows/WSL prerequisites, private SSH key, loopback UI, watchdog, and
+termination receipt. An agent host that has no controller path must report the
+blocker and must not substitute a direct `create-pod` MCP call. The one-time
+controller setup and exact runner labels are in
+[`UNIVERSAL-VERONICA-START.md`](UNIVERSAL-VERONICA-START.md).
+
 Owner-configured defaults (2026-08-30):
 
 | Setting | START behavior |
@@ -43,13 +64,12 @@ The selected window starts before Pod creation and includes provisioning, valida
 
 ## GPU fallback (2026-09-06)
 
-`EUR-IS-1` GPU stock fluctuates and can briefly show `none` for the primary A100. Since the persistent model volume is region-locked to that data center, the fix is not to change data center but to allow a small number of pre-approved substitute GPUs in the *same* data center for the *same* single Pod. `config/runpod-core.json`'s `pod.gpuFallbacks` lists ordered candidates, each with its own `cloudType`, `minMemoryGb`, and `maxHourlyUsd` cap (never above the saved $1.75/hour ceiling). The current fallback order is:
+`EUR-IS-1` GPU stock fluctuates and can briefly show `none` for the primary A100. Since the persistent model volume is region-locked to that data center, the fix is not to change data center but to allow an explicitly configured substitute GPU in the *same* data center for the *same* single Pod. `config/runpod-core.json`'s `pod.gpuFallbacks` lists ordered candidates, each with its own `cloudType`, `minMemoryGb`, and `maxHourlyUsd` cap (never above the saved $1.75/hour ceiling). The current executable order is:
 
 1. **NVIDIA A100-SXM4-80GB** (primary, Secure Cloud, up to $1.75/hour)
-2. **NVIDIA RTX PRO 6000 Blackwell Server Edition** (96 GB, Community Cloud, up to $1.69/hour)
-3. **NVIDIA RTX PRO 6000 Blackwell Workstation Edition** (96 GB, Community Cloud, up to $1.69/hour)
+2. **NVIDIA H100 80GB HBM3** (fallback, Secure Cloud, up to $1.75/hour)
 
-`scripts/runpod_core.py`'s `preflight()` checks live stock and price for the primary GPU first, then each fallback in order, and selects the first one with stock within its own price cap. `scripts/supervised_runpod.py` creates the Pod using whichever GPU/cloud type preflight actually selected, and records `usedFallbackGpu`/`gpuTypeId`/`cloudType` in `preflight.json` and `supervised-state.json`. No secure-cloud GPU in `EUR-IS-1` currently matches the A100's ~80 GB class within the $1.75/hour ceiling, so the only real fallback today is Community Cloud, which the owner explicitly accepted (2026-09-06) after being told it trades away Secure Cloud's reliability guarantees (community pods can be preempted by their host). A `reliabilityNote` is surfaced in the evidence and printed as a warning whenever a fallback is actually used. This does not relax the one-Pod, current-approval, or no-automatic-replacement-Pod rules — it only widens which single Pod the one approved attempt is allowed to create.
+`scripts/runpod_core.py`'s `preflight()` checks live stock and price for the primary GPU first, then each fallback in order, and selects the first one with stock within its own price cap. `scripts/supervised_runpod.py` creates the Pod using whichever GPU/cloud type preflight actually selected, and records `usedFallbackGpu`/`gpuTypeId`/`cloudType` in `preflight.json` and `supervised-state.json`. Stock at the approved price is never assumed: if neither configured GPU is available within the $1.75/hour cap, creation remains blocked. A `reliabilityNote` is surfaced in the evidence and printed as a warning whenever a fallback is actually used. This does not relax the one-Pod, current-approval, or no-automatic-replacement-Pod rules — it only widens which single Pod the one approved attempt is allowed to create.
 
 An explicit current **"Start Veronica"** request under these settings supplies authorization for **that one run**. Ask the single duration question and wait for the answer unless the start request already supplies the duration. "Default", "usual", or Enter in the terminal picker means 60 minutes; silence in chat is not permission to launch. Announce the selected scope and record the request in a new one-use approval file. Do not repeat the spending-limit or supervision questions. A configuration discussion, a request for a dry run, or an old approval file does not authorize deployment. Other questions are only needed for an out-of-scope change or unclear intent. Today's configuration work did not authorize a paid deployment.
 

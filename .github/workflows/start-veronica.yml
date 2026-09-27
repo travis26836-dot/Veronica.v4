@@ -1,0 +1,87 @@
+name: Start Veronica
+
+on:
+  workflow_dispatch:
+    inputs:
+      authorized_start:
+        description: "Must be true for a current owner-authorized paid start."
+        required: true
+        type: boolean
+      duration_minutes:
+        description: "Bounded Runpod window in minutes (1-1440)."
+        required: true
+        default: "60"
+        type: string
+      requested_by:
+        description: "Agent or owner identity recorded with the one-use approval."
+        required: true
+        default: "trusted-agent"
+        type: string
+      authorization_context:
+        description: "Short non-secret record of the current owner authorization."
+        required: true
+        default: "Current owner request routed through the universal Veronica start command."
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: veronica-paid-run
+  cancel-in-progress: false
+
+jobs:
+  start:
+    # This exact host owns the local chat UI, WSL credentials, SSH key, watchdog,
+    # and supervised termination. Do not move this job to a GitHub-hosted runner.
+    runs-on: [self-hosted, windows, x64, veronica-controller]
+    environment: veronica-paid-start
+    timeout-minutes: 90
+    if: ${{ inputs.authorized_start == true }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+
+      - name: Provision the checked wrapper environment
+        shell: pwsh
+        run: uv sync --locked --python 3.12
+
+      - name: Confirm controller prerequisites before any Runpod API call
+        shell: pwsh
+        run: |
+          if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'PowerShell 7 is required.' }
+          if (-not (Get-Command wsl.exe -ErrorAction SilentlyContinue)) { throw 'WSL is required.' }
+          if (-not (Test-Path -LiteralPath '.\scripts\start-veronica-universal.ps1')) { throw 'Checked universal adapter is missing.' }
+          wsl.exe -e bash -lc 'command -v runpodctl >/dev/null && test -f /home/dubs/.ssh/id_ed25519_runpod_noirworks && test -f /home/dubs/.ssh/id_ed25519_runpod_noirworks.pub'
+          if ($LASTEXITCODE -ne 0) { throw 'The runner service account cannot access the required WSL Runpod credentials and SSH key.' }
+
+      - name: Start the approved one-Pod supervised Veronica run
+        shell: pwsh
+        env:
+          DURATION_MINUTES: ${{ inputs.duration_minutes }}
+          REQUESTED_BY: ${{ inputs.requested_by }}
+          AUTHORIZATION_CONTEXT: ${{ inputs.authorization_context }}
+        run: |
+          ./scripts/start-veronica-universal.ps1 `
+            -DurationMinutes ([int]$env:DURATION_MINUTES) `
+            -RequestedBy $env:REQUESTED_BY `
+            -AuthorizationContext $env:AUTHORIZATION_CONTEXT
+
+      - name: Upload non-secret run evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: veronica-start-evidence-${{ github.run_id }}
+          path: |
+            runs/*/approval.json
+            runs/*/authorization-context.md
+            runs/*/preflight.json
+            runs/*/supervised-state.json
+            runs/*/startup-ui-ready.json
+            runs/*/startup-ready.json
+            runs/*/termination.json
+          if-no-files-found: warn
+          retention-days: 14
