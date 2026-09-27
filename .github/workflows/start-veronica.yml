@@ -82,7 +82,7 @@ jobs:
           }
 
       - name: Upload non-secret run evidence
-        if: always()
+        if: ${{ always() && inputs.plan_only == false }}
         uses: actions/upload-artifact@v4
         with:
           name: veronica-start-evidence-${{ github.run_id }}
