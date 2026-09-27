@@ -2,6 +2,10 @@
 
 This file is the execution source of truth. Check an item only when its stated proof exists. Each milestone ends with a named acknowledgment so progress is visible and memorable.
 
+The [ongoing workflow](docs/PROJECT-WORKFLOW.md) and [goal register](docs/GOALS.md)
+organize this checklist into dependency-ordered work packets. They do not waive
+its gates. CORE targets October 23, 2026; recurring improvement continues afterward.
+
 **Immediate route:** candidate integrity -> model server -> first text/chat. The full roadmap below is not a prerequisite for that first conversation. Full qualification is required before final model selection and fine-tuning.
 
 ## Status legend

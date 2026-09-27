@@ -43,7 +43,7 @@ def test_plan_only_works_without_wsl_or_approval_and_makes_no_changes(launcher):
     assert result.returncode == 0, result.stderr
     plan = json.loads(result.stdout)
     assert plan["durationMinutes"] == 60
-    assert plan["maxHourlyUsd"] == 4.0
+    assert plan["maxHourlyUsd"] == 1.75
     assert plan["resourceCount"] == 1
     assert plan["gpuTypeId"] == "NVIDIA A100-SXM4-80GB"
     assert plan["resourceCreationAttempted"] is False
@@ -58,7 +58,7 @@ def test_explicit_options_override_defaults_without_raising_saved_ceiling(launch
     plan = json.loads(result.stdout)
     assert plan["durationMinutes"] == 120
     assert plan["maxHourlyUsd"] == 1.6
-    assert plan["maximumHourlyUsd"] == 4.0
+    assert plan["maximumHourlyUsd"] == 2.09
 
 
 def test_t2_profile_is_explicit_and_visible_in_plan(launcher):

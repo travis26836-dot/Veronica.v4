@@ -1,0 +1,35 @@
+{
+  "agent": "codex",
+  "branch": "feature/complete-todo-milestones",
+  "ended_at": "2026-09-23T15:37:05Z",
+  "evidence": [
+    "runs/2026-09-23T153339Z-start-veronica/decision.md"
+  ],
+  "files_changed": [
+    "scripts/start-veronica.ps1"
+  ],
+  "limitations": [
+    "Live startup blocked by stock before creation"
+  ],
+  "model": null,
+  "next_action": "Use a fresh run and authorization when stock is available",
+  "paths": [
+    "runs/2026-09-23T074340Z-start-veronica",
+    "scripts/start-veronica.ps1"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "ac22d3c7ee87669a153ecd0119ee71a0cb9b4c6f",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T07:44:53Z",
+  "status": "completed",
+  "summary": "Fix launcher function ordering and start approved one-hour Veronica Pod",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "start-veronica-launch-fix",
+  "tests": [
+    "Targeted launcher tests passed"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

@@ -1,0 +1,37 @@
+{
+  "checkedAtUtc": "2026-09-23T08:26:53.222448+00:00",
+  "cliVersion": "runpodctl 2.14.0-dd55bcf",
+  "volumeId": "v53gj9flzs",
+  "volumeSizeGb": 300,
+  "dataCenterId": "EUR-IS-1",
+  "requestedGpuTypeId": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpuTypeId": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "cloudType": "SECURE",
+  "usedFallbackGpu": false,
+  "consideredGpus": [
+    {
+      "gpuTypeId": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "cloudType": "SECURE",
+      "isPrimary": true,
+      "stock": "Low",
+      "priceUsd": 2.09,
+      "priceCapUsd": 2.09,
+      "hasStock": true,
+      "priceOk": true,
+      "selected": true
+    }
+  ],
+  "listedHourlyUsd": 2.09,
+  "stock": "Low",
+  "requestedLimitUsd": 2.09,
+  "savedMaximumHourlyUsd": 2.09,
+  "gpuCount": 1,
+  "requestedDurationMinutes": 60,
+  "approvalIsReusable": false,
+  "podCount": 0,
+  "blockers": [],
+  "shutdownMode": "supervised-with-local-backup",
+  "platformDeadlineEnforced": false,
+  "safeToCreate": true
+}

@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, StrictBool
 
 from .config import Settings
+from .boot_status import startup_status
 from .persona import MODE_PROMPTS, MODE_SAMPLING_DEFAULTS, prepare_messages
 from .provider import ChatProvider, OpenAICompatibleProvider, ProviderError, StreamingNotSupported
 
@@ -78,6 +79,11 @@ def create_app(
             "public_model": settings.public_model,
             "upstream_configured": bool(settings.upstream_model),
         }
+
+    @app.get("/api/startup-status")
+    async def startup_dashboard() -> dict[str, Any]:
+        """Expose evidence-backed startup progress to the local UI."""
+        return startup_status(Path.cwd() / "runs")
 
     @app.get("/api/capabilities")
     async def capabilities(request: Request) -> dict[str, Any]:

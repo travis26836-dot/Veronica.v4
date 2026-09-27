@@ -1,0 +1,87 @@
+{
+  "source": "visible browser tab 3",
+  "fixture": "CD-01",
+  "isolation": {
+    "verified": true,
+    "backend": "docker",
+    "image": "python@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+    "config_sha256": "1ebf4e0f7c8c840bef9314413305b1406fce3c0e470bc87282fc27fedbb8098c",
+    "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+    "image_id": "sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+    "probe": {
+      "ok": true,
+      "error": null,
+      "cleanup_verified": true,
+      "container": "veronica-eval-c869012d1744483f863326aabb69d2fb",
+      "raw_output": "{\"network_blocked\": true, \"interfaces\": [\"lo\"], \"root_readonly\": true, \"root_write_blocked\": true, \"uid\": 65534, \"pid\": 1, \"caps\": 0, \"no_new_privs\": \"1\", \"seccomp\": \"2\", \"memory_max\": \"268435456\", \"swap_max\": \"0\", \"pids_max\": \"32\", \"cpu_max\": \"100000 100000\", \"docker_socket_absent\": true}\n",
+      "raw_output_sha256": "370ee4907cb6e04fbc3e9d7603dce1df5f0e9ffb94bef5c19f69ffeecbae902b",
+      "observation": {
+        "network_blocked": true,
+        "interfaces": [
+          "lo"
+        ],
+        "root_readonly": true,
+        "root_write_blocked": true,
+        "uid": 65534,
+        "pid": 1,
+        "caps": 0,
+        "no_new_privs": "1",
+        "seccomp": "2",
+        "memory_max": "268435456",
+        "swap_max": "0",
+        "pids_max": "32",
+        "cpu_max": "100000 100000",
+        "docker_socket_absent": true
+      }
+    }
+  },
+  "foundation_qualified": false,
+  "outcome": {
+    "ok": true,
+    "error": null,
+    "vectors": [
+      {
+        "id": "empty",
+        "passed": true,
+        "error": null
+      },
+      {
+        "id": "ints-order",
+        "passed": true,
+        "error": null
+      },
+      {
+        "id": "strings",
+        "passed": true,
+        "error": null
+      }
+    ],
+    "executions": [
+      {
+        "ok": true,
+        "error": null,
+        "cleanup_verified": true,
+        "container": "veronica-eval-a8dda9a0d0654b828c6be683506081cc",
+        "raw_output": "{\"phase\": \"call\", \"value\": [], \"args_after\": [[]]}\n",
+        "raw_output_sha256": "8bd47a9e0ca88f897e9ff575d05f1fc3a6e52838bb50b910c766bc4cc5cd1ebd"
+      },
+      {
+        "ok": true,
+        "error": null,
+        "cleanup_verified": true,
+        "container": "veronica-eval-ddb5c08699c643ae96f56a59d680ee3b",
+        "raw_output": "{\"phase\": \"call\", \"value\": [3, 1, 2], \"args_after\": [[3, 1, 3, 2, 1]]}\n",
+        "raw_output_sha256": "f6a52e5a7d55a44af250dcc3d1ba16bfda978f33fc102c63fe6bc7c620375a03"
+      },
+      {
+        "ok": true,
+        "error": null,
+        "cleanup_verified": true,
+        "container": "veronica-eval-8077d787eacb429b8f166c5d158529a4",
+        "raw_output": "{\"phase\": \"call\", \"value\": [\"a\", \"b\"], \"args_after\": [[\"a\", \"a\", \"b\"]]}\n",
+        "raw_output_sha256": "c1ccce107e789e5a84720d9073118f70deaf54986e2502bf34672d966a59fa87"
+      }
+    ],
+    "source_sha256": "cc03bc41c5d41d9d52497e9e09f18ae24dc19f2b49ff9eaa74cbabd0cfb580b4"
+  }
+}

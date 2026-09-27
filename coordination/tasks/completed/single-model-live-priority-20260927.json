@@ -1,0 +1,36 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-27T09:40:03Z",
+  "evidence": [
+    "runs/2026-09-27-single-model-priority/decision.md"
+  ],
+  "files_changed": [
+    "docs/CURRENT-STATE.md",
+    "docs/GOALS.md",
+    "runs/2026-09-27-single-model-priority/decision.md"
+  ],
+  "limitations": [
+    "The deferred four-model comparison remains required for final foundation selection and CORE acceptance."
+  ],
+  "model": null,
+  "next_action": "Review clean integration branch, then obtain a fresh bounded duration for LV1.",
+  "paths": [
+    "docs/CURRENT-STATE.md",
+    "docs/GOALS.md",
+    "runs/2026-09-27-single-model-priority"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-27T09:39:29Z",
+  "status": "completed",
+  "summary": "Record owner decision to defer four-model comparison and prioritize one-model live Core verification",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "single-model-live-priority-20260927",
+  "tests": [],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

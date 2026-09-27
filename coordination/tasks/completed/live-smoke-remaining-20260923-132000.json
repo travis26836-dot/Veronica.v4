@@ -1,0 +1,36 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T17:21:27Z",
+  "evidence": [
+    "results.jsonl; reviews-assistant.jsonl; report.json"
+  ],
+  "files_changed": [
+    "runs/2026-09-23T132000Z-live-smoke-remaining"
+  ],
+  "limitations": [
+    "Native tool fixture returned HTTP 503; assistant reviews require owner/human adjudication."
+  ],
+  "model": "gpt-6",
+  "next_action": "Triage fabricated access/memory, sycophancy, false execution claims, and native-tool failure before another qualification run.",
+  "paths": [
+    "runs/2026-09-23T132000Z-live-smoke-remaining"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [
+    "No native tools or generated code were executed; no model qualification claim."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T17:19:31Z",
+  "status": "completed",
+  "summary": "Collect remaining ten smoke-tier live wrapper cases after completed CC/MB screen using bounded pacing.",
+  "supersedes": [],
+  "surface": "desktop",
+  "task_id": "live-smoke-remaining-20260923-132000",
+  "tests": [
+    "Ten live wrapper smoke requests with two-second pacing; advisory report generated"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

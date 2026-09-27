@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "kind": "schema_report",
+  "status": "collected_fail",
+  "expected_case_ids": [
+    "SO-01",
+    "SO-02",
+    "SO-03",
+    "SO-04",
+    "SO-05"
+  ],
+  "missing_case_ids": [],
+  "failed_case_ids": [
+    "SO-04"
+  ],
+  "cases": {
+    "SO-01": [
+      {
+        "sample_id": "SO-01.r1.t1",
+        "case_id": "SO-01",
+        "passed": true,
+        "errors": [],
+        "checks": [
+          {
+            "kind": "json_equals",
+            "passed": true,
+            "error": null
+          },
+          {
+            "kind": "no_tool_calls",
+            "passed": true,
+            "error": null
+          }
+        ]
+      }
+    ],
+    "SO-02": [
+      {
+        "sample_id": "SO-02.r1.t1",
+        "case_id": "SO-02",
+        "passed": true,
+        "errors": [],
+        "checks": [
+          {
+            "kind": "json_equals",
+            "passed": true,
+            "error": null
+          },
+          {
+            "kind": "no_tool_calls",
+            "passed": true,
+            "error": null
+          }
+        ]
+      }
+    ],
+    "SO-03": [
+      {
+        "sample_id": "SO-03.r1.t1",
+        "case_id": "SO-03",
+        "passed": true,
+        "errors": [],
+        "checks": [
+          {
+            "kind": "json_equals",
+            "passed": true,
+            "error": null
+          },
+          {
+            "kind": "no_tool_calls",
+            "passed": true,
+            "error": null
+          }
+        ]
+      }
+    ],
+    "SO-04": [
+      {
+        "sample_id": "SO-04.r1.t1",
+        "case_id": "SO-04",
+        "passed": false,
+        "errors": [
+          "json_value_mismatch"
+        ],
+        "checks": [
+          {
+            "kind": "json_equals",
+            "passed": false,
+            "error": "json_value_mismatch"
+          },
+          {
+            "kind": "no_tool_calls",
+            "passed": true,
+            "error": null
+          }
+        ]
+      }
+    ],
+    "SO-05": [
+      {
+        "sample_id": "SO-05.r1.t1",
+        "case_id": "SO-05",
+        "passed": true,
+        "errors": [],
+        "checks": [
+          {
+            "kind": "json_equals",
+            "passed": true,
+            "error": null
+          },
+          {
+            "kind": "no_tool_calls",
+            "passed": true,
+            "error": null
+          }
+        ]
+      }
+    ]
+  },
+  "tools_executed": false,
+  "foundation_qualified": false,
+  "limits": "Independent strict schema/native-call checks; semantic human review remains required."
+}

@@ -1,0 +1,664 @@
+{
+  "schema": {
+    "schema_version": 1,
+    "kind": "schema_report",
+    "status": "not_collected",
+    "expected_case_ids": [
+      "SO-01",
+      "SO-02",
+      "SO-03",
+      "SO-04",
+      "SO-05"
+    ],
+    "missing_case_ids": [
+      "SO-01",
+      "SO-02",
+      "SO-03",
+      "SO-04",
+      "SO-05"
+    ],
+    "passed_checks": 0,
+    "failed_checks": 0,
+    "errors": 0,
+    "cases": {
+      "SO-01": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "SO-02": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "SO-03": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "SO-04": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "SO-05": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      }
+    },
+    "foundation_qualified": false,
+    "tools_executed": false,
+    "check_kinds": [
+      "json_equals",
+      "json_keys"
+    ],
+    "limits": "Independent strict schema gate is authoritative; automatic checks are advisory and semantic review remains required.",
+    "independent_schema_gate": {
+      "schema_version": 1,
+      "kind": "schema_report",
+      "status": "not_collected",
+      "expected_case_ids": [
+        "SO-01",
+        "SO-02",
+        "SO-03",
+        "SO-04",
+        "SO-05"
+      ],
+      "missing_case_ids": [
+        "SO-01",
+        "SO-02",
+        "SO-03",
+        "SO-04",
+        "SO-05"
+      ],
+      "failed_case_ids": [],
+      "cases": {
+        "SO-01": [],
+        "SO-02": [],
+        "SO-03": [],
+        "SO-04": [],
+        "SO-05": []
+      },
+      "tools_executed": false,
+      "foundation_qualified": false,
+      "limits": "Independent strict schema/native-call checks; semantic human review remains required."
+    }
+  },
+  "native_tools": {
+    "schema_version": 1,
+    "kind": "native_tool_report",
+    "status": "not_collected",
+    "expected_case_ids": [
+      "TS-01",
+      "TS-02",
+      "TS-03",
+      "TS-04",
+      "TS-05"
+    ],
+    "missing_case_ids": [
+      "TS-01",
+      "TS-02",
+      "TS-03",
+      "TS-04",
+      "TS-05"
+    ],
+    "passed_checks": 0,
+    "failed_checks": 0,
+    "errors": 0,
+    "cases": {
+      "TS-01": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "TS-02": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "TS-03": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "TS-04": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "TS-05": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      }
+    },
+    "foundation_qualified": false,
+    "tools_executed": false,
+    "check_kinds": [
+      "no_tool_calls",
+      "tool_call"
+    ],
+    "limits": "Native call selection and arguments only. Tools are never executed."
+  },
+  "executable_code": {
+    "schema_version": 1,
+    "kind": "executable_code_report",
+    "status": "collected_fail",
+    "execute_code": true,
+    "tools_executed": false,
+    "generated_code_executed": true,
+    "isolation_verified": true,
+    "isolation": {
+      "verified": true,
+      "backend": "docker",
+      "image": "python@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+      "config_sha256": "1ebf4e0f7c8c840bef9314413305b1406fce3c0e470bc87282fc27fedbb8098c",
+      "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+      "image_id": "sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+      "probe": {
+        "ok": true,
+        "error": null,
+        "cleanup_verified": true,
+        "container": "veronica-eval-871f5764ffca44929a5edaf38fdcd22a",
+        "raw_output": "{\"network_blocked\": true, \"interfaces\": [\"lo\"], \"root_readonly\": true, \"root_write_blocked\": true, \"uid\": 65534, \"pid\": 1, \"caps\": 0, \"no_new_privs\": \"1\", \"seccomp\": \"2\", \"memory_max\": \"268435456\", \"swap_max\": \"0\", \"pids_max\": \"32\", \"cpu_max\": \"100000 100000\", \"docker_socket_absent\": true}\n",
+        "raw_output_sha256": "370ee4907cb6e04fbc3e9d7603dce1df5f0e9ffb94bef5c19f69ffeecbae902b",
+        "observation": {
+          "network_blocked": true,
+          "interfaces": [
+            "lo"
+          ],
+          "root_readonly": true,
+          "root_write_blocked": true,
+          "uid": 65534,
+          "pid": 1,
+          "caps": 0,
+          "no_new_privs": "1",
+          "seccomp": "2",
+          "memory_max": "268435456",
+          "swap_max": "0",
+          "pids_max": "32",
+          "cpu_max": "100000 100000",
+          "docker_socket_absent": true
+        }
+      }
+    },
+    "expected_case_ids": [
+      "CD-01",
+      "CD-02",
+      "CD-03",
+      "CD-04",
+      "CD-05"
+    ],
+    "missing_case_ids": [],
+    "cases": {
+      "CD-01": {
+        "function": "unique_in_order",
+        "samples": [
+          {
+            "sample_id": "CD-01.r1.t1",
+            "status": "response",
+            "passed": true,
+            "error": null,
+            "vectors_passed": 3,
+            "vectors_failed": 0,
+            "vectors": [
+              {
+                "id": "empty",
+                "passed": true,
+                "error": null
+              },
+              {
+                "id": "ints-order",
+                "passed": true,
+                "error": null
+              },
+              {
+                "id": "strings",
+                "passed": true,
+                "error": null
+              }
+            ],
+            "executions": [
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-22547d830f98448293d97b6f11200777",
+                "raw_output": "{\"phase\": \"call\", \"value\": [], \"args_after\": [[]]}\n",
+                "raw_output_sha256": "8bd47a9e0ca88f897e9ff575d05f1fc3a6e52838bb50b910c766bc4cc5cd1ebd"
+              },
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-ef9608aba75048ca989fcaf8d6af0052",
+                "raw_output": "{\"phase\": \"call\", \"value\": [3, 1, 2], \"args_after\": [[3, 1, 3, 2, 1]]}\n",
+                "raw_output_sha256": "f6a52e5a7d55a44af250dcc3d1ba16bfda978f33fc102c63fe6bc7c620375a03"
+              },
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-35b353efe41b4044b533d6c0e2485e39",
+                "raw_output": "{\"phase\": \"call\", \"value\": [\"a\", \"b\"], \"args_after\": [[\"a\", \"a\", \"b\"]]}\n",
+                "raw_output_sha256": "c1ccce107e789e5a84720d9073118f70deaf54986e2502bf34672d966a59fa87"
+              }
+            ],
+            "source_sha256": "dd2641d75d1ffb305f1a70cb29cc86fcb1952edc6d0e7244c62a5d66405175f3"
+          }
+        ],
+        "sample_count": 1,
+        "vector_count": 3,
+        "passed": true,
+        "missing": false
+      },
+      "CD-02": {
+        "function": "page_count",
+        "samples": [
+          {
+            "sample_id": "CD-02.r1.t1",
+            "status": "response",
+            "passed": false,
+            "error": "extraction_failed",
+            "vectors_passed": 0,
+            "vectors_failed": 9
+          }
+        ],
+        "sample_count": 1,
+        "vector_count": 9,
+        "passed": false,
+        "missing": false
+      },
+      "CD-03": {
+        "function": "find_user",
+        "samples": [
+          {
+            "sample_id": "CD-03.r1.t1",
+            "status": "response",
+            "passed": false,
+            "error": "extraction_failed",
+            "vectors_passed": 0,
+            "vectors_failed": 3
+          }
+        ],
+        "sample_count": 1,
+        "vector_count": 3,
+        "passed": false,
+        "missing": false
+      },
+      "CD-04": {
+        "function": "rank_records",
+        "samples": [
+          {
+            "sample_id": "CD-04.r1.t1",
+            "status": "response",
+            "passed": true,
+            "error": null,
+            "vectors_passed": 1,
+            "vectors_failed": 0,
+            "vectors": [
+              {
+                "id": "stable-tie",
+                "passed": true,
+                "error": null
+              }
+            ],
+            "executions": [
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-28a6da4e5c574ce7ba93feb249898cf0",
+                "raw_output": "{\"phase\": \"call\", \"value\": [{\"name\": \"B\", \"score\": 3}, {\"name\": \"A\", \"score\": 2}, {\"name\": \"C\", \"score\": 2}], \"args_after\": [[{\"name\": \"A\", \"score\": 2}, {\"name\": \"B\", \"score\": 3}, {\"name\": \"C\", \"score\": 2}]]}\n",
+                "raw_output_sha256": "4d8d8ad2b1cb2536591ef1e74b9c804f56e9eb2d2bf52bdd09b01e4cc2f21fcc"
+              }
+            ],
+            "source_sha256": "2649a147d196ed1001ff6f8a3e21779f4f6a3c018e29de7122e53a446fa1d292"
+          }
+        ],
+        "sample_count": 1,
+        "vector_count": 1,
+        "passed": true,
+        "missing": false
+      },
+      "CD-05": {
+        "function": "parse_count",
+        "samples": [
+          {
+            "sample_id": "CD-05.r1.t1",
+            "status": "response",
+            "passed": false,
+            "error": "vector_failure",
+            "vectors_passed": 7,
+            "vectors_failed": 1,
+            "vectors": [
+              {
+                "id": "valid-zero",
+                "passed": true,
+                "error": null
+              },
+              {
+                "id": "malformed",
+                "passed": true,
+                "error": null
+              },
+              {
+                "id": "boolean-count",
+                "passed": false,
+                "error": "fixture_mismatch"
+              },
+              {
+                "id": "negative",
+                "passed": true,
+                "error": null
+              },
+              {
+                "id": "extra-key",
+                "passed": true,
+                "error": null
+              },
+              {
+                "id": "null",
+                "passed": true,
+                "error": null
+              },
+              {
+                "id": "list",
+                "passed": true,
+                "error": null
+              },
+              {
+                "id": "float-count",
+                "passed": true,
+                "error": null
+              }
+            ],
+            "executions": [
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-41448fa75e1f48b4aacb6d6f9afd48fc",
+                "raw_output": "{\"phase\": \"call\", \"value\": 0, \"args_after\": [\"{\\\"count\\\":0}\"]}\n",
+                "raw_output_sha256": "cc32e4f7a753d7f2656e4e68c1da4dd1c4a27ae04520e04cf443841fded1e480"
+              },
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-ce2ef664a03546ff9cef87d44ed0b7e4",
+                "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [\"{\"]}\n",
+                "raw_output_sha256": "f070e6cd539186caac01b7146f404d5d08155f1e720539cd2efecfd5a689a400"
+              },
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-3d28c20bdb6648e5807c48570294674a",
+                "raw_output": "{\"phase\": \"call\", \"value\": true, \"args_after\": [\"{\\\"count\\\":true}\"]}\n",
+                "raw_output_sha256": "0dd4d73f9ee4f1ee0edc185acef7687daf8447fa464fdbb9ac42b24ccd5a2213"
+              },
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-9a4b9b0e3af0415f81c505ff2dae9c24",
+                "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [\"{\\\"count\\\":-1}\"]}\n",
+                "raw_output_sha256": "256a42c34e73e43702eaa53767e5935274ca2f5c8b45a2c50b968b81f83d8a95"
+              },
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-7ed6a25a24ee41ee8aa9c42f194330c6",
+                "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [\"{\\\"count\\\":1,\\\"other\\\":2}\"]}\n",
+                "raw_output_sha256": "d6dd2242c51dd6c817c4d754170bdb35e19ede39a5c7c3e606ab3d59ae839471"
+              },
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-02d806d6302f407495b47ed8b8360021",
+                "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [\"null\"]}\n",
+                "raw_output_sha256": "816dd245454c31585bbb798427aad2876594dc9b795bdca1849c91f26c84f87d"
+              },
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-80440f44a26d4c41b53a63021b4dd360",
+                "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [\"[1]\"]}\n",
+                "raw_output_sha256": "9437fe07d80b9d66f2d6780111d2884b981b76ff1f5a19fa0a2edd7f816a59a8"
+              },
+              {
+                "ok": true,
+                "error": null,
+                "cleanup_verified": true,
+                "container": "veronica-eval-c9deaca10ea54b20b2c57d155051264d",
+                "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [\"{\\\"count\\\":1.0}\"]}\n",
+                "raw_output_sha256": "a0e1461f1a558625ab9bc24717df22add12fd226b32af081583123713d5791b4"
+              }
+            ],
+            "source_sha256": "1de794673bec69012328be0b0f70f3ca20c3d7313271f0be7acdc46d41bce093"
+          }
+        ],
+        "sample_count": 1,
+        "vector_count": 8,
+        "passed": false,
+        "missing": false
+      }
+    },
+    "foundation_qualified": false,
+    "limits": "Host-scored independent fixture vectors. No expected answers are sent to the container. Collected pass requires verified container boundaries; this is not proof against kernel exploits."
+  },
+  "long_context": {
+    "schema_version": 1,
+    "kind": "long_context_report",
+    "status": "not_collected",
+    "expected_case_ids": [
+      "LC-8k-begin",
+      "LC-8k-mid",
+      "LC-8k-end",
+      "LC-16k-begin",
+      "LC-16k-mid",
+      "LC-16k-end",
+      "LC-32k-begin",
+      "LC-32k-mid",
+      "LC-32k-end"
+    ],
+    "missing_case_ids": [
+      "LC-8k-begin",
+      "LC-8k-mid",
+      "LC-8k-end",
+      "LC-16k-begin",
+      "LC-16k-mid",
+      "LC-16k-end",
+      "LC-32k-begin",
+      "LC-32k-mid",
+      "LC-32k-end"
+    ],
+    "passed_checks": 0,
+    "failed_checks": 0,
+    "errors": 0,
+    "cases": {
+      "LC-8k-begin": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "LC-8k-mid": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "LC-8k-end": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "LC-16k-begin": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "LC-16k-mid": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "LC-16k-end": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "LC-32k-begin": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "LC-32k-mid": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      },
+      "LC-32k-end": {
+        "samples": [],
+        "sample_count": 0,
+        "passed": false,
+        "missing": true
+      }
+    },
+    "foundation_qualified": false,
+    "tools_executed": false,
+    "token_estimate_method": "word_count",
+    "synthesized_cases": [
+      {
+        "id": "LC-8k-begin",
+        "needle": "CEDARTOKEN8192BEGINQ7F3",
+        "needle_position": "begin",
+        "needle_word_index": 5,
+        "target_tokens": 8192,
+        "estimated_tokens": 8192,
+        "token_estimate_method": "word_count",
+        "context_sha256": "e1f34305cbd509ad79043854f4591544053f2aac678f0ecc92a824e2042f52de",
+        "in_frozen_suite": false
+      },
+      {
+        "id": "LC-8k-mid",
+        "needle": "CEDARTOKEN8192MIDQ7F3",
+        "needle_position": "mid",
+        "needle_word_index": 4098,
+        "target_tokens": 8192,
+        "estimated_tokens": 8192,
+        "token_estimate_method": "word_count",
+        "context_sha256": "b67942bcaa9e470d922b4a495a6238d1550cd2303cfaf6e37c49028074b3ee6d",
+        "in_frozen_suite": false
+      },
+      {
+        "id": "LC-8k-end",
+        "needle": "CEDARTOKEN8192ENDQ7F3",
+        "needle_position": "end",
+        "needle_word_index": 8191,
+        "target_tokens": 8192,
+        "estimated_tokens": 8192,
+        "token_estimate_method": "word_count",
+        "context_sha256": "7cbf83f8d01258df6663b4c13555faf0a6efc3c7178eb7b0df6a7bfcb2d1ce9e",
+        "in_frozen_suite": false
+      },
+      {
+        "id": "LC-16k-begin",
+        "needle": "CEDARTOKEN16384BEGINQ7F3",
+        "needle_position": "begin",
+        "needle_word_index": 5,
+        "target_tokens": 16384,
+        "estimated_tokens": 16384,
+        "token_estimate_method": "word_count",
+        "context_sha256": "cd3d73bbc5aa095e277bd92ac24d94616dad9a1d6795f27e6289743b1a3361a7",
+        "in_frozen_suite": false
+      },
+      {
+        "id": "LC-16k-mid",
+        "needle": "CEDARTOKEN16384MIDQ7F3",
+        "needle_position": "mid",
+        "needle_word_index": 8194,
+        "target_tokens": 16384,
+        "estimated_tokens": 16384,
+        "token_estimate_method": "word_count",
+        "context_sha256": "99eaa9060ae72e76233ca15b87f71add016d14874459f2545ce3b4842aeeefd9",
+        "in_frozen_suite": false
+      },
+      {
+        "id": "LC-16k-end",
+        "needle": "CEDARTOKEN16384ENDQ7F3",
+        "needle_position": "end",
+        "needle_word_index": 16383,
+        "target_tokens": 16384,
+        "estimated_tokens": 16384,
+        "token_estimate_method": "word_count",
+        "context_sha256": "8ea503dbdc99e4c0a3657dfa7d9b5e77e49476293167e9840135c288a7faa1eb",
+        "in_frozen_suite": false
+      },
+      {
+        "id": "LC-32k-begin",
+        "needle": "CEDARTOKEN32768BEGINQ7F3",
+        "needle_position": "begin",
+        "needle_word_index": 5,
+        "target_tokens": 32768,
+        "estimated_tokens": 32768,
+        "token_estimate_method": "word_count",
+        "context_sha256": "84195583cd272726240bb2b490690416007890ff9c054d8e0c50c3451ae14c5e",
+        "in_frozen_suite": false
+      },
+      {
+        "id": "LC-32k-mid",
+        "needle": "CEDARTOKEN32768MIDQ7F3",
+        "needle_position": "mid",
+        "needle_word_index": 16386,
+        "target_tokens": 32768,
+        "estimated_tokens": 32768,
+        "token_estimate_method": "word_count",
+        "context_sha256": "bfcf41a36a22cec3775808dde3b64986c25bda4de83d529821aa7e1849acb02d",
+        "in_frozen_suite": false
+      },
+      {
+        "id": "LC-32k-end",
+        "needle": "CEDARTOKEN32768ENDQ7F3",
+        "needle_position": "end",
+        "needle_word_index": 32767,
+        "target_tokens": 32768,
+        "estimated_tokens": 32768,
+        "token_estimate_method": "word_count",
+        "context_sha256": "ef307790d24b29ee5b7edc3ae35be0bcef403eea7679dd4cbfccf78ccb6de0e7",
+        "in_frozen_suite": false
+      }
+    ],
+    "folded_into_frozen_suite": false,
+    "frozen_suite_lc_ids": [],
+    "limits": "Short CR-* probes are not a context-window result. These cases stay outside the frozen 60-case suite."
+  },
+  "written": {
+    "schema": "runs\\2026-09-23-live-coding\\schema-report.json",
+    "native_tools": "runs\\2026-09-23-live-coding\\native-tool-report.json",
+    "executable_code": "runs\\2026-09-23-live-coding\\executable-code-report.json",
+    "long_context": "runs\\2026-09-23-live-coding\\long-context-report.json"
+  }
+}

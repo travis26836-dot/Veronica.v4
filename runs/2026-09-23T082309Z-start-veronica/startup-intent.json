@@ -1,0 +1,14 @@
+{
+  "runId": "2026-09-23T082309Z-start-veronica",
+  "podName": null,
+  "createdAttemptAtUtc": "2026-09-23T08:23:27.3499761+00:00",
+  "deadlineUtc": "2026-09-23T09:23:27.3516734+00:00",
+  "backupShutdownAtUtc": "2026-09-23T09:23:27.3540983+00:00",
+  "maxHourlyUsd": 1.75,
+  "creationAttempted": false,
+  "podId": null,
+  "gpuTypeId": "NVIDIA A100-SXM4-80GB",
+  "networkVolumeId": "v53gj9flzs",
+  "modelRevision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+  "shutdownMode": "supervised-with-local-backup"
+}

@@ -1,0 +1,227 @@
+{
+  "kind": "reviewed_extraction_supplement",
+  "foundation_qualified": false,
+  "original_report_preserved": true,
+  "isolation": {
+    "verified": true,
+    "backend": "docker",
+    "image": "python@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+    "config_sha256": "1ebf4e0f7c8c840bef9314413305b1406fce3c0e470bc87282fc27fedbb8098c",
+    "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+    "image_id": "sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+    "probe": {
+      "ok": true,
+      "error": null,
+      "cleanup_verified": true,
+      "container": "veronica-eval-3305723ef47a41a3b4c25db281a2bd08",
+      "raw_output": "{\"network_blocked\": true, \"interfaces\": [\"lo\"], \"root_readonly\": true, \"root_write_blocked\": true, \"uid\": 65534, \"pid\": 1, \"caps\": 0, \"no_new_privs\": \"1\", \"seccomp\": \"2\", \"memory_max\": \"268435456\", \"swap_max\": \"0\", \"pids_max\": \"32\", \"cpu_max\": \"100000 100000\", \"docker_socket_absent\": true}\n",
+      "raw_output_sha256": "370ee4907cb6e04fbc3e9d7603dce1df5f0e9ffb94bef5c19f69ffeecbae902b",
+      "observation": {
+        "network_blocked": true,
+        "interfaces": [
+          "lo"
+        ],
+        "root_readonly": true,
+        "root_write_blocked": true,
+        "uid": 65534,
+        "pid": 1,
+        "caps": 0,
+        "no_new_privs": "1",
+        "seccomp": "2",
+        "memory_max": "268435456",
+        "swap_max": "0",
+        "pids_max": "32",
+        "cpu_max": "100000 100000",
+        "docker_socket_absent": true
+      }
+    }
+  },
+  "cases": {
+    "CD-02": {
+      "start_offset": 1737,
+      "end_offset": 2212,
+      "response_content_sha256": "1f8389d654c14ba82cf52a6d6c0173d694a5b20df56a1f5dc523e2f995c4a336",
+      "source_unchanged": true,
+      "outcome": {
+        "ok": true,
+        "error": null,
+        "vectors": [
+          {
+            "id": "zero-items",
+            "passed": true,
+            "error": null
+          },
+          {
+            "id": "exact-multiple",
+            "passed": true,
+            "error": null
+          },
+          {
+            "id": "partial-page",
+            "passed": true,
+            "error": null
+          },
+          {
+            "id": "neg-total",
+            "passed": true,
+            "error": null
+          },
+          {
+            "id": "zero-size",
+            "passed": true,
+            "error": null
+          },
+          {
+            "id": "neg-size",
+            "passed": true,
+            "error": null
+          },
+          {
+            "id": "float-size",
+            "passed": true,
+            "error": null
+          },
+          {
+            "id": "str-total",
+            "passed": true,
+            "error": null
+          },
+          {
+            "id": "bool-total",
+            "passed": true,
+            "error": null
+          }
+        ],
+        "executions": [
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-d286add65ba14a72a2ae262d2354624a",
+            "raw_output": "{\"phase\": \"call\", \"value\": 0, \"args_after\": [0, 5]}\n",
+            "raw_output_sha256": "59120138ebaf55db75536d1ca0b5d01f63f1e0206605d9da3c581093b9e1e4f9"
+          },
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-9491100fafe649eaa82b62e679df8adb",
+            "raw_output": "{\"phase\": \"call\", \"value\": 2, \"args_after\": [10, 5]}\n",
+            "raw_output_sha256": "b490adb9a62e448fe127ea8e4b48a2598c7299323c1429bc59bd9be20b931107"
+          },
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-e70330a9de7b49bea427e604e1fc4b59",
+            "raw_output": "{\"phase\": \"call\", \"value\": 3, \"args_after\": [11, 5]}\n",
+            "raw_output_sha256": "acd94cb27278a013fa422d472a23efc1f91407e8edec153e9700791cc4303ae3"
+          },
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-8da8f8be9bab48868b62847b071af564",
+            "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [-1, 5]}\n",
+            "raw_output_sha256": "3c85d9baf539958c9ac0d8aa88425de0ae0fe9ddfdb5ca91ec565f053fd6a75a"
+          },
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-78a12abc4bc74df39041d41406c48c3c",
+            "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [1, 0]}\n",
+            "raw_output_sha256": "9b5be829397ce2e4492f7e831acade5b6aec0faa44a3e062aee556f150973ff2"
+          },
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-613afde565d543bb981375b1405f1632",
+            "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [1, -2]}\n",
+            "raw_output_sha256": "c82350b0d095aa26feb35b128207b7a8c46145b3eb6e04385e78162c30f129a7"
+          },
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-f2c758c9a2744cf6b2561240e5da5bef",
+            "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [10, 2.5]}\n",
+            "raw_output_sha256": "ac613212cf27cf201baa3bb6e26ddb806fb59d972365b907116a4d214ec29b10"
+          },
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-623037331449432cbfaec614a86ff39a",
+            "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [\"10\", 5]}\n",
+            "raw_output_sha256": "a881b36cedc554a90b0dc7009088296f43ce29816de761460632b773330ed45d"
+          },
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-018b1f10826841a9911ebc38aa229fb4",
+            "raw_output": "{\"phase\": \"call\", \"exception\": \"ValueError\", \"args_after\": [true, 5]}\n",
+            "raw_output_sha256": "d395b68e600ba83d451cb52231292ac4b2342f81605b2ee68242b6967f71ab63"
+          }
+        ],
+        "source_sha256": "eef353fdf8c8d62eb1ba10dea82947b764cae265f9803732a51f0f4ba094e615"
+      }
+    },
+    "CD-03": {
+      "start_offset": 0,
+      "end_offset": 305,
+      "response_content_sha256": "dfd2e7784ad78198bc5852f73c239ed4e4ed5fb4cda3f2085dfc4596dfb0d714",
+      "source_unchanged": true,
+      "outcome": {
+        "ok": true,
+        "error": null,
+        "vectors": [
+          {
+            "id": "literal-malicious-name",
+            "passed": true,
+            "error": null
+          },
+          {
+            "id": "literal-raine",
+            "passed": true,
+            "error": null
+          },
+          {
+            "id": "no-match",
+            "passed": true,
+            "error": null
+          }
+        ],
+        "executions": [
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-ff4131c74ff64de8a62df5edcc50c6e3",
+            "raw_output": "{\"phase\": \"call\", \"value\": [[2, \"x' OR 1=1 --\"]], \"args_after\": [\"x' OR 1=1 --\"]}\n",
+            "raw_output_sha256": "d744db8eb5810bbebb58b0f8d60c4a6891db7d4f3777fea4a36efbb40e498963"
+          },
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-1e22006d250b46849d6ae7513a707426",
+            "raw_output": "{\"phase\": \"call\", \"value\": [[1, \"Raine\"]], \"args_after\": [\"Raine\"]}\n",
+            "raw_output_sha256": "3407bb595c5c4b288bb0bce99d8b27a336aec87a77d3972c5623bd40c639d469"
+          },
+          {
+            "ok": true,
+            "error": null,
+            "cleanup_verified": true,
+            "container": "veronica-eval-0b0104c206e44f20ad31b8e892a75627",
+            "raw_output": "{\"phase\": \"call\", \"value\": [], \"args_after\": [\"nobody\"]}\n",
+            "raw_output_sha256": "681141f3786a5806b1a7225a5f63c81679251f9cbf01c5410a1d55f24a6cf68d"
+          }
+        ],
+        "source_sha256": "ae0c8fd6c0de98587807c9a53b4a4b5dcf716b08d301ec01260b4b9f59345492"
+      }
+    }
+  }
+}

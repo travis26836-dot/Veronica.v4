@@ -1,0 +1,36 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T18:01:03Z",
+  "evidence": [
+    "docs/evals/RUBRIC-ROUTING.md",
+    "suite_sha256=ce1644f045953b66cd9b98883570d7404cac832cf06a6085453259af86aecf90"
+  ],
+  "files_changed": [
+    "docs/evals/RUBRIC-ROUTING.md"
+  ],
+  "limitations": [
+    "Routing contract is proposed; it does not implement automatic scoring or authorize training/paid compute"
+  ],
+  "model": null,
+  "next_action": "Use the contract to adjudicate current live failures and implement evaluator fixes #6 and #7 once those paths are available",
+  "paths": [
+    "docs/evals/RUBRIC-ROUTING.md"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T17:58:21Z",
+  "status": "completed",
+  "summary": "Define evidence-backed rubric score routing for CORE improvement decisions",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "rubric-routing-contract-20260923",
+  "tests": [
+    "git diff --check -- docs/evals/RUBRIC-ROUTING.md",
+    ".venv\\\\Scripts\\\\python.exe scripts/evaluate_veronica.py validate --tier extended"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

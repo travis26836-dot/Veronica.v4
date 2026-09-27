@@ -1,6 +1,6 @@
 # Veronica.v4 Current State
 
-**Status date:** 2026-09-13
+**Status date:** 2026-09-27 (single-model live priority; no new model qualification)
 
 **Update rule:** change this file deliberately when a newer decision is accepted; never infer authority from filesystem modification time
 
@@ -8,7 +8,9 @@
 
 - Canonical product definition: `docs/SOURCE-OF-TRUTH.md`
 - Execution checklist: `TODO.md`
-- Authoritative current decision: `runs/2026-09-13T135326Z-start-veronica/decision.md`
+- Authoritative current decision: `runs/2026-09-27-single-model-priority/decision.md`
+- Last designated runtime checkpoint: `runs/2026-09-13T135326Z-start-veronica/decision.md`
+- Ongoing workflow and priority: `docs/PROJECT-WORKFLOW.md`, `docs/GOALS.md`
 - Collaboration contract: `docs/AGENT-COLLABORATION.md`
 
 ## Verified checkpoint
@@ -25,10 +27,13 @@ The September 13 cold start verified early UI readiness, full model-file integri
 
 ## Collaboration workspace
 
-- Collaboration development branch: `agents/multi-agent-collaboration`
-- This branch establishes the shared Codex/Hermes/Copilot workflow before any merge to `main`.
-- Existing uncommitted Veronica changes predate the collaboration bootstrap and must not be bundled into collaboration-only commits.
+- Observed checkout: `main` at `7435489`, containing the PR #5 merge.
+- Existing dirty source, tests and evidence remain preserved; this is not a clean release baseline.
+- Earlier milestone work exists on `feature/complete-todo-milestones`; compare it before reimplementation or integration.
 
 ## Next legitimate action
 
-Use the collaboration preflight and claim system for subsequent work. Merge this collaboration branch into `main` only after owner review. Continue core-first qualification after the collaboration workflow is accepted.
+Review the clean offline integration branch, then run one bounded live Candidate
+A session to verify real Veronica chat behavior. The four-model comparison is
+deferred research; it is not a prerequisite for this live session. Do not infer
+live runtime or global agent inactivity from the local collaboration ledger.

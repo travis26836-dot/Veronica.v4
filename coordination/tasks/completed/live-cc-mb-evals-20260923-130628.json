@@ -1,0 +1,36 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T17:13:16Z",
+  "evidence": [
+    "runs/2026-09-23T130628Z-live-cc-mb-evals/results.jsonl; manifest.json"
+  ],
+  "files_changed": [
+    "runs/2026-09-23T130628Z-live-cc-mb-evals"
+  ],
+  "limitations": [
+    "Interrupted after one ReadTimeout and two HTTP 503 responses; no behavior score can be inferred."
+  ],
+  "model": "gpt-6",
+  "next_action": "Diagnose wrapper 503 behavior before a fresh bounded evaluation.",
+  "paths": [
+    "runs/2026-09-23T130628Z-live-cc-mb-evals"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [
+    "No automatic retry or replacement Pod."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T17:06:38Z",
+  "status": "completed",
+  "summary": "Run approved bounded CC-01 CC-02 MB-01 MB-02 live wrapper evaluation against currently authorized Pod; collect immutable raw evidence and advisory review.",
+  "supersedes": [],
+  "surface": "desktop",
+  "task_id": "live-cc-mb-evals-20260923-130628",
+  "tests": [
+    "6-call formal evaluator, timeout 90 seconds"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

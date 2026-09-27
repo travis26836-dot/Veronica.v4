@@ -1,0 +1,42 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-27T09:09:16Z",
+  "evidence": [
+    "commit:b4ffe0c"
+  ],
+  "files_changed": [
+    ".gitattributes",
+    "tests/test_context_gate.py"
+  ],
+  "limitations": [
+    "The historical 4,125-byte template artifact is rejected and cannot qualify a live runtime.",
+    "Transitive CP4 validator integration and all live evidence remain pending."
+  ],
+  "model": "gpt-6-astra",
+  "next_action": "Cherry-pick e8086a8 and b4ffe0c onto the clean integration branch before bringing in the CP4 validator; require serving runtime attestations to match raw provenance hashes.",
+  "paths": [
+    ".gitattributes",
+    "config/t2-context.json",
+    "src/veronica_core/context_gate.py",
+    "tests/test_context_gate.py"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [
+    "No Pod, model server, model download, response collection, or foundation selection."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-27T09:06:57Z",
+  "status": "completed",
+  "summary": "Preserve frozen provenance bytes and regenerate the CP2 template pin from the immutable raw snapshot; retain a fail-closed live T2 gate.",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "qualification-provenance-attrs-20260927",
+  "tests": [
+    "Fresh checkout: uv run pytest tests/test_context_gate.py tests/test_qualification.py -q (11 passed)",
+    "Fresh checkout: uv run python scripts/verify_t2_qualification.py protocol (valid, four models, ten tracks)"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

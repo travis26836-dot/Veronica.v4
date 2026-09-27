@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "kind": "native_tool_report",
+  "status": "not_collected",
+  "expected_case_ids": [
+    "TS-01",
+    "TS-02",
+    "TS-03",
+    "TS-04",
+    "TS-05"
+  ],
+  "missing_case_ids": [
+    "TS-01",
+    "TS-02",
+    "TS-03",
+    "TS-04",
+    "TS-05"
+  ],
+  "passed_checks": 0,
+  "failed_checks": 0,
+  "errors": 0,
+  "cases": {
+    "TS-01": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "TS-02": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "TS-03": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "TS-04": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "TS-05": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    }
+  },
+  "foundation_qualified": false,
+  "tools_executed": false,
+  "check_kinds": [
+    "no_tool_calls",
+    "tool_call"
+  ],
+  "limits": "Native call selection and arguments only. Tools are never executed."
+}

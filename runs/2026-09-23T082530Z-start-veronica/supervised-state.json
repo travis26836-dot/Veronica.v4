@@ -1,0 +1,16 @@
+{
+  "runId": "2026-09-23T082530Z-start-veronica",
+  "podName": "veronica-core-20260923-082653-46aa2c4c",
+  "createdAttemptAtUtc": "2026-09-23T08:26:53.654152+00:00",
+  "deadlineUtc": "2026-09-23T09:26:53.654152+00:00",
+  "backupShutdownAtUtc": "2026-09-23T09:26:53.654152+00:00",
+  "maxHourlyUsd": 2.09,
+  "sshKey": "/home/dubs/.ssh/id_ed25519_runpod_noirworks",
+  "podId": "xfa252ehpmuzzx",
+  "gpuTypeId": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "cloudType": "SECURE",
+  "usedFallbackGpu": false,
+  "platformTimer": false,
+  "creationAttempted": true,
+  "actualHourlyUsd": 2.09
+}

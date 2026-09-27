@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "kind": "long_context_report",
+  "status": "not_collected",
+  "expected_case_ids": [
+    "LC-8k-begin",
+    "LC-8k-mid",
+    "LC-8k-end",
+    "LC-16k-begin",
+    "LC-16k-mid",
+    "LC-16k-end",
+    "LC-32k-begin",
+    "LC-32k-mid",
+    "LC-32k-end"
+  ],
+  "missing_case_ids": [
+    "LC-8k-begin",
+    "LC-8k-mid",
+    "LC-8k-end",
+    "LC-16k-begin",
+    "LC-16k-mid",
+    "LC-16k-end",
+    "LC-32k-begin",
+    "LC-32k-mid",
+    "LC-32k-end"
+  ],
+  "passed_checks": 0,
+  "failed_checks": 0,
+  "errors": 0,
+  "cases": {
+    "LC-8k-begin": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "LC-8k-mid": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "LC-8k-end": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "LC-16k-begin": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "LC-16k-mid": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "LC-16k-end": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "LC-32k-begin": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "LC-32k-mid": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "LC-32k-end": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    }
+  },
+  "foundation_qualified": false,
+  "tools_executed": false,
+  "token_estimate_method": "word_count",
+  "synthesized_cases": [
+    {
+      "id": "LC-8k-begin",
+      "needle": "CEDARTOKEN8192BEGINQ7F3",
+      "needle_position": "begin",
+      "needle_word_index": 5,
+      "target_tokens": 8192,
+      "estimated_tokens": 8192,
+      "token_estimate_method": "word_count",
+      "context_sha256": "e1f34305cbd509ad79043854f4591544053f2aac678f0ecc92a824e2042f52de",
+      "in_frozen_suite": false
+    },
+    {
+      "id": "LC-8k-mid",
+      "needle": "CEDARTOKEN8192MIDQ7F3",
+      "needle_position": "mid",
+      "needle_word_index": 4098,
+      "target_tokens": 8192,
+      "estimated_tokens": 8192,
+      "token_estimate_method": "word_count",
+      "context_sha256": "b67942bcaa9e470d922b4a495a6238d1550cd2303cfaf6e37c49028074b3ee6d",
+      "in_frozen_suite": false
+    },
+    {
+      "id": "LC-8k-end",
+      "needle": "CEDARTOKEN8192ENDQ7F3",
+      "needle_position": "end",
+      "needle_word_index": 8191,
+      "target_tokens": 8192,
+      "estimated_tokens": 8192,
+      "token_estimate_method": "word_count",
+      "context_sha256": "7cbf83f8d01258df6663b4c13555faf0a6efc3c7178eb7b0df6a7bfcb2d1ce9e",
+      "in_frozen_suite": false
+    },
+    {
+      "id": "LC-16k-begin",
+      "needle": "CEDARTOKEN16384BEGINQ7F3",
+      "needle_position": "begin",
+      "needle_word_index": 5,
+      "target_tokens": 16384,
+      "estimated_tokens": 16384,
+      "token_estimate_method": "word_count",
+      "context_sha256": "cd3d73bbc5aa095e277bd92ac24d94616dad9a1d6795f27e6289743b1a3361a7",
+      "in_frozen_suite": false
+    },
+    {
+      "id": "LC-16k-mid",
+      "needle": "CEDARTOKEN16384MIDQ7F3",
+      "needle_position": "mid",
+      "needle_word_index": 8194,
+      "target_tokens": 16384,
+      "estimated_tokens": 16384,
+      "token_estimate_method": "word_count",
+      "context_sha256": "99eaa9060ae72e76233ca15b87f71add016d14874459f2545ce3b4842aeeefd9",
+      "in_frozen_suite": false
+    },
+    {
+      "id": "LC-16k-end",
+      "needle": "CEDARTOKEN16384ENDQ7F3",
+      "needle_position": "end",
+      "needle_word_index": 16383,
+      "target_tokens": 16384,
+      "estimated_tokens": 16384,
+      "token_estimate_method": "word_count",
+      "context_sha256": "8ea503dbdc99e4c0a3657dfa7d9b5e77e49476293167e9840135c288a7faa1eb",
+      "in_frozen_suite": false
+    },
+    {
+      "id": "LC-32k-begin",
+      "needle": "CEDARTOKEN32768BEGINQ7F3",
+      "needle_position": "begin",
+      "needle_word_index": 5,
+      "target_tokens": 32768,
+      "estimated_tokens": 32768,
+      "token_estimate_method": "word_count",
+      "context_sha256": "84195583cd272726240bb2b490690416007890ff9c054d8e0c50c3451ae14c5e",
+      "in_frozen_suite": false
+    },
+    {
+      "id": "LC-32k-mid",
+      "needle": "CEDARTOKEN32768MIDQ7F3",
+      "needle_position": "mid",
+      "needle_word_index": 16386,
+      "target_tokens": 32768,
+      "estimated_tokens": 32768,
+      "token_estimate_method": "word_count",
+      "context_sha256": "bfcf41a36a22cec3775808dde3b64986c25bda4de83d529821aa7e1849acb02d",
+      "in_frozen_suite": false
+    },
+    {
+      "id": "LC-32k-end",
+      "needle": "CEDARTOKEN32768ENDQ7F3",
+      "needle_position": "end",
+      "needle_word_index": 32767,
+      "target_tokens": 32768,
+      "estimated_tokens": 32768,
+      "token_estimate_method": "word_count",
+      "context_sha256": "ef307790d24b29ee5b7edc3ae35be0bcef403eea7679dd4cbfccf78ccb6de0e7",
+      "in_frozen_suite": false
+    }
+  ],
+  "folded_into_frozen_suite": false,
+  "frozen_suite_lc_ids": [],
+  "limits": "Short CR-* probes are not a context-window result. These cases stay outside the frozen 60-case suite."
+}

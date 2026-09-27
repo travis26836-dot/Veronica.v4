@@ -1,0 +1,34 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-26T09:36:23Z",
+  "evidence": [
+    "runs/2026-09-26-startup-test-capture/result.md"
+  ],
+  "files_changed": [
+    "tests/test_start_veronica.py"
+  ],
+  "limitations": [
+    "Only assertions changed; startup behavior was not altered."
+  ],
+  "model": null,
+  "next_action": "Include this assertion update with the launch-policy integration packet.",
+  "paths": [
+    "tests/test_start_veronica.py"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-26T09:35:04Z",
+  "status": "completed",
+  "summary": "Align launcher assertions with newly accepted 1.75 USD/hour RunPod ceiling",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "startup-policy-test-update-20260926",
+  "tests": [
+    "uv run pytest tests/test_start_veronica.py -q (30 passed, exit 0)"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

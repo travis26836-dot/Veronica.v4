@@ -1,0 +1,36 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T17:19:30Z",
+  "evidence": [
+    "results.jsonl; reviews-assistant.jsonl; report.json"
+  ],
+  "files_changed": [
+    "runs/2026-09-23T131800Z-live-cc-mb-evals-recovered"
+  ],
+  "limitations": [
+    "Assistant reviews are advisory; human review remains required. Gate blocked by observed model behavior."
+  ],
+  "model": "gpt-6",
+  "next_action": "Collect remaining bounded smoke cases, then triage model versus wrapper failures.",
+  "paths": [
+    "runs/2026-09-23T131800Z-live-cc-mb-evals-recovered"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [
+    "No claim of model qualification or completion of broader T2."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T17:17:49Z",
+  "status": "completed",
+  "summary": "Run approved four-case CC/MB wrapper evaluation after verified tunnel recovery, with two-second request pacing and explicit bounded limits.",
+  "supersedes": [],
+  "surface": "desktop",
+  "task_id": "live-cc-mb-evals-recovered-20260923-131800",
+  "tests": [
+    "Six live wrapper requests; advisory review report generated"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

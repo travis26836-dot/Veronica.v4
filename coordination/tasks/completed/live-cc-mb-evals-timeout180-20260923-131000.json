@@ -1,0 +1,36 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T17:13:17Z",
+  "evidence": [
+    "results.jsonl; manifest.json; collection-interrupted.json"
+  ],
+  "files_changed": [
+    "runs/2026-09-23T131000Z-live-cc-mb-evals-timeout180"
+  ],
+  "limitations": [
+    "MB-01 exposed invented exact memory; MB-02 initial acknowledgement passed, follow-up failed HTTP 503; CC cases unexecuted."
+  ],
+  "model": "gpt-6",
+  "next_action": "Repair or diagnose immediate sequential wrapper request failure, then create a new evaluation run.",
+  "paths": [
+    "runs/2026-09-23T131000Z-live-cc-mb-evals-timeout180"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [
+    "No automatic retry; local evaluator stopped after known 503 hang."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T17:09:27Z",
+  "status": "completed",
+  "summary": "Run the same approved CC-01 CC-02 MB-01 MB-02 live wrapper evaluation in a distinct record after the prior 90-second transport timeout; only timeout budget changes to 180 seconds.",
+  "supersedes": [],
+  "surface": "desktop",
+  "task_id": "live-cc-mb-evals-timeout180-20260923-131000",
+  "tests": [
+    "same approved cases with timeout 180 seconds"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

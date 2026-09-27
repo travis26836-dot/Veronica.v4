@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "kind": "schema_report",
+  "status": "not_collected",
+  "expected_case_ids": [
+    "SO-01",
+    "SO-02",
+    "SO-03",
+    "SO-04",
+    "SO-05"
+  ],
+  "missing_case_ids": [
+    "SO-01",
+    "SO-02",
+    "SO-03",
+    "SO-04",
+    "SO-05"
+  ],
+  "passed_checks": 0,
+  "failed_checks": 0,
+  "errors": 0,
+  "cases": {
+    "SO-01": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "SO-02": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "SO-03": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "SO-04": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    },
+    "SO-05": {
+      "samples": [],
+      "sample_count": 0,
+      "passed": false,
+      "missing": true
+    }
+  },
+  "foundation_qualified": false,
+  "tools_executed": false,
+  "check_kinds": [
+    "json_equals",
+    "json_keys"
+  ],
+  "limits": "Independent strict schema gate is authoritative; automatic checks are advisory and semantic review remains required.",
+  "independent_schema_gate": {
+    "schema_version": 1,
+    "kind": "schema_report",
+    "status": "not_collected",
+    "expected_case_ids": [
+      "SO-01",
+      "SO-02",
+      "SO-03",
+      "SO-04",
+      "SO-05"
+    ],
+    "missing_case_ids": [
+      "SO-01",
+      "SO-02",
+      "SO-03",
+      "SO-04",
+      "SO-05"
+    ],
+    "failed_case_ids": [],
+    "cases": {
+      "SO-01": [],
+      "SO-02": [],
+      "SO-03": [],
+      "SO-04": [],
+      "SO-05": []
+    },
+    "tools_executed": false,
+    "foundation_qualified": false,
+    "limits": "Independent strict schema/native-call checks; semantic human review remains required."
+  }
+}

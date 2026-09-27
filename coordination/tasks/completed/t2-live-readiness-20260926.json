@@ -1,0 +1,35 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-26T09:35:57Z",
+  "evidence": [
+    "runs/2026-09-26-t2-live-readiness/preflight.md"
+  ],
+  "files_changed": [
+    "runs/2026-09-26-t2-live-readiness/preflight.md"
+  ],
+  "limitations": [
+    "No clean integrated checkout has a currently valid frozen T2 packet.",
+    "No paid compute was authorized or started."
+  ],
+  "model": null,
+  "next_action": "Repair the ordered integration and revalidate frozen protocol/template/evidence hashes before any fresh paid T2 request.",
+  "paths": [
+    "runs/2026-09-26-t2-live-readiness"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-26T09:35:06Z",
+  "status": "completed",
+  "summary": "Validate four-model T2 live qualification prerequisites without starting paid compute",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "t2-live-readiness-20260926",
+  "tests": [
+    "T2 packet revalidation: valid=false, ready=false, exit 1"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}
