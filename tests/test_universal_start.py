@@ -55,6 +55,7 @@ def test_only_an_online_idle_fully_labeled_runner_is_eligible():
         runner(busy=True),
         runner(labels=("self-hosted", "windows", "x64")),
         runner(),
+        runner(labels=("self-hosted", "Windows", "X64", "veronica-controller")),
     ]}
 
     def fake_run(command, **kwargs):
@@ -62,7 +63,7 @@ def test_only_an_online_idle_fully_labeled_runner_is_eligible():
         return completed(command, stdout=json.dumps(inventory))
 
     eligible = start.eligible_controller_runners("example/repo", run=fake_run)
-    assert [item["name"] for item in eligible] == ["veronica-controller"]
+    assert [item["name"] for item in eligible] == ["veronica-controller", "veronica-controller"]
 
 
 def test_dispatch_refuses_when_no_matching_controller_is_online():

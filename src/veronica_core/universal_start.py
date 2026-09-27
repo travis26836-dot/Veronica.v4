@@ -127,13 +127,13 @@ def eligible_controller_runners(repository: str, *, run=subprocess.run) -> list[
         runners = json.loads(result.stdout).get("runners", [])
     except json.JSONDecodeError as error:
         raise UniversalStartError("GitHub returned an invalid self-hosted runner inventory") from error
-    required = set(DEFAULT_RUNNER_LABELS)
+    required = {label.casefold() for label in DEFAULT_RUNNER_LABELS}
     return [
         runner
         for runner in runners
         if runner.get("status") == "online"
         and runner.get("busy") is False
-        and required.issubset({label.get("name") for label in runner.get("labels", [])})
+        and required.issubset({str(label.get("name", "")).casefold() for label in runner.get("labels", [])})
     ]
 
 
