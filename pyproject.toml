@@ -9,6 +9,9 @@ dependencies = [
   "uvicorn[standard]>=0.35,<1"
 ]
 
+[project.scripts]
+veronica-start = "veronica_core.universal_start:main"
+
 [dependency-groups]
 dev = [
   "pytest>=8.4,<9"

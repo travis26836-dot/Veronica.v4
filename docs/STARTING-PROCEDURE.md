@@ -27,6 +27,29 @@ setup, and do not claim setup is complete from a command's exit code alone.
 
 In Codex or Copilot, **"Start Veronica"**, **"launch Veronica"**, or **"boot Veronica"** invokes the `veronica-runpod-core` skill and its checked launcher. No manual Pod deployment is needed. This is an agent command, not a microphone listener or a new PowerShell `start` alias.
 
+### Universal cross-agent command
+
+The same owner wording now works across Codex, Copilot, Hermes, Manus, and a
+human terminal. Each agent routes the request through:
+
+```bash
+uv run veronica-start --authorize-start --duration-minutes 60 \
+  --requested-by <agent-name> \
+  --authorization-context "Owner requested Start Veronica for one hour."
+```
+
+`veronica-start` is a fail-closed router, not another deployment implementation.
+On the approved Windows controller it invokes the existing checked launcher;
+elsewhere it dispatches a protected GitHub Actions workflow to that controller.
+The controller is the only host that may create a Veronica Pod because it owns
+the Windows/WSL prerequisites, private SSH key, loopback UI, watchdog, and
+termination receipt. An agent host that has no controller path must report the
+blocker and must not substitute a direct `create-pod` MCP call. The one-time
+controller setup and exact runner labels are in
+[`UNIVERSAL-VERONICA-START.md`](UNIVERSAL-VERONICA-START.md).
+The router does not change the price split below: the default start request
+stays **$1.75/hour**, and the saved ceiling stays **$2.09/hour**.
+
 Owner-configured defaults (2026-08-30):
 
 | Setting | START behavior |
