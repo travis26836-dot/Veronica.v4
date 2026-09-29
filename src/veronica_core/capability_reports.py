@@ -410,21 +410,55 @@ def _definitions_only(source: str) -> str:
     return ast.unparse(tree)
 
 
+def _extract_function_source(text: str, function_name: str) -> str | None:
+    """Return dedented source for first top-level matching def, tolerating prose/other blocks."""
+    if not text or not function_name:
+        return None
+    lines = text.splitlines(keepends=True)
+    for i, line in enumerate(lines):
+        s = line.strip()
+        if s.startswith(f"def {function_name}(") or s.startswith(f"async def {function_name}("):
+            block = [line]
+            base = len(line) - len(line.lstrip())
+            for j in range(i + 1, len(lines)):
+                l = lines[j]
+                if l.strip():
+                    ind = len(l) - len(l.lstrip())
+                    if ind <= base:
+                        break
+                block.append(l)
+            return textwrap.dedent("".join(block)).strip()
+    return None
+
+
 def extract_python(message: dict | None, function_name: str) -> str | None:
     content = (message or {}).get("content") or ""
-    chunks = [textwrap.dedent(chunk).strip() for chunk in FENCE_RE.findall(content) if chunk.strip()]
-    merged = "\n\n".join(chunks) if chunks else textwrap.dedent(content).strip()
-    if f"def {function_name}" not in merged:
-        return None
-    try:
-        isolated = _definitions_only(merged)
-        tree = ast.parse(isolated)
-    except (SyntaxError, ValueError):
-        return None
-    names = {node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
-    if function_name not in names or not isolated.strip():
-        return None
-    return isolated
+    # Process fenced chunks separately to avoid merging explanatory code with target
+    for chunk in FENCE_RE.findall(content):
+        chunk = textwrap.dedent(chunk).strip()
+        if f"def {function_name}" in chunk or f"async def {function_name}" in chunk:
+            src = _extract_function_source(chunk, function_name)
+            if src:
+                try:
+                    isolated = _definitions_only(src)
+                    tree = ast.parse(isolated)
+                    names = {node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
+                    if function_name in names and isolated.strip():
+                        return isolated
+                except (SyntaxError, ValueError):
+                    continue
+    # Unfenced fallback: extract target def from whole content (handles prose after)
+    src = _extract_function_source(content, function_name)
+    if src:
+        try:
+            isolated = _definitions_only(src)
+            tree = ast.parse(isolated)
+            names = {node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            if function_name in names and isolated.strip():
+                return isolated
+        except (SyntaxError, ValueError):
+            pass
+    return None
 
 
 def _minimal_env(workdir: Path) -> dict[str, str]:
