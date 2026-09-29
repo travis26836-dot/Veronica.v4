@@ -1,0 +1,38 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T16:55:38Z",
+  "evidence": [
+    "command:active run startup_status reported phase=verified and inferenceVerified=true"
+  ],
+  "files_changed": [
+    "src/veronica_core/boot_status.py",
+    "tests/test_app.py"
+  ],
+  "limitations": [
+    "The active wrapper was not restarted, so this correction will appear in its browser endpoint on the next normal wrapper launch."
+  ],
+  "model": null,
+  "next_action": "Perform the dashboard browser preview only after a normal wrapper restart that does not interrupt the owner.",
+  "paths": [
+    "src/veronica_core/boot_status.py",
+    "tests/test_app.py"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T16:54:53Z",
+  "status": "completed",
+  "summary": "Reconcile boot dashboard inference status with real provider and wrapper smoke evidence",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "live-boot-smoke-reconciliation",
+  "tests": [
+    "uv run pytest tests/test_app.py -q (15 passed)",
+    "node --check src/veronica_core/static/app.js",
+    "git diff --check"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

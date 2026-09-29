@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "suite_id": "veronica-core-v1",
+  "suite_sha256": "ce1644f045953b66cd9b98883570d7404cac832cf06a6085453259af86aecf90",
+  "source_kind": "live_endpoint",
+  "started_at": "2026-09-23T17:23:01.937424+00:00",
+  "surface": "wrapper",
+  "base_url": "http://127.0.0.1:8010/v1",
+  "model_alias": "Veronica",
+  "mode": "coding",
+  "identity": {
+    "repository": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
+    "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f"
+  },
+  "identity_status": "supplied metadata; confirm against serving-run provenance",
+  "runtime_record_sha256": "1bf358dc0a5bcae94558a4d3afd773ed49784b0907f77b95b659e9899c98f6b7",
+  "plan": {
+    "case_count": 5,
+    "completion_calls": 5,
+    "repeats": 1,
+    "max_completion_tokens": 2560,
+    "max_tokens_per_call": 512,
+    "categories": {
+      "coding": 5
+    },
+    "input_tokens": "Not estimated; full multi-turn history is sent each turn",
+    "cost": "No dollar estimate: provider/GPU price and model speed must be supplied separately",
+    "creates_compute": false,
+    "executes_tools_or_generated_code": false,
+    "ai_judge_calls": 0,
+    "heldout": false,
+    "case_ids": [
+      "CD-01",
+      "CD-02",
+      "CD-03",
+      "CD-04",
+      "CD-05"
+    ],
+    "suite_id": "veronica-core-v1",
+    "suite_sha256": "ce1644f045953b66cd9b98883570d7404cac832cf06a6085453259af86aecf90",
+    "network_calls": 0
+  },
+  "max_seconds": 480.0,
+  "temperature": 0,
+  "top_p": 1,
+  "thinking": "default",
+  "seed": 42,
+  "inter_request_delay_seconds": 2.0,
+  "collection_status": "complete",
+  "automatic_judge": false,
+  "tools_executed": false,
+  "wrapper_source_sha256": {
+    "persona.py": "5ea5a5dbbb38854349a0dbfd6c7a789f56160eeaecc9e321c8488ea5325f119a",
+    "provider.py": "a5d4cb7a361900176609af27a9dd253470b0818dcc82877e4b9b49418182d084",
+    "app.py": "bb930548a0b1da86a2a28ae9972b6b9063e371e2aea5dd379471dc8cc63028bf"
+  },
+  "finished_at": "2026-09-23T17:25:14.794712+00:00"
+}

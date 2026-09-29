@@ -1,0 +1,35 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T15:37:05Z",
+  "evidence": [
+    "runs/2026-09-23T153339Z-start-veronica/decision.md"
+  ],
+  "files_changed": [
+    "runs/2026-09-23T153339Z-start-veronica",
+    "scripts/start-veronica.ps1"
+  ],
+  "limitations": [
+    "No eligible A100 stock; no inference occurred"
+  ],
+  "model": null,
+  "next_action": "Wait for eligible stock or obtain new explicit price/resource scope",
+  "paths": [
+    "runs/2026-09-23T153339Z-start-veronica"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T15:33:52Z",
+  "status": "completed",
+  "summary": "Owner-authorized one-hour A100 Veronica startup with 1.75 dollar hourly cap",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "start-veronica-one-hour-20260923b",
+  "tests": [
+    "Targeted launcher tests passed; live preflight safely refused unavailable A100 before creation"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

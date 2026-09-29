@@ -1,0 +1,34 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T18:00:53Z",
+  "evidence": [
+    "runs/2026-09-23T163608Z-start-veronica/termination.json"
+  ],
+  "files_changed": [
+    "runs/2026-09-23T163608Z-start-veronica"
+  ],
+  "limitations": [
+    "No model qualification claimed"
+  ],
+  "model": null,
+  "next_action": "Reconcile remaining launch record start-veronica-one-hour-20260923 after locating its authoritative run evidence",
+  "paths": [
+    "runs/2026-09-23T163608Z-start-veronica"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T16:36:16Z",
+  "status": "completed",
+  "summary": "Owner-authorized one-hour A100 then RTX PRO 6000 Blackwell secure fallback startup",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "start-veronica-fallback-20260923-163608",
+  "tests": [
+    "termination.json confirmedAbsent=true"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

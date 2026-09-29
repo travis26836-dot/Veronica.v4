@@ -47,6 +47,8 @@ termination receipt. An agent host that has no controller path must report the
 blocker and must not substitute a direct `create-pod` MCP call. The one-time
 controller setup and exact runner labels are in
 [`UNIVERSAL-VERONICA-START.md`](UNIVERSAL-VERONICA-START.md).
+The router does not change the price split below: the default start request
+stays **$1.75/hour**, and the saved ceiling stays **$2.09/hour**.
 
 Owner-configured defaults (2026-08-30):
 
@@ -54,7 +56,8 @@ Owner-configured defaults (2026-08-30):
 | --- | --- |
 | Duration | Ask **"How long would you like the pod to run? Default: 1 hour."**; **60 minutes** for default selection, or an explicit duration up to 24 hours |
 | Compute | **One NVIDIA A100-SXM4-80GB** preferred; if it has no stock in `EUR-IS-1`, an approved fallback GPU from `config/runpod-core.json`'s `pod.gpuFallbacks` may be substituted for that same single Pod (see "GPU fallback" below). No automatic *replacement Pod* after a failed/cancelled attempt. |
-| Hourly ceiling | **$1.75/hour maximum**; check the live offer and actual Pod rate |
+| Default start request | **$1.75/hour** for the primary A100. This is not the saved ceiling. |
+| Saved hourly ceiling | **$2.09/hour**, because the configured fallback GPU is capped at $2.09/hour. Do not collapse these two limits. Check the live offer and actual Pod rate. |
 | Persistent storage | Existing **300 GB volume `v53gj9flzs` in `EUR-IS-1`**, mounted at `/workspace`; preserve it on shutdown |
 | Model | Pinned Candidate A from `config/runpod-core.json`, reused and hash-checked on the volume |
 | Shutdown | Supervised local watchdog; keep this Windows computer awake and connected until confirmed termination |
@@ -62,14 +65,11 @@ Owner-configured defaults (2026-08-30):
 
 The selected window starts before Pod creation and includes provisioning, validation, and model loading. It is not a promise of one full hour of chat after loading. Persistent storage charges are separate from the GPU hourly ceiling. Sleep prevention cannot guarantee connectivity or shutdown during a computer/network failure.
 
-## GPU fallback (2026-09-06)
+## GPU fallback
 
-`EUR-IS-1` GPU stock fluctuates and can briefly show `none` for the primary A100. Since the persistent model volume is region-locked to that data center, the fix is not to change data center but to allow an explicitly configured substitute GPU in the *same* data center for the *same* single Pod. `config/runpod-core.json`'s `pod.gpuFallbacks` lists ordered candidates, each with its own `cloudType`, `minMemoryGb`, and `maxHourlyUsd` cap (never above the saved $1.75/hour ceiling). The current executable order is:
+`EUR-IS-1` GPU stock can show no A100 availability. The persistent model volume is region-locked to that data center, so a start may use an ordered substitute GPU from `config/runpod-core.json` for the same single Pod. Every configured fallback must specify its cloud type, minimum VRAM, and a cap at or below the saved **$2.09/hour** ceiling.
 
-1. **NVIDIA A100-SXM4-80GB** (primary, Secure Cloud, up to $1.75/hour)
-2. **NVIDIA H100 80GB HBM3** (fallback, Secure Cloud, up to $1.75/hour)
-
-`scripts/runpod_core.py`'s `preflight()` checks live stock and price for the primary GPU first, then each fallback in order, and selects the first one with stock within its own price cap. `scripts/supervised_runpod.py` creates the Pod using whichever GPU/cloud type preflight actually selected, and records `usedFallbackGpu`/`gpuTypeId`/`cloudType` in `preflight.json` and `supervised-state.json`. Stock at the approved price is never assumed: if neither configured GPU is available within the $1.75/hour cap, creation remains blocked. A `reliabilityNote` is surfaced in the evidence and printed as a warning whenever a fallback is actually used. This does not relax the one-Pod, current-approval, or no-automatic-replacement-Pod rules — it only widens which single Pod the one approved attempt is allowed to create.
+The current profile uses **NVIDIA A100-SXM4-80GB** as primary and **NVIDIA RTX PRO 6000 Blackwell Server Edition** as its configured fallback. The default start request stays at **$1.75/hour**. The fallback is eligible only when its live offer is at or below its own **$2.09/hour** cap. `scripts/runpod_core.py` checks live stock and price for the primary first, then the fallback, and records the actual selected GPU and cloud type in the run evidence. A fallback does not authorize a second Pod, a rate above $2.09/hour, or automatic replacement after failure.
 
 An explicit current **"Start Veronica"** request under these settings supplies authorization for **that one run**. Ask the single duration question and wait for the answer unless the start request already supplies the duration. "Default", "usual", or Enter in the terminal picker means 60 minutes; silence in chat is not permission to launch. Announce the selected scope and record the request in a new one-use approval file. Do not repeat the spending-limit or supervision questions. A configuration discussion, a request for a dry run, or an old approval file does not authorize deployment. Other questions are only needed for an out-of-scope change or unclear intent. Today's configuration work did not authorize a paid deployment.
 
@@ -122,7 +122,7 @@ The reusable startup worked: Candidate A produced real API and UI responses, and
 
 On 2026-08-30, RunPod CLI was updated from 2.9.0 to 2.12.0. The official [removal report](https://github.com/runpod/runpodctl/pull/330) confirms that `--stop-after` and `--terminate-after` never enforced shutdown: the backend accepted them and continued billing. [Restoration PR 331](https://github.com/runpod/runpodctl/pull/331) depends on a backend fix. Old instructions claiming these flags protect a run are superseded.
 
-The owner initially required automatic termination, then accepted **supervision and explicit shutdown** after the missing platform guarantee was explained. The historical first-chat authorization covered one Pod, at most $1.60/hour, at most two hours, and is consumed. The later START configuration above sets one hour by default, a $1.75/hour ceiling, and the accepted awake/connected supervision arrangement. New runs still need a current actual start request; configuration alone never creates a Pod.
+The owner initially required automatic termination, then accepted **supervision and explicit shutdown** after the missing platform guarantee was explained. The historical first-chat authorization covered one Pod, at most $1.60/hour, at most two hours, and is consumed. The later START configuration above sets one hour by default, a $1.75/hour default start request, and a $2.09/hour saved ceiling so the fallback remains valid, plus the accepted awake/connected supervision arrangement. New runs still need a current actual start request; configuration alone never creates a Pod.
 
 On 2026-09-06, a fresh authorized START attempt (`runs/2026-09-06T064841Z-start-veronica/`) exposed and fixed two real defects, then hit a live infrastructure condition:
 

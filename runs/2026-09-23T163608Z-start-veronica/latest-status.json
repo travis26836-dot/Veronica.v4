@@ -1,0 +1,14 @@
+{
+  "id": "1m3a9mk6i0chhn",
+  "name": "veronica-core-20260923-163648-ffb4089a",
+  "desiredStatus": "RUNNING",
+  "runtimeStatus": "running",
+  "costPerHr": 1.59,
+  "publicIp": null,
+  "portMappings": null,
+  "deadlineUtc": "2026-09-23T17:36:48.254923+00:00",
+  "watchdog": {
+    "atUtc": "2026-09-23T17:27:56.228182+00:00",
+    "pid": 103
+  }
+}

@@ -58,7 +58,7 @@ def test_explicit_options_override_defaults_without_raising_saved_ceiling(launch
     plan = json.loads(result.stdout)
     assert plan["durationMinutes"] == 120
     assert plan["maxHourlyUsd"] == 1.6
-    assert plan["maximumHourlyUsd"] == 1.75
+    assert plan["maximumHourlyUsd"] == 2.09
 
 
 def test_t2_profile_is_explicit_and_visible_in_plan(launcher):

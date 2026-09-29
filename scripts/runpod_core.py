@@ -117,6 +117,12 @@ def validate_profile_safety(profile):
     maximum = safety.get("maximumHourlyUsd")
     if isinstance(maximum, bool) or not isinstance(maximum, (int, float, Decimal)) or not math.isfinite(maximum) or maximum <= 0:
         raise ValueError("The saved hourly spending ceiling must be finite and positive")
+    default_hourly = safety.get("defaultHourlyUsd")
+    if default_hourly is not None and (
+        isinstance(default_hourly, bool) or not isinstance(default_hourly, (int, float, Decimal))
+        or not math.isfinite(default_hourly) or default_hourly <= 0 or default_hourly > maximum
+    ):
+        raise ValueError("The default hourly start request must be finite, positive, and within the saved ceiling")
     if safety.get("requirePerRunApproval") is not True or safety.get("allowAutomaticReplacementPod") is not False:
         raise ValueError("Every new Pod requires fresh approval and automatic replacement must remain disabled")
     if safety.get("defaultShutdownMode") != "supervised-with-local-backup":

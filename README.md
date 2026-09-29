@@ -6,6 +6,9 @@ This repository is the canonical source of truth for the product, wrapper, tests
 
 ## Project contract
 
+**Ongoing development:** [Project workflow](docs/PROJECT-WORKFLOW.md) and
+[goal register](docs/GOALS.md) define bounded CORE goals and recurring improvements.
+
 **Objective:** Deliver one impressive general-purpose AI named Veronica that retains the base model's capabilities and can be extended into many applications.
 
 **Owner:** Raine makes product, personality, model, cost, and release decisions.

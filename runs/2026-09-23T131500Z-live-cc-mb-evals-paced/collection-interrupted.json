@@ -1,0 +1,6 @@
+{
+  "atUtc": "2026-09-23T17:17:38.6368330+00:00",
+  "limitation": "No model behavior conclusion from this run.",
+  "completedSamples": [],
+  "reason": "Stopped local evaluator before any sample was recorded after local tunnel became unreachable. Wrapper health was later restored."
+}

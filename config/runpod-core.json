@@ -19,11 +19,11 @@
     "cloudType": "SECURE",
     "gpuFallbacks": [
       {
-        "gpuTypeId": "NVIDIA H100 80GB HBM3",
+        "gpuTypeId": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
         "cloudType": "SECURE",
-        "minMemoryGb": 80,
-        "maxHourlyUsd": 1.75,
-        "reliabilityNote": "H100 SXM - close to A100 in VRAM and superior tensor performance for the chosen model."
+        "minMemoryGb": 96,
+        "maxHourlyUsd": 2.09,
+        "reliabilityNote": "Configured A100 fallback. Eligible only at or below its own 2.09 USD/hour cap. The saved ceiling is 2.09 so this fallback stays valid; the default start request remains 1.75."
       }
     ],
     "containerDiskInGb": 30,
@@ -52,7 +52,8 @@
   "terminationEvidence": "https://github.com/runpod/runpodctl/pull/330",
   "requirePerRunApproval": true,
   "allowAutomaticReplacementPod": false,
-  "maximumHourlyUsd": 1.75,
+  "maximumHourlyUsd": 2.09,
+  "defaultHourlyUsd": 1.75,
   "defaultShutdownMode": "supervised-with-local-backup",
   "defaultDurationMinutes": 60,
   "presetDurationMinutes": [60, 120, 180],

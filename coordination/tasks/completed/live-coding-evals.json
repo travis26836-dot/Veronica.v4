@@ -1,0 +1,34 @@
+{
+  "agent": "codex",
+  "branch": "feature/complete-todo-milestones",
+  "ended_at": "2026-09-23T08:53:01Z",
+  "evidence": [
+    "runs/2026-09-23-live-coding/decision.md"
+  ],
+  "files_changed": [
+    "runs/2026-09-23-live-coding"
+  ],
+  "limitations": [
+    "Public fixtures only; extraction failures preserved; truthfulness and truncation remain"
+  ],
+  "model": null,
+  "next_action": "Review model defects and repair extraction separately; no qualification claim",
+  "paths": [
+    "runs/2026-09-23-live-coding"
+  ],
+  "repo_commit_after": "5ab89b82ee112902d6b39b284573d69ee8559819",
+  "repo_commit_before": "ac0433611954ec3f2d47df65b141cbd478f823fe",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T08:48:09Z",
+  "status": "completed",
+  "summary": "Five live coding cases and isolated host-scored execution",
+  "supersedes": [],
+  "surface": "desktop",
+  "task_id": "live-coding-evals",
+  "tests": [
+    "Five live responses; automatic and reviewed extraction sandbox reports, four function fixtures pass, CD-05 boolean validation fails"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

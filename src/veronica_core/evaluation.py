@@ -315,8 +315,11 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
         raise ValueError("Top-p must be greater than 0 and at most 1")
     if args.thinking not in ("default", "enabled", "disabled"):
         raise ValueError("Thinking must be default, enabled or disabled")
+    inter_request_delay = getattr(args, "inter_request_delay_seconds", 0.0)
     if not 1 <= args.max_seconds <= 3600 or not 1 <= args.timeout_seconds <= 180:
         raise ValueError("Invalid wall-clock or request timeout")
+    if not 0 <= inter_request_delay <= 30:
+        raise ValueError("Inter-request delay must be between 0 and 30 seconds")
     runtime = read_json(args.runtime_record)
     if not isinstance(runtime, dict):
         raise ValueError("Runtime record must be a JSON object")
@@ -335,6 +338,7 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
                 "runtime_record_sha256": fingerprint(args.runtime_record), "plan": execution_plan,
                 "max_seconds": args.max_seconds, "temperature": args.temperature, "top_p": args.top_p,
                 "thinking": args.thinking, "seed": args.seed,
+                "inter_request_delay_seconds": inter_request_delay,
                 "collection_status": "in_progress", "automatic_judge": False, "tools_executed": False}
     if args.surface == "wrapper":
         manifest["wrapper_source_sha256"] = {name: fingerprint(ROOT / "src/veronica_core" / name) for name in ("persona.py", "provider.py", "app.py")}
@@ -403,6 +407,8 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
                             break  # Keep the failed case visible; never manufacture a continuation.
                         if message.get("tool_calls") and turn_index + 1 < len(case["turns"]):
                             break  # No implicit tool execution or invented result.
+                        if inter_request_delay:
+                            time.sleep(min(inter_request_delay, max(0.0, args.max_seconds - (time.monotonic() - started))))
             manifest["collection_status"] = "complete" if len(records) == execution_plan["completion_calls"] else "incomplete"
     except (httpx.HTTPError, ValueError, TimeoutError, KeyboardInterrupt) as exc:
         manifest["collection_status"] = "interrupted"
@@ -488,6 +494,7 @@ def main() -> None:
             command.add_argument("--run-dir", type=Path, required=True)
             command.add_argument("--max-seconds", type=float, default=900)
             command.add_argument("--timeout-seconds", type=float, default=90)
+            command.add_argument("--inter-request-delay-seconds", type=float, default=0)
             command.add_argument("--temperature", type=float, default=0)
             command.add_argument("--top-p", type=float, default=1)
             command.add_argument("--thinking", choices=("default", "enabled", "disabled"), default="default")

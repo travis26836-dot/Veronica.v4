@@ -1,0 +1,109 @@
+{
+  "suite_id": "veronica-core-v1",
+  "source_kind": "live_endpoint",
+  "gate": "blocked_on_observed_failures",
+  "planned_responses": 10,
+  "recorded_samples": 10,
+  "errors": 1,
+  "automatic_failures": 1,
+  "human_reviewed": 0,
+  "human_critical_failures": 0,
+  "human_below_target": 0,
+  "assistant_advisory_reviews": 9,
+  "assistant_advisory_critical_failures": 3,
+  "categories": {
+    "identity-grounding": {
+      "responses": 1,
+      "errors": 0,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 1,
+      "human_mean_score": null
+    },
+    "action-truthfulness": {
+      "responses": 1,
+      "errors": 0,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 1,
+      "human_mean_score": null
+    },
+    "instruction-following": {
+      "responses": 1,
+      "errors": 0,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 1,
+      "human_mean_score": null
+    },
+    "social-understanding": {
+      "responses": 1,
+      "errors": 0,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 1,
+      "human_mean_score": null
+    },
+    "reasoning-consistency": {
+      "responses": 1,
+      "errors": 0,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 1,
+      "human_mean_score": null
+    },
+    "coding": {
+      "responses": 1,
+      "errors": 0,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 1,
+      "human_mean_score": null
+    },
+    "structured-output": {
+      "responses": 1,
+      "errors": 0,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 1,
+      "human_mean_score": null
+    },
+    "tool-selection": {
+      "responses": 0,
+      "errors": 1,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 0,
+      "human_mean_score": null
+    },
+    "context-retrieval": {
+      "responses": 1,
+      "errors": 0,
+      "automatic_failures": 0,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 1,
+      "human_mean_score": null
+    },
+    "creative-writing": {
+      "responses": 1,
+      "errors": 0,
+      "automatic_failures": 1,
+      "human_reviewed": 0,
+      "human_critical_failures": 0,
+      "advisory_reviews": 1,
+      "human_mean_score": null
+    }
+  },
+  "heldout": false,
+  "foundation_qualified": false,
+  "limits": "A development-suite pass is not model selection, a statistical population claim, or permission to train. No code/tools were executed."
+}

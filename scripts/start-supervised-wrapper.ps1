@@ -19,9 +19,11 @@ $env:VERONICA_UPSTREAM_BASE_URL = 'http://127.0.0.1:' + $runProfile.runtime.loca
 $env:VERONICA_UPSTREAM_MODEL = $runProfile.publicAlias
 $env:VERONICA_PUBLIC_MODEL = $runProfile.publicAlias
 $env:VERONICA_PROVIDER_TIMEOUT_SECONDS = '180'
+$env:VERONICA_RUN_DIR = $resolvedRun
 Set-Location -LiteralPath $projectRoot
 try {
     & (Join-Path $projectRoot '.venv\Scripts\python.exe') -m uvicorn veronica_core.app:create_app --factory --host 127.0.0.1 --port $Port
 } finally {
     Remove-Item Env:VERONICA_UPSTREAM_API_KEY -ErrorAction SilentlyContinue
+    Remove-Item Env:VERONICA_RUN_DIR -ErrorAction SilentlyContinue
 }

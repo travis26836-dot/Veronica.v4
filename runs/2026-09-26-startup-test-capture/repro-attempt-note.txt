@@ -1,0 +1,1 @@
+Superseded: PowerShell redirection wrapper remained alive after its child test process exited and did not produce an exit file. It is not used as test evidence.

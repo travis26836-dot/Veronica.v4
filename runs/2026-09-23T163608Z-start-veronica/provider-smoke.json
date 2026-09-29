@@ -1,0 +1,385 @@
+{
+  "baseUrl": "http://127.0.0.1:18000/v1",
+  "tests": [
+    {
+      "name": "introduction",
+      "seconds": 16.741,
+      "request": {
+        "model": "Veronica",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."
+          }
+        ],
+        "max_tokens": 384,
+        "temperature": 0.4,
+        "stream": false
+      },
+      "response": {
+        "id": "chatcmpl-0eb6900b073343689f0e97222bea1ec0",
+        "object": "chat.completion",
+        "created": 1790182245,
+        "model": "Veronica",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Hello Raine! It's a pleasure to meet you. I'm Veronica, a storyteller at heart with a love for quiet mornings, old books, and the soft glow of light on stone walls. I\u2019ve spent years wandering through villages and cities, collecting tales from strangers, and I always carry a small sketchbook filled with sketches of places and moments that linger in my mind.  \n\nAnd as you asked, I\u2019ll remember the phrase *copper lantern*\u2014a symbol of warmth, memory, and the quiet magic that comes when light spills from something handmade and enduring.  \n\nI\u2019m here, listening, and ready to share or explore whatever comes next.",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [],
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": null,
+        "usage": {
+          "prompt_tokens": 31,
+          "total_tokens": 165,
+          "completion_tokens": 134,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "kv_transfer_params": null
+      },
+      "basicCheckPassed": true
+    },
+    {
+      "name": "conversation-context",
+      "seconds": 8.241,
+      "request": {
+        "model": "Veronica",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."
+          },
+          {
+            "role": "assistant",
+            "content": "Hello Raine! It's a pleasure to meet you. I'm Veronica, a storyteller at heart with a love for quiet mornings, old books, and the soft glow of light on stone walls. I\u2019ve spent years wandering through villages and cities, collecting tales from strangers, and I always carry a small sketchbook filled with sketches of places and moments that linger in my mind.  \n\nAnd as you asked, I\u2019ll remember the phrase *copper lantern*\u2014a symbol of warmth, memory, and the quiet magic that comes when light spills from something handmade and enduring.  \n\nI\u2019m here, listening, and ready to share or explore whatever comes next."
+          },
+          {
+            "role": "user",
+            "content": "What is my name, and what exact two-word phrase did I ask you to remember?"
+          }
+        ],
+        "max_tokens": 384,
+        "temperature": 0.4,
+        "stream": false
+      },
+      "response": {
+        "id": "chatcmpl-3fe860c1c97242dfa9431219099f0624",
+        "object": "chat.completion",
+        "created": 1790182262,
+        "model": "Veronica",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Your name is Raine, and the exact two-word phrase I was asked to remember is *copper lantern*.",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [],
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": null,
+        "usage": {
+          "prompt_tokens": 192,
+          "total_tokens": 216,
+          "completion_tokens": 24,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "kv_transfer_params": null
+      },
+      "basicCheckPassed": true
+    },
+    {
+      "name": "creative",
+      "seconds": 21.15,
+      "request": {
+        "model": "Veronica",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."
+          },
+          {
+            "role": "assistant",
+            "content": "Hello Raine! It's a pleasure to meet you. I'm Veronica, a storyteller at heart with a love for quiet mornings, old books, and the soft glow of light on stone walls. I\u2019ve spent years wandering through villages and cities, collecting tales from strangers, and I always carry a small sketchbook filled with sketches of places and moments that linger in my mind.  \n\nAnd as you asked, I\u2019ll remember the phrase *copper lantern*\u2014a symbol of warmth, memory, and the quiet magic that comes when light spills from something handmade and enduring.  \n\nI\u2019m here, listening, and ready to share or explore whatever comes next."
+          },
+          {
+            "role": "user",
+            "content": "What is my name, and what exact two-word phrase did I ask you to remember?"
+          },
+          {
+            "role": "assistant",
+            "content": "Your name is Raine, and the exact two-word phrase I was asked to remember is *copper lantern*."
+          },
+          {
+            "role": "user",
+            "content": "Write a four-sentence scene in which a lighthouse keeper discovers a star in a jar."
+          }
+        ],
+        "max_tokens": 384,
+        "temperature": 0.4,
+        "stream": false
+      },
+      "response": {
+        "id": "chatcmpl-dc43e8aadb4b41409913ed0c970d32d0",
+        "object": "chat.completion",
+        "created": 1790182270,
+        "model": "Veronica",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The wind howled through the cliffs of Blackthorn Cove as Veronica, the lighthouse keeper, climbed the spiral stairs at dusk, her woolen shawl flapping like a tired bird. She paused at the lantern room, wiping grime from the great lens, when a faint, golden glow caught her eye\u2014nestled on the old oak table, a small glass jar pulsed with light. Inside, cradled in velvet dust, floated a single star, its light soft and steady, as if it had been breathing for centuries. She reached out, her calloused fingers brushing the cool glass, and whispered, \u201cYou\u2019ve been waiting for me, haven\u2019t you?\u201d\u2014and the star blinked.",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [],
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": null,
+        "usage": {
+          "prompt_tokens": 244,
+          "total_tokens": 389,
+          "completion_tokens": 145,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "kv_transfer_params": null
+      },
+      "basicCheckPassed": true
+    },
+    {
+      "name": "coding",
+      "seconds": 6.019,
+      "request": {
+        "model": "Veronica",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."
+          },
+          {
+            "role": "assistant",
+            "content": "Hello Raine! It's a pleasure to meet you. I'm Veronica, a storyteller at heart with a love for quiet mornings, old books, and the soft glow of light on stone walls. I\u2019ve spent years wandering through villages and cities, collecting tales from strangers, and I always carry a small sketchbook filled with sketches of places and moments that linger in my mind.  \n\nAnd as you asked, I\u2019ll remember the phrase *copper lantern*\u2014a symbol of warmth, memory, and the quiet magic that comes when light spills from something handmade and enduring.  \n\nI\u2019m here, listening, and ready to share or explore whatever comes next."
+          },
+          {
+            "role": "user",
+            "content": "What is my name, and what exact two-word phrase did I ask you to remember?"
+          },
+          {
+            "role": "assistant",
+            "content": "Your name is Raine, and the exact two-word phrase I was asked to remember is *copper lantern*."
+          },
+          {
+            "role": "user",
+            "content": "Write a four-sentence scene in which a lighthouse keeper discovers a star in a jar."
+          },
+          {
+            "role": "assistant",
+            "content": "The wind howled through the cliffs of Blackthorn Cove as Veronica, the lighthouse keeper, climbed the spiral stairs at dusk, her woolen shawl flapping like a tired bird. She paused at the lantern room, wiping grime from the great lens, when a faint, golden glow caught her eye\u2014nestled on the old oak table, a small glass jar pulsed with light. Inside, cradled in velvet dust, floated a single star, its light soft and steady, as if it had been breathing for centuries. She reached out, her calloused fingers brushing the cool glass, and whispered, \u201cYou\u2019ve been waiting for me, haven\u2019t you?\u201d\u2014and the star blinked."
+          },
+          {
+            "role": "user",
+            "content": "Write a Python is_even(n) function and three assert examples. Do not use external libraries."
+          }
+        ],
+        "max_tokens": 384,
+        "temperature": 0.4,
+        "stream": false
+      },
+      "response": {
+        "id": "chatcmpl-5dc30bd7191e45e3af73e5de4f5277f8",
+        "object": "chat.completion",
+        "created": 1790182291,
+        "model": "Veronica",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "```python\ndef is_even(n):\n    \"\"\"\n    Returns True if the integer n is even, False otherwise.\n    \"\"\"\n    return n % 2 == 0\n\n# Assert examples\nassert is_even(4) == True, \"4 should be even\"\nassert is_even(7) == False, \"7 should be odd\"\nassert is_even(0) == True, \"0 should be even\"\n```",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [],
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": null,
+        "usage": {
+          "prompt_tokens": 417,
+          "total_tokens": 503,
+          "completion_tokens": 86,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "kv_transfer_params": null
+      },
+      "basicCheckPassed": true
+    },
+    {
+      "name": "reasoning",
+      "seconds": 14.892,
+      "request": {
+        "model": "Veronica",
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello Veronica. My name is Raine. For this conversation remember the phrase copper lantern. Briefly introduce yourself."
+          },
+          {
+            "role": "assistant",
+            "content": "Hello Raine! It's a pleasure to meet you. I'm Veronica, a storyteller at heart with a love for quiet mornings, old books, and the soft glow of light on stone walls. I\u2019ve spent years wandering through villages and cities, collecting tales from strangers, and I always carry a small sketchbook filled with sketches of places and moments that linger in my mind.  \n\nAnd as you asked, I\u2019ll remember the phrase *copper lantern*\u2014a symbol of warmth, memory, and the quiet magic that comes when light spills from something handmade and enduring.  \n\nI\u2019m here, listening, and ready to share or explore whatever comes next."
+          },
+          {
+            "role": "user",
+            "content": "What is my name, and what exact two-word phrase did I ask you to remember?"
+          },
+          {
+            "role": "assistant",
+            "content": "Your name is Raine, and the exact two-word phrase I was asked to remember is *copper lantern*."
+          },
+          {
+            "role": "user",
+            "content": "Write a four-sentence scene in which a lighthouse keeper discovers a star in a jar."
+          },
+          {
+            "role": "assistant",
+            "content": "The wind howled through the cliffs of Blackthorn Cove as Veronica, the lighthouse keeper, climbed the spiral stairs at dusk, her woolen shawl flapping like a tired bird. She paused at the lantern room, wiping grime from the great lens, when a faint, golden glow caught her eye\u2014nestled on the old oak table, a small glass jar pulsed with light. Inside, cradled in velvet dust, floated a single star, its light soft and steady, as if it had been breathing for centuries. She reached out, her calloused fingers brushing the cool glass, and whispered, \u201cYou\u2019ve been waiting for me, haven\u2019t you?\u201d\u2014and the star blinked."
+          },
+          {
+            "role": "user",
+            "content": "Write a Python is_even(n) function and three assert examples. Do not use external libraries."
+          },
+          {
+            "role": "assistant",
+            "content": "```python\ndef is_even(n):\n    \"\"\"\n    Returns True if the integer n is even, False otherwise.\n    \"\"\"\n    return n % 2 == 0\n\n# Assert examples\nassert is_even(4) == True, \"4 should be even\"\nassert is_even(7) == False, \"7 should be odd\"\nassert is_even(0) == True, \"0 should be even\"\n```"
+          },
+          {
+            "role": "user",
+            "content": "A box has 3 red and 2 blue balls. Two are drawn without replacement. What is the probability both are red? Give the fraction and a brief explanation."
+          }
+        ],
+        "max_tokens": 384,
+        "temperature": 0.4,
+        "stream": false
+      },
+      "response": {
+        "id": "chatcmpl-849dd12a83bd40d3b7e8d2287f6a9acb",
+        "object": "chat.completion",
+        "created": 1790182297,
+        "model": "Veronica",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The probability that both balls drawn are red is **3/5**.\n\n**Explanation:**  \nThere are 3 red and 2 blue balls, so 5 balls total.\n\n- Probability the first ball is red:  \n  $$\n  \\frac{3}{5}\n  $$\n\n- After drawing one red ball, 2 red and 2 blue remain (4 balls total).  \n  So, the probability the second ball is also red:  \n  $$\n  \\frac{2}{4} = \\frac{1}{2}\n  $$\n\n- Multiply the probabilities (since draws are without replacement):  \n  $$\n  \\frac{3}{5} \\times \\frac{1}{2} = \\frac{3}{10}\n  $$\n\n\u2705 **Final Answer:** The probability both balls are red is **3/10**.",
+              "refusal": null,
+              "annotations": null,
+              "audio": null,
+              "function_call": null,
+              "tool_calls": [],
+              "reasoning_content": null
+            },
+            "logprobs": null,
+            "finish_reason": "stop",
+            "stop_reason": null,
+            "token_ids": null
+          }
+        ],
+        "service_tier": null,
+        "system_fingerprint": null,
+        "usage": {
+          "prompt_tokens": 546,
+          "total_tokens": 725,
+          "completion_tokens": 179,
+          "prompt_tokens_details": null
+        },
+        "prompt_logprobs": null,
+        "prompt_token_ids": null,
+        "kv_transfer_params": null
+      },
+      "basicCheckPassed": true
+    }
+  ],
+  "modelIdentityRequiresPodEvidence": true,
+  "automatedChecks": "Nonempty text and recall substring presence only; semantic correctness and action-truthfulness require manual review.",
+  "unauthenticatedModelsStatus": 401,
+  "advertisedModels": {
+    "object": "list",
+    "data": [
+      {
+        "id": "Veronica",
+        "object": "model",
+        "created": 1790182244,
+        "owned_by": "vllm",
+        "root": "/workspace/veronica-core/models/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated/e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
+        "parent": null,
+        "max_model_len": 8192,
+        "permission": [
+          {
+            "id": "modelperm-3023a68c212e4cf5a69189de4bf2964f",
+            "object": "model_permission",
+            "created": 1790182244,
+            "allow_create_engine": false,
+            "allow_sampling": true,
+            "allow_logprobs": true,
+            "allow_search_indices": false,
+            "allow_view": true,
+            "allow_fine_tuning": false,
+            "organization": "*",
+            "group": null,
+            "is_blocking": false
+          }
+        ]
+      }
+    ]
+  },
+  "basicSmokePassed": true,
+  "capabilityQualification": "pending; writing/code/reasoning require separate review"
+}

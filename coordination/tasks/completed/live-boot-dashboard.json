@@ -1,0 +1,46 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T16:53:57Z",
+  "evidence": [
+    "command:GET /api/startup-status returned 200 and 11 evidence-backed events"
+  ],
+  "files_changed": [
+    "scripts/start-supervised-wrapper.ps1",
+    "src/veronica_core/app.py",
+    "src/veronica_core/static/app.js",
+    "src/veronica_core/static/index.html",
+    "src/veronica_core/static/styles.css",
+    "tests/test_app.py"
+  ],
+  "limitations": [
+    "No live browser hot-reload was performed because restarting the active owner wrapper would interrupt the current session."
+  ],
+  "model": null,
+  "next_action": "Review the dashboard in the next normal wrapper launch or restart it only when the owner is not using the active session.",
+  "paths": [
+    "scripts/start-supervised-wrapper.ps1",
+    "src/veronica_core/app.py",
+    "src/veronica_core/static/app.js",
+    "src/veronica_core/static/index.html",
+    "src/veronica_core/static/styles.css",
+    "tests/test_app.py"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T16:50:01Z",
+  "status": "completed",
+  "summary": "Implement an evidence-backed terminal-style live startup dashboard and API for the Veronica wrapper",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "live-boot-dashboard",
+  "tests": [
+    "uv run pytest tests/test_app.py -q (15 passed)",
+    "node --check src/veronica_core/static/app.js",
+    "git diff --check"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

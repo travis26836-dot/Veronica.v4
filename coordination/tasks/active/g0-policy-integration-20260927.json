@@ -1,0 +1,34 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": null,
+  "evidence": [],
+  "files_changed": [],
+  "limitations": [
+    "An active clean-integration task in C:\\Users\\raine\\.codex\\worktrees\\core-finish-integration already owns the same policy and startup-test paths."
+  ],
+  "model": null,
+  "next_action": "Let g0-launch-policy-integration-20260927 finish the clean-branch policy integration, then review its handoff.",
+  "paths": [
+    "config/runpod-core.json",
+    "config/runpod-t2-alternative.json",
+    "docs/STARTING-PROCEDURE.md",
+    "runs/2026-09-26-startup-test-capture",
+    "tests/test_start_veronica.py"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [
+    "No duplicate policy integration was applied after the cross-worktree claim was discovered."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-27T09:03:32Z",
+  "status": "blocked",
+  "summary": "Cleanly integrate completed A100 price policy and startup test evidence",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "g0-policy-integration-20260927",
+  "tests": [],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

@@ -1,0 +1,39 @@
+{
+  "agent": "codex",
+  "branch": "feature/complete-todo-milestones",
+  "ended_at": "2026-09-23T08:56:57Z",
+  "evidence": [
+    "runs/2026-09-23-t2-readiness-review/correction.md",
+    "runs/2026-09-23-cp4-dependency-repair/decision.md"
+  ],
+  "files_changed": [
+    "TODO.md",
+    "docs/CURRENT-STATE.md",
+    "runs/2026-09-23-t2-readiness-review/correction.md"
+  ],
+  "limitations": [
+    "Original ready claim superseded; active runtime remains diagnostic-only"
+  ],
+  "model": null,
+  "next_action": "Review diagnostic failures and reconcile chat-template provenance",
+  "paths": [
+    "TODO.md",
+    "docs/CURRENT-STATE.md",
+    "runs/2026-09-23-t2-readiness-review"
+  ],
+  "repo_commit_after": "5ab89b82ee112902d6b39b284573d69ee8559819",
+  "repo_commit_before": "ac22d3c7ee87669a153ecd0119ee71a0cb9b4c6f",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T07:37:33Z",
+  "status": "completed",
+  "summary": "Combine CP2 and CP3 evidence and determine M1 CP4 readiness",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "t2-readiness-review",
+  "tests": [
+    "Repaired CP4 validator rejects original complete-only dependencies; correction recorded"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

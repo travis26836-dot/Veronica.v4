@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import subprocess
 from typing import Any
@@ -7,6 +8,7 @@ from typing import Any
 from fastapi.testclient import TestClient
 
 from veronica_core.app import create_app, rewrite_sse_line
+from veronica_core.boot_status import startup_status
 from veronica_core.config import Settings
 from veronica_core.provider import ProviderError, StreamingNotSupported
 
@@ -93,6 +95,45 @@ def test_health_distinguishes_wrapper_and_provider() -> None:
     offline = TestClient(create_app(SETTINGS, OfflineProvider())).get("/api/health")
     assert offline.status_code == 200
     assert offline.json()["status"] == "wrapper_only"
+
+
+def test_startup_dashboard_uses_only_actual_safe_evidence(tmp_path: Path, monkeypatch) -> None:
+    run = tmp_path / "runs" / "authorized-run"
+    run.mkdir(parents=True)
+    (run / "supervised-state.json").write_text(json.dumps({"creationAttempted": True, "podId": "private-pod", "deadlineUtc": "2030-01-01T00:00:00Z"}))
+    (run / "preflight.json").write_text(json.dumps({"safeToCreate": True, "gpu": "NVIDIA A100", "listedHourlyUsd": 1.59}))
+    (run / "provider-ready.json").write_text(json.dumps({"ready": False, "waitingReason": "Model shards loading"}))
+    (run / "provider-smoke.json").write_text(json.dumps({"basicSmokePassed": True}))
+    (run / "wrapper-smoke.json").write_text(json.dumps({"basicSmokePassed": True}))
+    (run / "bootstrap-start.json").write_text(json.dumps({"privateKeyFile": "/private/key.json", "apiKey": "must-not-leak"}))
+    monkeypatch.setenv("VERONICA_RUN_DIR", str(run))
+
+    body = startup_status(tmp_path / "runs")
+
+    assert body["available"] is True
+    assert body["runId"] == "authorized-run"
+    assert any(event["id"] == "gpu" and "$1.59/hour" in event["detail"] for event in body["events"])
+    assert any(event["id"] == "provider" and event["state"] == "running" for event in body["events"])
+    assert body["inferenceVerified"] is True
+    assert body["phase"] == "verified"
+    assert any(event["id"] == "inference" and event["state"] == "complete" for event in body["events"])
+    serialized = json.dumps(body)
+    assert "private-pod" not in serialized
+    assert "must-not-leak" not in serialized
+    assert "/private/key.json" not in serialized
+
+
+def test_startup_dashboard_does_not_guess_when_multiple_live_runs(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.delenv("VERONICA_RUN_DIR", raising=False)
+    for name in ("one", "two"):
+        run = tmp_path / name
+        run.mkdir()
+        (run / "supervised-state.json").write_text(json.dumps({"creationAttempted": True}))
+
+    body = startup_status(tmp_path)
+
+    assert body["available"] is False
+    assert body["phase"] == "idle"
 
 
 def test_models_exposes_only_stable_veronica_alias() -> None:

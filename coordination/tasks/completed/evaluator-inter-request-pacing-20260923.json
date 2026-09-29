@@ -1,0 +1,38 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T17:21:42Z",
+  "evidence": [
+    "runs/2026-09-23T131800Z-live-cc-mb-evals-recovered; runs/2026-09-23T132000Z-live-smoke-remaining"
+  ],
+  "files_changed": [
+    "src/veronica_core/evaluation.py",
+    "tests/test_evaluation.py"
+  ],
+  "limitations": [
+    "Pacing reduces one-sequence request races but does not make native tools available or alter model behavior."
+  ],
+  "model": "gpt-6",
+  "next_action": "Keep pacing in future bounded live evaluation; triage behavior and native-tool failures separately.",
+  "paths": [
+    "src/veronica_core/evaluation.py",
+    "tests/test_evaluation.py"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [
+    "No retry of failed historical records and no model/prompt change."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T17:13:44Z",
+  "status": "completed",
+  "summary": "Add bounded evaluator request pacing to prevent false wrapper 503 failures on one-sequence vLLM, with focused test coverage.",
+  "supersedes": [],
+  "surface": "desktop",
+  "task_id": "evaluator-inter-request-pacing-20260923",
+  "tests": [
+    "uv run pytest tests/test_evaluation.py -q (19 passed)"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

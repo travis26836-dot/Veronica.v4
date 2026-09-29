@@ -1,0 +1,10 @@
+{
+  "limitation": "CC-01 and CC-02 were not executed in this record.",
+  "atUtc": "2026-09-23T17:13:01.1646101+00:00",
+  "reason": "Stopped local evaluator after preserved MB-02 follow-up HTTP 503 and no subsequent progress; no request was retried.",
+  "failedSample": "MB-02.r1.t2",
+  "completedSamples": [
+    "MB-01.r1.t1",
+    "MB-02.r1.t1"
+  ]
+}

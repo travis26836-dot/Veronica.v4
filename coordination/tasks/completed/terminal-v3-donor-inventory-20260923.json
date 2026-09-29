@@ -1,0 +1,36 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T16:53:00Z",
+  "evidence": [
+    "coordination/handoffs/terminal-v3-donor-inventory.md"
+  ],
+  "files_changed": [
+    "coordination/handoffs/terminal-v3-donor-inventory.md"
+  ],
+  "limitations": [
+    "The visual donor contains an executable terminal system that must not be ported before v4 E3 tools is authorized and implemented."
+  ],
+  "model": "gpt-6-astra",
+  "next_action": "Dashboard specialist claims v4 UI plus a read-only sanitized startup-event API and ports only display patterns.",
+  "paths": [
+    "coordination/handoffs/terminal-v3-donor-inventory.md"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [
+    "Do not reuse donor terminal execution endpoints as startup telemetry."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T16:49:46Z",
+  "status": "completed",
+  "summary": "Inventory the v3 Veronica terminal implementation and provide a donor-read-only integration handoff for the live startup dashboard work.",
+  "supersedes": [],
+  "surface": "desktop",
+  "task_id": "terminal-v3-donor-inventory-20260923",
+  "tests": [
+    "Read-only donor inventory; verified current run artifact inputs."
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

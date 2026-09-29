@@ -41,6 +41,11 @@
             <div class="project-summary"><p class="section-title">Active Core</p><strong>Veronica</strong><span id="providerSummary">Wrapper ready; checking the model server.</span></div>
             <div class="mode-control"><label for="mode">Conversation mode</label><select id="mode"><option value="chat">Chat</option><option value="deep-reasoning">Deep Reasoning</option><option value="creative">Creative</option><option value="coding">Coding</option></select></div>
           </section>
+          <section id="bootDashboard" class="boot-dashboard" aria-labelledby="bootTitle" aria-live="polite">
+            <header class="boot-header"><div><p class="section-title">SYSTEM BOOT</p><h3 id="bootTitle">Veronica startup telemetry</h3></div><span id="bootPhase" class="boot-phase">Awaiting launcher record</span></header>
+            <p id="bootSummary" class="boot-summary">The dashboard shows only records created by the launcher. It never invents startup progress.</p>
+            <ol id="bootTranscript" class="boot-transcript"></ol>
+          </section>
           <section id="conversation" class="chat-log" aria-live="polite">
             <article class="message system"><span>SYSTEM</span><p>Veronica’s interface is ready. Connect the text model to begin. No model-generated response has been produced yet.</p></article>
           </section>

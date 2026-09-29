@@ -1,0 +1,34 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T15:40:32Z",
+  "evidence": [
+    "runs/2026-09-23T153904Z-start-veronica/decision.md"
+  ],
+  "files_changed": [
+    "runs/2026-09-23T153904Z-start-veronica"
+  ],
+  "limitations": [
+    "No eligible stock, no Pod created"
+  ],
+  "model": null,
+  "next_action": "Fresh attempt only when stock returns or scope changes",
+  "paths": [
+    "runs/2026-09-23T153904Z-start-veronica"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T15:39:18Z",
+  "status": "completed",
+  "summary": "Owner-directed one-hour startup using configured A100 then RTX PRO 6000 Blackwell secure fallback",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "start-veronica-fallback-run-20260923",
+  "tests": [
+    "Live preflight checked A100 and RTX PRO 6000 Blackwell fallback; both unavailable; inventory empty"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

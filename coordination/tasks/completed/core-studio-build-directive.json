@@ -1,0 +1,34 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-23T16:35:31Z",
+  "evidence": [
+    "docs/BUILD-DIRECTIVE.md"
+  ],
+  "files_changed": [
+    "docs/BUILD-DIRECTIVE.md"
+  ],
+  "limitations": [
+    "Directive defines architecture only; Studio launcher/tool contract remain unimplemented"
+  ],
+  "model": null,
+  "next_action": "Implement native tool contract, then dedicated ComfyUI Studio profile",
+  "paths": [
+    "docs/BUILD-DIRECTIVE.md"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-23T16:35:00Z",
+  "status": "completed",
+  "summary": "Create canonical Core and Studio modular build directive",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "core-studio-build-directive",
+  "tests": [
+    "Reviewed against BUILD-PIPELINE, SOURCE-OF-TRUTH, TODO, and Studio boundary record"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}

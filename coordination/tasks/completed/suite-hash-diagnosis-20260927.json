@@ -1,0 +1,32 @@
+{
+  "agent": "codex",
+  "branch": "main",
+  "ended_at": "2026-09-27T09:06:06Z",
+  "evidence": [
+    "coordination/handoffs/suite-hash-diagnosis-20260927.md"
+  ],
+  "files_changed": [
+    "coordination/handoffs/suite-hash-diagnosis-20260927.md"
+  ],
+  "limitations": [
+    "Read-only diagnosis; active dependency owners choose and implement the canonical representation."
+  ],
+  "model": null,
+  "next_action": "Use this diagnosis to repair frozen suite and chat-template provenance before revalidating T2.",
+  "paths": [
+    "coordination/handoffs/suite-hash-diagnosis-20260927.md"
+  ],
+  "repo_commit_after": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "repo_commit_before": "7435489c79368e9b5311c63b0377790ecfb79f94",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-09-27T09:05:46Z",
+  "status": "completed",
+  "summary": "Record read-only diagnosis of cross-platform frozen suite hash drift for active dependency repair",
+  "supersedes": [],
+  "surface": "codex-desktop",
+  "task_id": "suite-hash-diagnosis-20260927",
+  "tests": [],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4"
+}
