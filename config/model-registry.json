@@ -1,14 +1,16 @@
 {
   "schemaVersion": 1,
   "publicAlias": "Veronica",
-  "selectionStatus": "benchmark_required",
+  "selectionStatus": "owner_selected",
   "defaultDevelopmentCandidate": "qwen3-30b-a3b-2507-abliterated",
   "qualificationProtocol": "config/t2-qualification.json",
+  "ownerDecisionDate": "2026-09-29",
+  "ownerDecision": "Candidate A (the installed abliterated Qwen3-30B-A3B-Instruct-2507 on volume v53gj9flzs) is the sole foundation for Veronica. Candidate B is retired and not to be used or compared. No further model shopping or forks. The text model directs; image/video generation uses a separate diffusion worker called as a tool.",
   "candidates": [
     {
       "id": "qwen3-30b-a3b-2507-abliterated",
       "repository": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
-      "role": "available_first_run_candidate",
+      "role": "selected_foundation",
       "licenseDeclared": "Apache-2.0",
       "uncensoredMethod": "abliteration",
       "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
@@ -21,7 +23,7 @@
     {
       "id": "qwen3.8-27b-abliterated",
       "repository": "huihui-ai/Huihui-Qwen3.8-27B-abliterated",
-      "role": "capability_challenger",
+      "role": "retired_not_selected",
       "licenseDeclared": "Apache-2.0",
       "uncensoredMethod": "abliteration",
       "revision": "739e3c5b89849f6c238ce1e5b70008612ae42cdd",

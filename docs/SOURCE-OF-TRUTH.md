@@ -50,27 +50,31 @@ Applications must call Veronica's API alias, never a hard-coded Hugging Face rep
 
 ## 4. Current model decision
 
-No final foundation has been selected. Selection status is `benchmark_required`.
+**Owner decision, 2026-09-29:** The installed model is the core. 
 
-**Live checkpoint (2026-08-30):** Candidate A now has verified artifacts and real API/UI chat evidence. Its supervised A100 run ended with confirmed Pod termination and retained storage. The first evaluation exposed contradictory math and an unsupported code-execution claim, so it is not yet a qualified capable core. See `runs/2026-08-30-supervised-first-chat/decision.md` and `manual-review.md`.
+- Foundation: `huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated` @ revision `e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f`
+- Public alias: `Veronica` (stable, never change)
+- RunPod volume: `v53gj9flzs` (EUR-IS-1)
+- Selection status: `owner_selected`
+- Candidate B: retired, not to be downloaded, compared, or used for this product.
 
-### Candidate A - available first-run candidate
+This is the text model that will direct image and video generation. It does not generate pixels itself. A separate diffusion worker (ComfyUI-class or equivalent) will render files when Veronica calls it as a tool.
 
-- Repository: `huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated`
-- Reason: owner reported a prior Hugging Face bucket copy; the pinned candidate has now been downloaded and hash-verified on the existing RunPod volume. The first supervised A100 run used a verified $1.59/hour rate; final billing is separate from measured inference performance.
-- Known concern: this Instruct variant is non-thinking-only according to its official base card. It can perform reasoning tasks, but a prompt preset cannot turn it into a native thinking-mode model. It is not the automatic final choice for the requested core.
+No further model shopping or new forks. The rules in this document and `config/model-registry.json` are the anchor. Reconfigure only with explicit owner direction and evidence.
 
-### Candidate B - capability challenger
+**Historical context (preserved for reference):** Candidate A had verified cold-start evidence on 2026-09-13 (UI ready before full load, basic chat, creative, coding replies, clean termination with volume retained). It is not yet fully qualified for long context, native tool calling, or production.
 
-- Repository: `huihui-ai/Huihui-Qwen3.8-27B-abliterated`
-- Reason: newer dense multimodal reasoning model with image/video understanding and stronger agent-oriented base capabilities.
-- Known concern: newer community ablation and denser inference cost require careful validation.
+### Control model
 
-### Control models
+The official base `Qwen/Qwen3-30B-A3B-Instruct-2507` remains available only as a regression reference to check what abliteration changed. It is not a product option.
 
-The official unmodified base corresponding to each candidate is a control, not the uncensored production choice. It reveals whether ablation or quantization damaged capability.
+The core must still demonstrate:
+- Lawful adult prompt following (explicit natural language)
+- Reasoning, writing, coding
+- Structured output for tool calls
+- Clean handoff to media workers
 
-The selection suite must test quality, sarcasm and implied meaning, personality adaptability, writing, coding, reasoning, long context, structured JSON, tool calling, lawful adult prompt following, latency, and VRAM.
+Tool execution, media generation modules, and paid long runs come after a confirmed basic text session. See section 5.
 
 ## 5. First deliverable
 

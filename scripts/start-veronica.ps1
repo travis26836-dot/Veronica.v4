@@ -71,6 +71,14 @@ function Resolve-RunDirectory([string]$Value) {
 }
 $resolvedRun = if ($RunDir) { Resolve-RunDirectory $RunDir } else { $null }
 if ($ApprovalFile -and -not (Test-Path -LiteralPath $ApprovalFile -PathType Leaf)) { throw 'ApprovalFile does not exist.' }
+
+function Write-Record([string]$Name, $Value) {
+    $destination = Join-Path $resolvedRun $Name
+    $temporary = $destination + '.tmp'
+    $Value | ConvertTo-Json -Depth 8 | Set-Content -Encoding utf8 -LiteralPath $temporary
+    Move-Item -Force -LiteralPath $temporary -Destination $destination
+}
+
 $stages = @('validate-current-authorization-and-local-prerequisites', 'prepare-pinned-model-provenance',
     'confirm-windows-sleep-prevention', 'check-price-stock-volume-and-create-one-pod', 'wait-for-ssh',
     'validate-persistent-model-and-start-server', 'open-loopback-ssh-tunnel', 'start-windows-chat-wrapper',
@@ -228,12 +236,6 @@ function Test-OwnedWrapperListener {
         }
     }
     return $true
-}
-function Write-Record([string]$Name, $Value) {
-    $destination = Join-Path $resolvedRun $Name
-    $temporary = $destination + '.tmp'
-    $Value | ConvertTo-Json -Depth 8 | Set-Content -Encoding utf8 -LiteralPath $temporary
-    Move-Item -Force -LiteralPath $temporary -Destination $destination
 }
 
 # Reuse the controller's authorization contract, without invoking its network APIs.

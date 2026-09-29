@@ -19,8 +19,9 @@ Cleanup commits 48645d1, d3f9e26, and 22b7140 were fast-forwarded onto the
 original milestone branch. They are local; no push occurred in this task.
 The cleanup branch remains as a historical pointer and is not the active goal.
 
-Foundation qualification remains pending. Historical run files are not evidence
-of a currently running provider or authorization for a new paid run.
+**Model anchor (2026-09-29):** The installed Candidate A (huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated on volume v53gj9flzs) is the sole Veronica foundation per updated SOURCE-OF-TRUTH and model-registry.json. Candidate B is retired. No further shopping or forks. See config/model-registry.json and docs/SOURCE-OF-TRUTH.md section 4.
+
+Foundation qualification remains pending. Historical run files are not evidence of a currently running provider or authorization for a new paid run. The anchor does not claim full qualification — it locks the engine so we stop restarting.
 
 Planning checkpoint: runs/2026-09-17-core-completion-plan/decision.md.
 Core completion sequence: docs/CORE-COMPLETION-PLAN.md (proposed).

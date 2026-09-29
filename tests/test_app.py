@@ -250,6 +250,7 @@ def test_capability_report_separates_implemented_and_planned() -> None:
     assert "basic_text_chat" in body["implemented"]
     assert "streaming_chat" in body["implemented"]
     assert "streaming" not in body["planned"]
+    assert "image_prompt_handoff" in body["implemented"]
     assert "native_tool_execution" in body["planned"]
     assert "native_tool_execution" not in body["implemented"]
     assert body["local_access"].startswith("intended for loopback")
@@ -318,3 +319,47 @@ def test_chat_javascript_parses() -> None:
     )
     assert parsed.returncode == 0, parsed.stderr
     # Current UI uses plain textContent (no Markdown rendering); safe escaping is via textContent.
+
+
+class ToolCallProvider(MockProvider):
+    async def complete(self, payload: dict[str, Any]) -> dict[str, Any]:
+        self.last_payload = payload
+        return {
+            "id": "chatcmpl-tool",
+            "object": "chat.completion",
+            "model": "candidate/model",
+            "choices": [{
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": None,
+                    "tool_calls": [{
+                        "id": "call-1",
+                        "type": "function",
+                        "function": {"name": "render_image", "arguments": "{\"prompt\":\"adult portrait\"}"},
+                    }],
+                },
+                "finish_reason": "tool_calls",
+            }],
+        }
+
+
+def test_render_image_stub_returns_exact_prompt_and_does_not_render() -> None:
+    client = TestClient(create_app(SETTINGS, ToolCallProvider()))
+    response = client.post("/v1/chat/completions", json={"messages": [{"role": "user", "content": "render"}]})
+    assert response.status_code == 200
+    result = response.json()["veronica_tool_results"][0]
+    assert result["ok"] is True
+    assert result["result"] == {"status": "not rendered", "prompt": "adult portrait"}
+
+
+def test_unknown_or_invalid_tool_is_reported_failed() -> None:
+    from veronica_core.tools import execute_tool_call
+
+    unknown = execute_tool_call({"id": "x", "function": {"name": "delete_volume", "arguments": "{}"}})
+    invalid = execute_tool_call({"id": "y", "function": {"name": "render_image", "arguments": "{"}})
+    empty = execute_tool_call({"id": "z", "function": {"name": "render_image", "arguments": "{\"prompt\":\"  \"}"}})
+    assert unknown["ok"] is False and "unknown tool" in unknown["error"]
+    assert invalid["ok"] is False and "invalid arguments" in invalid["error"]
+    assert empty["ok"] is False and "non-empty prompt" in empty["error"]
+

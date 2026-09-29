@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field, StrictBool
 from .config import Settings
 from .persona import MODE_PROMPTS, MODE_SAMPLING_DEFAULTS, prepare_messages
 from .provider import ChatProvider, OpenAICompatibleProvider, ProviderError, StreamingNotSupported
+from .tools import execute_tool_call
 
 
 STATIC_DIR = Path(__file__).parent / "static"
@@ -90,6 +91,7 @@ def create_app(
                 "mode_selection",
                 "openai_compatible_alias",
                 "provider_health",
+                "image_prompt_handoff",
             ],
             "modes": list(MODE_PROMPTS),
             "mode_control": "prompt_presets_only; native reasoning controls require model qualification",
@@ -152,6 +154,10 @@ def create_app(
             except ProviderError as exc:
                 raise HTTPException(status_code=503, detail=str(exc)) from exc
             response["model"] = settings.public_model
+            message = ((response.get("choices") or [{}])[0].get("message") or {})
+            tool_calls = message.get("tool_calls") if isinstance(message, dict) else None
+            if tool_calls:
+                response["veronica_tool_results"] = [execute_tool_call(call) for call in tool_calls]
             return response
 
         stream_fn = getattr(provider, "stream", None)

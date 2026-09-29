@@ -26,4 +26,18 @@ composer.addEventListener("submit", async (event) => { event.preventDefault(); i
 promptInput.addEventListener("keydown", (event) => { if ((event.ctrlKey || event.metaKey) && event.key === "Enter") composer.requestSubmit(); });
 document.querySelector("#refreshStatus").addEventListener("click", () => refreshHealth({ announce: true })); document.querySelector("#newConversation").addEventListener("click", resetConversation);
 function drawStarfield() { const canvas = document.querySelector("#starfield"); const context = canvas.getContext("2d"); const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches; let stars = []; const resize = () => { canvas.width = window.innerWidth * devicePixelRatio; canvas.height = window.innerHeight * devicePixelRatio; context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); stars = Array.from({ length: Math.min(130, Math.ceil(window.innerWidth / 11)) }, () => ({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, size: Math.random() * 1.4 + .25, alpha: Math.random() * .6 + .15 })); }; const render = () => { context.clearRect(0, 0, window.innerWidth, window.innerHeight); for (const star of stars) { context.fillStyle = `rgba(221, 198, 255, ${star.alpha})`; context.fillRect(star.x, star.y, star.size, star.size); } if (!reduceMotion) requestAnimationFrame(render); }; resize(); window.addEventListener("resize", resize); render(); }
-document.querySelector("#clock").textContent = localTime(); window.setInterval(() => { document.querySelector("#clock").textContent = localTime(); }, 1000); drawStarfield(); addActivity("Veronica v4 chat interface loaded."); refreshHealth(); window.setInterval(refreshHealth, 15000);
+const podLoad = document.querySelector("#podLoad");
+let podLoadText = "";
+async function refreshPodLoad() {
+  if (!podLoad) return;
+  try {
+    const response = await fetch("http://127.0.0.1:8765/pod-load.txt", { cache: "no-store" });
+    if (!response.ok) return;
+    const text = (await response.text()).trim();
+    if (!text || text === podLoadText) return;
+    podLoadText = text;
+    podLoad.textContent = text;
+    podLoad.scrollTop = podLoad.scrollHeight;
+  } catch { /* The local load feed is optional until the supervised tailer is up. */ }
+}
+document.querySelector("#clock").textContent = localTime(); window.setInterval(() => { document.querySelector("#clock").textContent = localTime(); }, 1000); drawStarfield(); addActivity("Veronica v4 chat interface loaded."); refreshHealth(); refreshPodLoad(); window.setInterval(refreshHealth, 15000); window.setInterval(refreshPodLoad, 2000);

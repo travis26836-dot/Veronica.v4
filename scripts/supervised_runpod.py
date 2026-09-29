@@ -65,8 +65,14 @@ def validate_approval(approval, profile, run, instant=None):
         raise ValueError("Authorization timestamp must include a timezone")
     if not timedelta(0) <= instant - issued <= timedelta(hours=2):
         raise ValueError("Authorization is not current; obtain new user authorization")
-    if (run / "supervised-state.json").exists():
-        raise ValueError("This authorization/run was already used; never retry creation")
+    state_path = run / "supervised-state.json"
+    if state_path.exists():
+        try:
+            existing = json.loads(state_path.read_text(encoding="utf-8-sig"))
+        except (OSError, json.JSONDecodeError) as error:
+            raise ValueError("This authorization/run was already used; never retry creation") from error
+        if not isinstance(existing, dict) or existing.get("creationAttempted") is not False:
+            raise ValueError("This authorization/run was already used; never retry creation")
 
 
 def owned_pods(state):
