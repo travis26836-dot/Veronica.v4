@@ -142,5 +142,8 @@ def test_windows_controller_and_one_click_adapter_delegate_to_the_checked_launch
     assert "authorization-context.md" in controller
     assert "start-veronica.ps1" in controller
     assert "start-veronica-universal.ps1" in one_click
+    assert "$hourly = [double]$profile.safety.defaultHourlyUsd" in controller
+    assert "maxHourlyUsd = $hourly" in controller
+    assert "-MaxHourlyUsd $hourly" in controller
     assert "runpodctl" not in controller
     assert "pod create" not in controller.lower()
