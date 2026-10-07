@@ -18,7 +18,7 @@
     "src/veronica_core/capability_reports.py",
     "tests/test_capability_reports.py"
   ],
-  "repo_commit_after": "54ec318b6ea1772a3d2d503fdc1fadd3cd0bd511",
+  "repo_commit_after": "001fa343a13d910b49789a2868fd215e19533e64",
   "repo_commit_before": "54ec318b6ea1772a3d2d503fdc1fadd3cd0bd511",
   "ruled_out": [],
   "schema_version": 1,
