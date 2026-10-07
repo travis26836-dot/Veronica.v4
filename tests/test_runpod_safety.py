@@ -59,10 +59,12 @@ def test_legacy_timer_flag_does_not_authorize_creation():
                 core.main()
 
 
-def test_preflight_falls_back_to_approved_gpu_when_primary_has_no_stock():
+@pytest.mark.parametrize("hourly,fallback_price,expected_safe",
+                         [(2.09, 2.09, True), (1.75, 1.75, True), (1.75, 1.90, False)])
+def test_preflight_falls_back_only_within_approved_price(hourly, fallback_price, expected_safe):
     """The primary A100 having zero stock must not block startup when an approved
-    fallback GPU (config/runpod-core.json pod.gpuFallbacks) has stock within its
-    own price cap; the reliability trade-off must be surfaced, not hidden."""
+    fallback GPU has stock within both the profile cap and the per-run approval;
+    the reliability trade-off must be surfaced, not hidden."""
     profile = core.profile_at(core.DEFAULT_PROFILE)
     fallback = profile["pod"]["gpuFallbacks"][0]
 
@@ -73,7 +75,7 @@ def test_preflight_falls_back_to_approved_gpu_when_primary_has_no_stock():
             return json.dumps([
                 {"gpuId": profile["pod"]["gpuTypeId"], "securePricePerHr": 2.09,
                  "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "none"}]},
-                {"gpuId": fallback["gpuTypeId"], "securePricePerHr": fallback["maxHourlyUsd"],
+                {"gpuId": fallback["gpuTypeId"], "securePricePerHr": fallback_price,
                  "dataCenterAvailability": [{"dataCenterId": "EUR-IS-1", "stockStatus": "Medium"}]},
             ])
         if args == ("pod", "list", "--all"):
@@ -87,12 +89,18 @@ def test_preflight_falls_back_to_approved_gpu_when_primary_has_no_stock():
         raise AssertionError(f"Unexpected/mutating command: {args}")
 
     with patch.object(core, "cli", fake_cli):
-        result = core.preflight(profile, 2.09, 60, supervised=True)
-    assert result["safeToCreate"]
-    assert result["usedFallbackGpu"] is True
-    assert result["gpuTypeId"] == fallback["gpuTypeId"]
-    assert result["cloudType"] == fallback["cloudType"]
-    assert result["reliabilityNote"]
+        result = core.preflight(profile, hourly, 60, supervised=True)
+    assert result["safeToCreate"] is expected_safe
+    assert result["consideredGpus"][1]["priceCapUsd"] == min(hourly, fallback["maxHourlyUsd"])
+    assert result["consideredGpus"][1]["priceOk"] is expected_safe
+    if expected_safe:
+        assert result["usedFallbackGpu"] is True
+        assert result["gpuTypeId"] == fallback["gpuTypeId"]
+        assert result["cloudType"] == fallback["cloudType"]
+        assert result["reliabilityNote"]
+    else:
+        assert result["usedFallbackGpu"] is False
+        assert any("no configured fallback GPU has stock" in item for item in result["blockers"])
 
 
 def test_preflight_blocks_when_primary_and_all_fallbacks_have_no_stock():
