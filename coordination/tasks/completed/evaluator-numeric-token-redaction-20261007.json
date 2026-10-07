@@ -1,0 +1,40 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/preserve-numeric-token-usage",
+  "ended_at": "2026-10-07T13:19:03Z",
+  "evidence": [
+    "commit b18fc04; secret scan found no secrets; CodeQL reported zero alerts"
+  ],
+  "files_changed": [
+    "docs/evals/README.md",
+    "src/veronica_core/evaluation.py",
+    "tests/test_evaluation.py"
+  ],
+  "limitations": [
+    "Parallel code review service was unavailable; the validation wrapper reported no review comments."
+  ],
+  "model": null,
+  "next_action": "Use branch CI and integration review after this focused evaluator fix is incorporated; no live inference or compute is needed.",
+  "paths": [
+    "docs/evals/README.md",
+    "src/veronica_core/evaluation.py",
+    "tests/test_evaluation.py"
+  ],
+  "repo_commit_after": "b18fc04b164c3264570b094765ebb6b978392e05",
+  "repo_commit_before": "64222b7e57010a5d385b4365b960dce5fce171d0",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:11:42Z",
+  "status": "completed",
+  "summary": "Preserve usage counters while redacting credentials in evaluator evidence",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "evaluator-numeric-token-redaction-20261007",
+  "tests": [
+    "/tmp/veronica-eval-test-env/bin/python -m pytest tests/test_evaluation.py -q (22 passed)",
+    "python -m py_compile src/veronica_core/evaluation.py tests/test_evaluation.py (passed)",
+    "git diff --check (passed)"
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
