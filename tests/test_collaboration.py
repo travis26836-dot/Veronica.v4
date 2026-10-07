@@ -15,6 +15,7 @@ CoordinationError = MODULE.CoordinationError
 claim = MODULE.claim
 claims_overlap = MODULE.claims_overlap
 layout = MODULE.layout
+main = MODULE.main
 update_task = MODULE.update_task
 validate_repository = MODULE.validate_repository
 
@@ -26,6 +27,7 @@ def git(root: Path, *args: str) -> None:
 
 
 def project(tmp_path: Path) -> Path:
+    tmp_path.mkdir(parents=True, exist_ok=True)
     for name in (
         "AGENTS.md",
         "docs/AGENT-COLLABORATION.md",
@@ -86,6 +88,42 @@ def test_claim_rejects_overlapping_active_path(tmp_path: Path) -> None:
     claim(root, claim_args("first-task", ["src/veronica_core"]))
     with pytest.raises(CoordinationError, match="first-task"):
         claim(root, claim_args("second-task", ["src/veronica_core/app.py"]))
+
+
+def test_claim_rejects_overlapping_path_across_worktrees(tmp_path: Path, capsys) -> None:
+    root = project(tmp_path / "primary")
+    linked = tmp_path / "linked"
+    git(root, "worktree", "add", "--detach", str(linked), "HEAD")
+
+    assert layout(root)["active"] == layout(linked)["active"]
+    assert layout(root)["lock"] == layout(linked)["lock"]
+    common_args = [
+        "claim", "--agent", "codex", "--surface", "test",
+        "--summary", "Cross-worktree claim test",
+    ]
+    assert main([
+        "--root", str(root), *common_args,
+        "--task-id", "first-task", "--path", "src/veronica_core",
+    ]) == 0
+    assert "CREATED shared claim first-task" in capsys.readouterr().out
+    assert main([
+        "--root", str(linked), *common_args,
+        "--task-id", "second-task", "--path", "src/veronica_core/app.py",
+    ]) == 2
+    assert "Path ownership conflict with: first-task" in capsys.readouterr().err
+
+
+def test_claim_respects_checkout_local_legacy_claim(tmp_path: Path) -> None:
+    root = project(tmp_path)
+    legacy_active = layout(root)["legacy_active"] / "legacy-task.json"
+    legacy_active.parent.mkdir(parents=True)
+    legacy_active.write_text(
+        json.dumps({"task_id": "legacy-task", "paths": ["src/veronica_core"]}),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(CoordinationError, match="legacy-task"):
+        claim(root, claim_args("new-task", ["src/veronica_core/app.py"]))
 
 
 def test_claim_allows_separate_paths(tmp_path: Path) -> None:
