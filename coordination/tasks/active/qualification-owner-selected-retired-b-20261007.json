@@ -1,0 +1,33 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/fix-qualification-gate-issue",
+  "ended_at": null,
+  "evidence": [],
+  "files_changed": [],
+  "limitations": [],
+  "model": "GitHub Copilot Coding Agent",
+  "next_action": null,
+  "paths": [
+    "TODO.md",
+    "config/model-registry.json",
+    "config/t2-comparison-inputs.template.json",
+    "config/t2-qualification.json",
+    "docs/CURRENT-STATE.md",
+    "docs/SOURCE-OF-TRUTH.md",
+    "src/veronica_core/qualification.py",
+    "tests/test_qualification.py"
+  ],
+  "repo_commit_after": null,
+  "repo_commit_before": "8537b277e6b08f74536a29ae8ef1d05ef7ec4f1c",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:12:30Z",
+  "status": "active",
+  "summary": "Update frozen T2 validation and run matrix for the owner-selected registry while keeping foundation qualification pending",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "qualification-owner-selected-retired-b-20261007",
+  "tests": [],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
