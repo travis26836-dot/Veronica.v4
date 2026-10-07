@@ -342,6 +342,8 @@ def test_static_chat_interface_is_served() -> None:
     assert "drawStarfield" in js.text
     assert "Veronica v4 chat interface loaded" in js.text
     assert "refreshHealth" in js.text
+    assert "localStorage" not in js.text
+    assert "textContent" in js.text
     assert css.status_code == 200
     assert "chat-log" in css.text
     assert "composer-actions" in css.text
