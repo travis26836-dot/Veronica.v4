@@ -3,7 +3,8 @@
   "branch": "copilot/fix-ci-failure-scripts-verify-local",
   "ended_at": "2026-10-07T13:13:04Z",
   "evidence": [
-    "Actions run 34302332867 failure log; commit 57dcf4a; current CI entry point result"
+    "commit:57dcf4a1c1effe36ac2044e242dae009a114571d",
+    "command:pwsh -NoLogo -NoProfile -File scripts/verify-local.ps1"
   ],
   "files_changed": [
     "tests/test_app.py"

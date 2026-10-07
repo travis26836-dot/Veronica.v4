@@ -22,7 +22,8 @@ Align stale UI tests with current minimal chat interface
 
 ## Evidence
 
-- `Actions run 34302332867 failure log; commit 57dcf4a; current CI entry point result`
+- `commit:57dcf4a1c1effe36ac2044e242dae009a114571d`
+- `command:pwsh -NoLogo -NoProfile -File scripts/verify-local.ps1`
 
 ## Limitations
 
