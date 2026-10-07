@@ -2,11 +2,21 @@
   "agent": "copilot",
   "branch": "copilot/fix-integer-only-json-parser",
   "ended_at": null,
-  "evidence": [],
-  "files_changed": [],
-  "limitations": [],
+  "evidence": [
+    "runs/2026-09-23-live-coding/executable-code-report.json",
+    "runs/2026-10-07-cd05-boolean-regression/decision.md"
+  ],
+  "files_changed": [
+    "coordination/handoffs/issue-8-cd05-boolean-regression.md",
+    "runs/2026-10-07-cd05-boolean-regression/decision.md",
+    "tests/test_capability_reports.py"
+  ],
+  "limitations": [
+    "Prompt-only live intervention not evaluated: no matching active endpoint was supplied or verified and no fresh bounded-run authorization was included",
+    "Raw baseline results.jsonl is absent in this checkout; T2 coding qualification remains open"
+  ],
   "model": "GitHub Copilot Coding Agent",
-  "next_action": null,
+  "next_action": "Recover the baseline response/runtime record and obtain a fresh authorized live evaluation window before the paired prompt comparison",
   "paths": [
     "coordination/handoffs/issue-8-cd05-boolean-regression.md",
     "coordination/tasks/active/issue-8-cd05-boolean-regression.json",
@@ -14,17 +24,22 @@
     "runs/2026-10-07-cd05-boolean-regression",
     "tests/test_capability_reports.py"
   ],
-  "repo_commit_after": null,
+  "repo_commit_after": "b2cea04d430de8f03267ecac93e867f0d5b6da12",
   "repo_commit_before": "64222b7e57010a5d385b4365b960dce5fce171d0",
-  "ruled_out": [],
+  "ruled_out": [
+    "Did not edit application code or weaken CD-05 expected fixtures"
+  ],
   "schema_version": 1,
   "session_id": null,
   "started_at": "2026-10-07T13:11:35Z",
-  "status": "active",
+  "status": "blocked",
   "summary": "Preserve CD-05 boolean parser regression, add independent fixture checks and record bounded intervention comparison without claiming T2 qualification",
   "supersedes": [],
   "surface": "copilot-cloud",
   "task_id": "issue-8-cd05-boolean-regression",
-  "tests": [],
+  "tests": [
+    "/tmp/veronica-issue8-venv/bin/python -m pytest tests/test_capability_reports.py -q (17 passed)",
+    "Pinned Docker isolated fixture reproduction: baseline 7/8, exact-type repair 8/8"
+  ],
   "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
 }
