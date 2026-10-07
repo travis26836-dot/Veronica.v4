@@ -87,6 +87,7 @@ def layout(root: Path) -> dict[str, Path]:
         "base": base,
         "active": base / "tasks" / "active",
         "completed": base / "tasks" / "completed",
+        "released": base / "tasks" / "released",
         "handoffs": base / "handoffs",
         "sessions": base / "sessions",
         "lock": base / ".claim-lock",
@@ -95,7 +96,7 @@ def layout(root: Path) -> dict[str, Path]:
 
 def ensure_layout(root: Path) -> dict[str, Path]:
     paths = layout(root)
-    for key in ("active", "completed", "handoffs", "sessions"):
+    for key in ("active", "completed", "released", "handoffs", "sessions"):
         paths[key].mkdir(parents=True, exist_ok=True)
     return paths
 
@@ -195,12 +196,19 @@ def preflight(root: Path, intended_paths: list[str] | None = None) -> list[str]:
     active = load_records(layout(root)["active"])
     if intended_paths:
         normalized = [normalize_claim(item) for item in intended_paths]
-        conflicts = [r["task_id"] for r in active if paths_overlap(normalized, r.get("paths", []))]
+        conflicts = [
+            r["task_id"]
+            for r in active
+            if r.get("status") in ("active", "blocked")
+            and paths_overlap(normalized, r.get("paths", []))
+        ]
         if conflicts:
             raise CoordinationError("Claimed paths overlap active tasks: " + ", ".join(conflicts))
     messages.append(f"PASS repository={root}")
     messages.append(f"PASS branch={branch} commit={commit}")
-    messages.append(f"INFO active_tasks={len(active)}")
+    messages.append(
+        f"INFO active_tasks={sum(r.get('status') in ('active', 'blocked') for r in active)}"
+    )
     messages.append(f"INFO dirty={'yes' if dirty else 'no'}")
     if dirty:
         messages.append("NOTICE preserve existing changes; stage exact reviewed paths, never git add .")
@@ -213,7 +221,12 @@ def claim(root: Path, args: argparse.Namespace) -> Path:
     claimed_paths = sorted({normalize_claim(item) for item in args.paths})
     with claim_lock(root) as paths:
         existing = load_records(paths["active"])
-        conflicts = [r["task_id"] for r in existing if paths_overlap(claimed_paths, r.get("paths", []))]
+        conflicts = [
+            r["task_id"]
+            for r in existing
+            if r.get("status") in ("active", "blocked")
+            and paths_overlap(claimed_paths, r.get("paths", []))
+        ]
         if conflicts:
             raise CoordinationError("Path ownership conflict with: " + ", ".join(conflicts))
         record = {
@@ -253,28 +266,47 @@ def find_active(root: Path, task_id: str) -> tuple[Path, dict]:
 
 
 def update_task(root: Path, args: argparse.Namespace, complete: bool) -> Path:
-    active_path, record = find_active(root, args.task_id)
-    record["status"] = "completed" if complete else args.status
-    record["files_changed"] = sorted(set(args.files or []))
-    record["tests"] = args.tests or []
-    record["evidence"] = args.evidence or []
-    record["limitations"] = args.limitations or []
-    record["ruled_out"] = args.ruled_out or []
-    record["next_action"] = args.next_action
-    record["repo_commit_after"] = run_git(root, "rev-parse", "HEAD")
-    if complete:
-        record["ended_at"] = utc_now()
-        errors = validate_record(record, require_completion=True)
-        if errors:
-            raise CoordinationError("; ".join(errors))
-        paths = ensure_layout(root)
-        completed = paths["completed"] / active_path.name
-        if completed.exists():
-            raise CoordinationError(f"Completed record already exists: {completed}")
-        write_json_exclusive(completed, record)
+    with claim_lock(root) as paths:
+        active_path, record = find_active(root, args.task_id)
+        record["status"] = "completed" if complete else args.status
+        record["files_changed"] = sorted(set(args.files or []))
+        record["tests"] = args.tests or []
+        record["evidence"] = args.evidence or []
+        record["limitations"] = args.limitations or []
+        record["ruled_out"] = args.ruled_out or []
+        record["next_action"] = args.next_action
+        record["repo_commit_after"] = run_git(root, "rev-parse", "HEAD")
         handoff = paths["handoffs"] / f"{args.task_id}.md"
+        if complete:
+            record["ended_at"] = utc_now()
+            errors = validate_record(record, require_completion=True)
+            if errors:
+                raise CoordinationError("; ".join(errors))
+            destination = paths["completed"] / active_path.name
+            if destination.exists():
+                raise CoordinationError(f"Completed record already exists: {destination}")
+            if handoff.exists():
+                raise CoordinationError(f"Handoff already exists: {handoff}")
+            write_json_exclusive(destination, record)
+            active_path.unlink()
+        elif record["status"] == "handoff":
+            record["ended_at"] = utc_now()
+            errors = validate_record(record)
+            if errors:
+                raise CoordinationError("; ".join(errors))
+            destination = paths["released"] / active_path.name
+            if destination.exists():
+                raise CoordinationError(f"Released record already exists: {destination}")
+            if handoff.exists():
+                raise CoordinationError(f"Handoff already exists: {handoff}")
+            write_json_replace(active_path, record)
+            os.replace(active_path, destination)
+        else:
+            write_json_replace(active_path, record)
+            return active_path
+
         lines = [
-            f"# Handoff: {args.task_id}", "", "**Status:** completed", "",
+            f"# Handoff: {args.task_id}", "", f"**Status:** {record['status']}", "",
             f"**Agent:** {record['agent']} / {record['surface']}", "",
             f"**Started:** {record['started_at']}", "", f"**Ended:** {record['ended_at']}", "",
             "## Scope", "", record["summary"], "", "## Files changed", "",
@@ -287,10 +319,7 @@ def update_task(root: Path, args: argparse.Namespace, complete: bool) -> Path:
             "## Next safe action", "", record["next_action"], "",
         ]
         handoff.write_text("\n".join(lines), encoding="utf-8", newline="\n")
-        active_path.unlink()
-        return completed
-    write_json_replace(active_path, record)
-    return active_path
+        return destination
 
 
 def validate_repository(root: Path) -> list[str]:
@@ -299,6 +328,7 @@ def validate_repository(root: Path) -> list[str]:
     errors = []
     active = load_records(paths["active"])
     completed = load_records(paths["completed"])
+    released = load_records(paths["released"])
     for record in active:
         errors.extend(f"{record.get('task_id')}: {e}" for e in validate_record(record))
     for record in completed:
@@ -311,13 +341,37 @@ def validate_repository(root: Path) -> list[str]:
                 continue
             if not (root / evidence).exists():
                 errors.append(f"{record.get('task_id')}: missing evidence {evidence}")
+    for record in released:
+        task_id = record.get("task_id")
+        errors.extend(f"{task_id}: {e}" for e in validate_record(record))
+        if record.get("status") != "handoff":
+            errors.append(f"{task_id}: released record must have status handoff")
+        if not record.get("ended_at"):
+            errors.append(f"{task_id}: released record requires ended_at")
+        if not record.get("next_action"):
+            errors.append(f"{task_id}: released record requires next_action")
+        handoff = paths["handoffs"] / f"{task_id}.md"
+        if not handoff.is_file():
+            errors.append(f"{task_id}: missing handoff")
+        for evidence in record.get("evidence", []):
+            if evidence.startswith("commit:") or evidence.startswith("command:"):
+                continue
+            if not (root / evidence).exists():
+                errors.append(f"{task_id}: missing evidence {evidence}")
     for index, left in enumerate(active):
         for right in active[index + 1 :]:
-            if paths_overlap(left.get("paths", []), right.get("paths", [])):
+            if (
+                left.get("status") in ("active", "blocked")
+                and right.get("status") in ("active", "blocked")
+                and paths_overlap(left.get("paths", []), right.get("paths", []))
+            ):
                 errors.append(f"active overlap: {left.get('task_id')} and {right.get('task_id')}")
     if errors:
         raise CoordinationError("\n".join(errors))
-    messages.append(f"PASS records active={len(active)} completed={len(completed)}")
+    messages.append(
+        f"PASS records active={sum(r.get('status') in ('active', 'blocked') for r in active)} "
+        f"completed={len(completed)} released={len(released)}"
+    )
     return messages
 
 
@@ -367,7 +421,11 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "claim":
             output = [f"CREATED {claim(root, args).relative_to(root)}"]
         elif args.command == "status":
-            records = load_records(layout(root)["active"])
+            records = [
+                record
+                for record in load_records(layout(root)["active"])
+                if record.get("status") in ("active", "blocked")
+            ]
             output = [json.dumps(record, sort_keys=True) for record in records] or ["No active tasks."]
         elif args.command == "validate":
             output = validate_repository(root)
