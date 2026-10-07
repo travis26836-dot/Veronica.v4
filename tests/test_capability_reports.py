@@ -246,6 +246,118 @@ def page_count(total, size):
     assert malicious["passed"] is False
 
 
+def test_extract_function_ignores_invalid_explanatory_fences_and_later_truncation():
+    content = """```python
+page_count(0, 5) → 1
+return 0
+```
+
+```python
+def page_count(total, size):
+    return (total + size - 1) // size
+```
+
+```python
+assert page_count(
+"""
+    extracted = cap._extract_function_source(content, "page_count")
+    assert extracted is not None
+    assert "def page_count(total, size):" in extracted["source"]
+    cap.ast.parse(extracted["source"])
+    span = next(span for span in extracted["selected_spans"] if span["kind"] == "function")
+    assert content[span["start_offset"]:span["end_offset"]].lstrip().startswith("def page_count")
+
+
+def test_extract_unfenced_function_before_prose_and_sql_fence():
+    content = """def find_user(conn, display_name):
+    return conn.execute("SELECT id, display_name FROM users WHERE display_name = ?", (display_name,)).fetchall()
+
+This function uses a parameterized query.
+
+```sql
+SELECT * FROM users;
+```
+"""
+    source = cap.extract_python({"content": content}, "find_user")
+    assert source is not None
+    cap.ast.parse(source)
+    assert "SELECT * FROM users;" not in source
+    assert "def find_user" in source
+
+
+def test_extract_preserves_imports_and_helpers():
+    content = """```python
+import math
+
+page_count(0, 5) → 1
+
+def positive_size(value):
+    return max(1, value)
+
+def page_count(total, size):
+    return math.ceil(total / positive_size(size))
+```"""
+    source = cap.extract_python({"content": content}, "page_count")
+    assert source is not None
+    tree = cap.ast.parse(source)
+    assert any(isinstance(node, cap.ast.Import) and node.names[0].name == "math" for node in tree.body)
+    assert any(isinstance(node, cap.ast.FunctionDef) and node.name == "positive_size" for node in tree.body)
+
+
+def test_extract_rejects_missing_incomplete_and_ambiguous_functions():
+    assert cap.extract_python({"content": "No Python function here."}, "page_count") is None
+    assert cap.extract_python({"content": "def page_count(total, size):\n"}, "page_count") is None
+    content = """```python
+def page_count(total, size):
+    return total
+```
+def page_count(total, size):
+    return size
+"""
+    assert cap.extract_python({"content": content}, "page_count") is None
+
+
+def test_executable_report_records_extraction_metadata_and_failure_stage(monkeypatch):
+    record = cd_record("CD-02", GOOD_CD02)
+    record["truncated"] = True
+    original_message = dict(record["message"])
+    response = record["message"]["content"]
+    monkeypatch.setattr(cap, "isolation_prefix", lambda: ([], "test"))
+    monkeypatch.setattr(cap, "verify_network_isolation", lambda prefix: {"verified": True})
+    monkeypatch.setattr(cap, "_run_isolated_sample", lambda source, fixture, prefix, timeout: {
+        "ok": True,
+        "error": None,
+        "vectors": [{"passed": False} for _ in fixture["vectors"]],
+    })
+
+    report = cap.executable_code_report([record])
+    sample = report["cases"]["CD-02"]["samples"][0]
+    source = cap.extract_python(record["message"], "page_count")
+    assert sample["failure_stage"] == "algorithm"
+    assert sample["extraction_status"] == "complete"
+    assert sample["truncation_status"] == "truncated"
+    assert sample["response_sha256"] == cap.hashlib.sha256(response.encode()).hexdigest()
+    assert sample["source_sha256"] == cap.hashlib.sha256(source.encode()).hexdigest()
+    span = next(span for span in sample["selected_spans"] if span["kind"] == "function")
+    assert response[span["start_offset"]:span["end_offset"]].lstrip().startswith("def page_count")
+    assert record["message"] == original_message
+
+
+def test_executable_report_marks_missing_target_as_extraction_failure(monkeypatch):
+    monkeypatch.setattr(cap, "isolation_prefix", lambda: ([], "test"))
+    monkeypatch.setattr(cap, "verify_network_isolation", lambda prefix: {"verified": True})
+    report = cap.executable_code_report([cd_record("CD-02", "A page-count example, but no function.")])
+    sample = report["cases"]["CD-02"]["samples"][0]
+    assert sample["failure_stage"] == "extraction"
+    assert sample["error"] == "extraction_failed"
+    assert sample["truncation_status"] == "unknown"
+
+
+def test_truncation_status_uses_response_finish_reason():
+    assert cap._truncation_status({"response": {"choices": [{"finish_reason": "length"}]}}) == "truncated"
+    assert cap._truncation_status({"response": {"choices": [{"finish_reason": "stop"}]}}) == "not_truncated"
+
+
 def test_execute_code_not_collected_without_cd_samples():
     report = cap.executable_code_report([so_record("SO-01", "{}", [{"kind": "json_keys", "required": []}])])
     assert report["status"] == "not_collected"

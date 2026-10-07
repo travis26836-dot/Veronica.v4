@@ -1,0 +1,37 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/extract-complete-python-functions",
+  "ended_at": "2026-10-07T13:16:06Z",
+  "evidence": [
+    "coordination/handoffs/extract-python-functions-20261007.md"
+  ],
+  "files_changed": [
+    "src/veronica_core/capability_reports.py",
+    "tests/test_capability_reports.py"
+  ],
+  "limitations": [
+    "No live model run; verified extraction/report behavior and unchanged sandbox path locally."
+  ],
+  "model": null,
+  "next_action": "Review and merge the evaluator fix; do not infer model qualification from these tests.",
+  "paths": [
+    "src/veronica_core/capability_reports.py",
+    "tests/test_capability_reports.py"
+  ],
+  "repo_commit_after": "54ec318b6ea1772a3d2d503fdc1fadd3cd0bd511",
+  "repo_commit_before": "54ec318b6ea1772a3d2d503fdc1fadd3cd0bd511",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:11:36Z",
+  "status": "completed",
+  "summary": "Extract unique complete requested Python functions from mixed response formats",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "extract-python-functions-20261007",
+  "tests": [
+    "pytest -q tests/test_capability_reports.py (23 passed)",
+    "pytest -q (all passed, one skipped)"
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
