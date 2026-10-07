@@ -1,5 +1,6 @@
 """Scoring failures, isolation, budget gates and transcript handling without inference."""
 from copy import deepcopy
+import hashlib
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -42,6 +43,84 @@ def test_correct_substring_does_not_pass_exact_or_remove_semantic_review():
 @pytest.mark.parametrize("answer", ['{"ok":true,"ok":false}', '{"ok":NaN}', '```json\n{"ok":true}\n```', '{"ok":1}'])
 def test_json_grade_rejects_duplicate_keys_nonfinite_fences_and_bool_number_confusion(answer):
     assert not ev.automatic_checks({"content": answer}, [{"kind": "json_equals", "value": {"ok": True}}])[0]["passed"]
+
+
+def test_evidence_redaction_preserves_only_known_numeric_usage_counters():
+    evidence = {
+        "usage": {
+            "prompt_tokens": 387,
+            "completion_tokens": 18,
+            "total_tokens": 405,
+            "prompt_tokens_details": {"cached_tokens": 7, "audio_tokens": 2},
+            "completion_tokens_details": {
+                "reasoning_tokens": 11, "audio_tokens": 3,
+                "accepted_prediction_tokens": 1, "rejected_prediction_tokens": 0,
+            },
+            "other_tokens": 9,
+        },
+        "prompt_tokens": 999,
+        "request": {"max_tokens": 384},
+        "invalid_usage": {"prompt_tokens": True, "total_tokens": -1, "completion_tokens": "18"},
+    }
+
+    cleaned = ev._redact_evidence(evidence)
+
+    assert cleaned["usage"]["prompt_tokens"] == 387
+    assert type(cleaned["usage"]["prompt_tokens"]) is int
+    assert cleaned["usage"]["completion_tokens"] == 18
+    assert cleaned["usage"]["total_tokens"] == 405
+    assert cleaned["usage"]["prompt_tokens_details"] == {"cached_tokens": 7, "audio_tokens": 2}
+    assert cleaned["usage"]["completion_tokens_details"]["reasoning_tokens"] == 11
+    assert cleaned["usage"]["completion_tokens_details"]["accepted_prediction_tokens"] == 1
+    assert cleaned["usage"]["other_tokens"] == ev.REDACTED
+    assert cleaned["prompt_tokens"] == ev.REDACTED
+    assert cleaned["request"]["max_tokens"] == 384
+    assert cleaned["invalid_usage"] == {
+        "prompt_tokens": ev.REDACTED, "total_tokens": ev.REDACTED, "completion_tokens": ev.REDACTED,
+    }
+
+
+def test_evidence_redaction_scrubs_nested_credentials_strings_and_raw_json():
+    explicit_secret = "synthetic-explicit-value"
+    known_format_key = "sk-" + "synthetic-api-key-value"
+    evidence = {
+        "usage": {"prompt_tokens": 387, "completion_tokens": 18, "total_tokens": 405},
+        "properties": {
+            "api_key": "synthetic-api-key-value",
+            "access_token": "synthetic-access-token-value",
+            "refresh_token": "synthetic-refresh-token-value",
+            "token": "synthetic-bare-token-value",
+        },
+        "nested": {"authorization": "Bearer " + "synthetic-bearer-value"},
+        "message": (
+            "Bearer " + "synthetic-inline-bearer-value; "
+            "api_key=synthetic-inline-api-key; API key is " + known_format_key + "; synthetic-explicit-value"
+        ),
+    }
+
+    cleaned = ev._redact_evidence(
+        {"parsed": evidence, "raw_json": json.dumps(evidence)},
+        [explicit_secret],
+    )
+    parsed_raw = json.loads(cleaned["raw_json"])
+    saved = json.dumps(cleaned, ensure_ascii=False)
+
+    assert cleaned["parsed"]["usage"] == parsed_raw["usage"]
+    assert type(parsed_raw["usage"]["prompt_tokens"]) is int
+    assert cleaned["parsed"]["properties"] == {
+        "api_key": ev.REDACTED,
+        "access_token": ev.REDACTED,
+        "refresh_token": ev.REDACTED,
+        "token": ev.REDACTED,
+    }
+    assert parsed_raw["properties"] == cleaned["parsed"]["properties"]
+    for secret in (
+        explicit_secret, "synthetic-api-key-value", "synthetic-access-token-value",
+        "synthetic-refresh-token-value", "synthetic-bare-token-value",
+        "synthetic-bearer-value", "synthetic-inline-bearer-value", "synthetic-inline-api-key",
+        known_format_key,
+    ):
+        assert secret not in saved
 
 
 def test_prose_does_not_count_as_native_tool_call_and_multiple_calls_fail():
@@ -150,6 +229,62 @@ def test_live_runner_isolates_cases_but_keeps_generated_history_within_case(tmp_
     assert all(m["role"] != "assistant" for m in requests[2]["messages"])
     assert "rubric" not in json.dumps(requests) and "DO_NOT_COPY" not in (args.run_dir / "manifest.json").read_text()
     assert report["gate"] == "human_review_pending"
+
+
+def test_live_collection_redacts_saved_response_and_hashes_original_body(tmp_path, monkeypatch):
+    data = suite()
+    suite_path = tmp_path / "suite.json"
+    ev.write_json(suite_path, data)
+    runtime = tmp_path / "runtime.json"
+    ev.write_json(runtime, {"model": {"repository": "fixture", "revision": "fixture"}})
+    api_key = "synthetic-explicit-api-key"
+    monkeypatch.setenv("VERONICA_TEST_API_KEY", api_key)
+    response_data = {
+        "choices": [{"message": {"role": "assistant", "content": "Bearer " + "synthetic-bearer-value"}}],
+        "usage": {
+            "prompt_tokens": 387,
+            "completion_tokens": 18,
+            "total_tokens": 405,
+            "prompt_tokens_details": {"cached_tokens": 7},
+            "completion_tokens_details": {"reasoning_tokens": 11},
+        },
+        "properties": {"api_key": api_key, "access_token": "synthetic-access-token"},
+    }
+    response_body = json.dumps(response_data, separators=(",", ":")).encode("utf-8")
+
+    def handler(request):
+        if request.url.path.endswith("/models"):
+            return httpx.Response(200, json={"data": [{"id": "Veronica"}]})
+        return httpx.Response(200, content=response_body, headers={"content-type": "application/json"})
+
+    actual_client = httpx.Client
+    monkeypatch.setattr(ev.httpx, "Client", lambda **kwargs: actual_client(transport=httpx.MockTransport(handler), **kwargs))
+    monkeypatch.setattr(ev, "new_run", lambda path: (path.mkdir(), path)[1])
+    args = SimpleNamespace(
+        execute=True, base_url="http://127.0.0.1:9999/v1", allow_remote=False,
+        temperature=0, top_p=1, thinking="disabled", max_seconds=10, timeout_seconds=5,
+        runtime_record=runtime, api_key_env="VERONICA_TEST_API_KEY",
+        run_dir=tmp_path / "results", suite=suite_path, surface="direct", model="Veronica",
+        mode="chat", seed=1, repeats=1, max_tokens=10,
+    )
+
+    ev.collect(args, data, data["cases"], ev.plan(data["cases"], 1, 10, 10, 100))
+
+    record = ev.read_jsonl(args.run_dir / "results.jsonl")[0]
+    raw_response = json.loads(record["raw_response"])
+    saved = json.dumps(record, ensure_ascii=False)
+    assert record["response"]["usage"] == raw_response["usage"]
+    assert record["response"]["usage"]["prompt_tokens"] == 387
+    assert type(record["response"]["usage"]["prompt_tokens"]) is int
+    assert record["response"]["properties"] == {
+        "api_key": ev.REDACTED, "access_token": ev.REDACTED,
+    }
+    assert record["message"]["content"] == ev.REDACTED
+    assert record["response_body_sha256"] == hashlib.sha256(response_body).hexdigest()
+    assert record["response_body_bytes"] == len(response_body)
+    assert record["response_body_truncated"] is False
+    assert api_key not in saved and "synthetic-access-token" not in saved
+    assert "synthetic-bearer-value" not in saved
 
 
 @pytest.mark.parametrize(("top_p", "thinking"), [(0, "default"), (1.1, "default"), (1, "invalid")])
