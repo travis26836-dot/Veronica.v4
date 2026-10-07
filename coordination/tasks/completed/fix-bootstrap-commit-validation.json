@@ -1,0 +1,44 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/replace-dangling-bootstrap-commit-reference",
+  "ended_at": "2026-10-07T13:13:46Z",
+  "evidence": [
+    "commit:2d880090aae795cf050446217566c0fcffd31ae2",
+    "scripts/collaboration.py",
+    "tests/test_collaboration.py"
+  ],
+  "files_changed": [
+    "coordination/handoffs/collaboration-bootstrap.md",
+    "coordination/tasks/completed/collaboration-bootstrap.json",
+    "scripts/collaboration.py",
+    "tests/test_collaboration.py"
+  ],
+  "limitations": [
+    "Repository-wide validation still reports unrelated pre-existing missing evidence, including other stale commit references."
+  ],
+  "model": null,
+  "next_action": "Review the completed change; repair other invalid evidence only in separately claimed packets.",
+  "paths": [
+    "coordination/handoffs/collaboration-bootstrap.md",
+    "coordination/tasks/completed/collaboration-bootstrap.json",
+    "scripts/collaboration.py",
+    "tests/test_collaboration.py"
+  ],
+  "repo_commit_after": "2d880090aae795cf050446217566c0fcffd31ae2",
+  "repo_commit_before": "d3851f97d0e93910868efda3c0f6635b6586785d",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:11:27Z",
+  "status": "completed",
+  "summary": "Replace the unreachable bootstrap evidence commit and reject invalid commit evidence in completed records",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "fix-bootstrap-commit-validation",
+  "tests": [
+    "python -m pytest tests/test_collaboration.py -q (9 passed)",
+    "python -m py_compile scripts/collaboration.py tests/test_collaboration.py",
+    "git diff --check"
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
