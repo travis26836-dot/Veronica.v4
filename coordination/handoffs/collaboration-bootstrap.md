@@ -38,7 +38,7 @@ Establish the shared Codex, Hermes, and GitHub Copilot collaboration protocol an
 
 ## Evidence
 
-- `commit:f77e548`
+- `commit:00816af42e79bbc7f8d5fc5e2ef2d9e8c344a369`
 - `docs/AGENT-COLLABORATION.md`
 - `docs/AGENT-ENVIRONMENT-MATRIX.md`
 - `coordination/sessions/2026-09-13-logbook-recovery.md`
@@ -56,4 +56,4 @@ Establish the shared Codex, Hermes, and GitHub Copilot collaboration protocol an
 
 ## Next safe action
 
-Owner reviews commit f77e548 and this handoff, then explicitly decides whether to merge agents/multi-agent-collaboration into main.
+Owner reviews commit 00816af42e79bbc7f8d5fc5e2ef2d9e8c344a369 and this handoff, then explicitly decides whether to merge agents/multi-agent-collaboration into main.

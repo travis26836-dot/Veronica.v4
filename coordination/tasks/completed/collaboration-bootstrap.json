@@ -3,7 +3,7 @@
   "branch": "agents/multi-agent-collaboration",
   "ended_at": "2026-09-13T23:30:02Z",
   "evidence": [
-    "commit:f77e548",
+    "commit:00816af42e79bbc7f8d5fc5e2ef2d9e8c344a369",
     "docs/AGENT-COLLABORATION.md",
     "docs/AGENT-ENVIRONMENT-MATRIX.md",
     "coordination/sessions/2026-09-13-logbook-recovery.md"
@@ -29,7 +29,7 @@
     "Hermes AGENTS.md loading was verified from the installed CLI help; other Hermes surfaces must not use ignore-rules or safe-mode for project work."
   ],
   "model": "gpt-5",
-  "next_action": "Owner reviews commit f77e548 and this handoff, then explicitly decides whether to merge agents/multi-agent-collaboration into main.",
+  "next_action": "Owner reviews commit 00816af42e79bbc7f8d5fc5e2ef2d9e8c344a369 and this handoff, then explicitly decides whether to merge agents/multi-agent-collaboration into main.",
   "paths": [
     ".codex/config.toml",
     ".github/copilot-instructions.md",

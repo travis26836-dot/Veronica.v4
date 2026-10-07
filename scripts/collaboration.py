@@ -307,9 +307,26 @@ def validate_repository(root: Path) -> list[str]:
         if not handoff.is_file():
             errors.append(f"{record.get('task_id')}: missing handoff")
         for evidence in record.get("evidence", []):
-            if evidence.startswith("commit:") or evidence.startswith("command:"):
+            if evidence.startswith("commit:"):
+                revision = evidence.removeprefix("commit:")
+                result = subprocess.run(
+                    [
+                        "git",
+                        "rev-parse",
+                        "--verify",
+                        "--end-of-options",
+                        f"{revision}^{{commit}}",
+                    ],
+                    cwd=root,
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+                if not revision or result.returncode:
+                    errors.append(f"{record.get('task_id')}: missing evidence {evidence}")
+            elif evidence.startswith("command:"):
                 continue
-            if not (root / evidence).exists():
+            elif not (root / evidence).exists():
                 errors.append(f"{record.get('task_id')}: missing evidence {evidence}")
     for index, left in enumerate(active):
         for right in active[index + 1 :]:

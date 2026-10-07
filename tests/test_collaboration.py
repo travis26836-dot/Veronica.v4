@@ -115,3 +115,21 @@ def test_validate_rejects_missing_evidence(tmp_path: Path) -> None:
     assert completed.exists()
     with pytest.raises(CoordinationError, match="missing evidence"):
         validate_repository(root)
+
+
+def test_validate_accepts_commit_evidence(tmp_path: Path) -> None:
+    root = project(tmp_path)
+    commit = MODULE.run_git(root, "rev-parse", "HEAD")
+    claim(root, claim_args("valid-commit-proof", ["docs/example.md"]))
+    update_task(root, finish_args("valid-commit-proof", f"commit:{commit}"), True)
+
+    validate_repository(root)
+
+
+def test_validate_rejects_missing_commit_evidence(tmp_path: Path) -> None:
+    root = project(tmp_path)
+    claim(root, claim_args("missing-commit-proof", ["docs/example.md"]))
+    update_task(root, finish_args("missing-commit-proof", "commit:deadbeef"), True)
+
+    with pytest.raises(CoordinationError, match="missing evidence commit:deadbeef"):
+        validate_repository(root)
