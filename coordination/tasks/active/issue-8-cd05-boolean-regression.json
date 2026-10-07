@@ -1,0 +1,30 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/fix-integer-only-json-parser",
+  "ended_at": null,
+  "evidence": [],
+  "files_changed": [],
+  "limitations": [],
+  "model": "GitHub Copilot Coding Agent",
+  "next_action": null,
+  "paths": [
+    "coordination/handoffs/issue-8-cd05-boolean-regression.md",
+    "coordination/tasks/active/issue-8-cd05-boolean-regression.json",
+    "data/evals/t2-executable-fixtures.json",
+    "runs/2026-10-07-cd05-boolean-regression",
+    "tests/test_capability_reports.py"
+  ],
+  "repo_commit_after": null,
+  "repo_commit_before": "64222b7e57010a5d385b4365b960dce5fce171d0",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:11:35Z",
+  "status": "active",
+  "summary": "Preserve CD-05 boolean parser regression, add independent fixture checks and record bounded intervention comparison without claiming T2 qualification",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "issue-8-cd05-boolean-regression",
+  "tests": [],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
