@@ -1,0 +1,28 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/release-or-transfer-claims-on-handoff",
+  "ended_at": null,
+  "evidence": [],
+  "files_changed": [],
+  "limitations": [],
+  "model": null,
+  "next_action": null,
+  "paths": [
+    "coordination/README.md",
+    "scripts/collaboration.py",
+    "tests/test_collaboration.py"
+  ],
+  "repo_commit_after": null,
+  "repo_commit_before": "8c23a7d2b6416fd943acc6fb34174eb53c227559",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:11:12Z",
+  "status": "active",
+  "summary": "Release claimed paths after handoff while preserving historical ownership",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "release-handoff-claims-20261007",
+  "tests": [],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
