@@ -1,0 +1,32 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/fix-qualification-gate-issue",
+  "ended_at": "2026-10-07T13:20:28Z",
+  "evidence": [
+    "runs/2026-10-07-owner-selected-registry/decision.md"
+  ],
+  "files_changed": [
+    "docs/GOALS.md"
+  ],
+  "limitations": [],
+  "model": "GitHub Copilot Coding Agent",
+  "next_action": "No follow-up for the goal register; proceed with CP2 integration in the correct checkout.",
+  "paths": [
+    "docs/GOALS.md"
+  ],
+  "repo_commit_after": "10d28ee375455253b5924c5e71f0ce9ba6dd46ef",
+  "repo_commit_before": "10d28ee375455253b5924c5e71f0ce9ba6dd46ef",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:15:17Z",
+  "status": "completed",
+  "summary": "Align the goal register with Candidate A owner selection and retired Candidate B",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "owner-selected-registry-goal-update-20261007",
+  "tests": [
+    "Reviewed owner priority and CORE dependency wording against the registry decision."
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}

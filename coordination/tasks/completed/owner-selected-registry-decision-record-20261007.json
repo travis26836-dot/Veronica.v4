@@ -1,0 +1,35 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/fix-qualification-gate-issue",
+  "ended_at": "2026-10-07T13:20:33Z",
+  "evidence": [
+    "runs/2026-10-07-owner-selected-registry/decision.md"
+  ],
+  "files_changed": [
+    "runs/2026-10-07-owner-selected-registry/decision.md"
+  ],
+  "limitations": [
+    "The CP2 configuration and packet builder are absent from this checkout."
+  ],
+  "model": "GitHub Copilot Coding Agent",
+  "next_action": "Use the checkout containing CP2 to remove retired IDs and rebuild the context packet.",
+  "paths": [
+    "runs/2026-10-07-owner-selected-registry/decision.md"
+  ],
+  "repo_commit_after": "10d28ee375455253b5924c5e71f0ce9ba6dd46ef",
+  "repo_commit_before": "10d28ee375455253b5924c5e71f0ce9ba6dd46ef",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:15:20Z",
+  "status": "completed",
+  "summary": "Record the bounded registry/protocol decision without claiming T2 qualification",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "owner-selected-registry-decision-record-20261007",
+  "tests": [
+    "PYTHONPATH=src python scripts/verify_t2_qualification.py protocol",
+    "PYTHONPATH=src python -m pytest tests/test_qualification.py tests/test_contracts.py -q"
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}

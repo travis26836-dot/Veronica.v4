@@ -37,10 +37,14 @@ def _project_path(value: str, root: Path = ROOT) -> Path:
 
 def _models(registry: dict) -> dict[str, dict]:
     rows = registry.get("candidates", []) + registry.get("controls", [])
-    result = {row.get("id"): row for row in rows if isinstance(row, dict)}
-    if len(result) != len(rows) or None in result:
+    all_models = {row.get("id"): row for row in rows if isinstance(row, dict)}
+    if len(all_models) != len(rows) or None in all_models:
         raise ValueError("Model registry contains missing or duplicate ids")
-    return result
+    return {
+        model_id: model
+        for model_id, model in all_models.items()
+        if model.get("role") != "retired_not_selected"
+    }
 
 
 def required_matrix(protocol: dict, model_ids: set[str]) -> set[tuple[str, str]]:
@@ -66,8 +70,8 @@ def validate_protocol(protocol_path: Path = DEFAULT_PROTOCOL, root: Path = ROOT)
         issues.append("Protocol requires schemaVersion 1 and protocolId")
     if protocol.get("status") != "frozen_before_live_runs":
         issues.append("Protocol must be frozen before collecting comparison outputs")
-    if registry.get("selectionStatus") != "benchmark_required":
-        issues.append("Registry must remain benchmark_required until a signed T2 decision exists")
+    if registry.get("selectionStatus") not in {"benchmark_required", "owner_selected"}:
+        issues.append("Registry selectionStatus must be benchmark_required or owner_selected")
 
     suite_spec = protocol.get("suite", {})
     suite_path = _project_path(suite_spec.get("path", ""), root)
@@ -97,7 +101,7 @@ def validate_protocol(protocol_path: Path = DEFAULT_PROTOCOL, root: Path = ROOT)
         if control.get("controlsCandidateId") != candidate_id:
             issues.append(f"Control {control_id} does not point to {candidate_id}")
     if pair_members != set(models):
-        issues.append("Every registered candidate and control must appear in exactly one comparison pair")
+        issues.append("Every active candidate and control must appear in exactly one comparison pair")
 
     snapshot_files = 0
     profiles = {}

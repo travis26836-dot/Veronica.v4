@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-07-owner-selected-registry",
+  "recordedAt": "2026-10-07T13:19:41Z",
+  "owner": "Raine",
+  "stage": "test",
+  "status": "in_progress",
+  "scope": "Offline owner-selected T2 registry and protocol alignment; no inference or paid compute.",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "modelSelectionStatus": "owner_selected",
+  "modelRevision": null,
+  "runtimeVersion": null,
+  "gpu": null,
+  "configurationFingerprint": null,
+  "lastDurableHandoff": "Run folder initialized; evidence pending.",
+  "nextAction": "Record decision.md and required evidence. Do not overwrite this folder."
+}

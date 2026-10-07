@@ -60,6 +60,7 @@
       "type": "string",
       "enum": [
         "benchmark_required",
+        "owner_selected",
         "hold",
         "qualified",
         "selected",

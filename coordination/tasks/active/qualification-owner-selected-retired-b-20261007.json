@@ -2,11 +2,31 @@
   "agent": "copilot",
   "branch": "copilot/fix-qualification-gate-issue",
   "ended_at": null,
-  "evidence": [],
-  "files_changed": [],
-  "limitations": [],
+  "evidence": [
+    "runs/2026-10-07-owner-selected-registry/decision.md"
+  ],
+  "files_changed": [
+    "TODO.md",
+    "config/model-registry.json",
+    "config/schemas/model-record.schema.json",
+    "config/schemas/run-record.schema.json",
+    "config/t2-comparison-inputs.template.json",
+    "config/t2-qualification.json",
+    "docs/CURRENT-STATE.md",
+    "docs/GOALS.md",
+    "docs/SOURCE-OF-TRUTH.md",
+    "docs/evals/README.md",
+    "runs/2026-10-07-owner-selected-registry/decision.md",
+    "src/veronica_core/contracts.py",
+    "src/veronica_core/qualification.py",
+    "tests/test_contracts.py",
+    "tests/test_qualification.py"
+  ],
+  "limitations": [
+    "CP2 configuration and packet builder are absent at this checkout, so that portion of the requested cross-packet update cannot be applied or validated."
+  ],
   "model": "GitHub Copilot Coding Agent",
-  "next_action": null,
+  "next_action": "In the checkout containing config/t2-context.json, src/veronica_core/context_gate.py, and scripts/generate_context_packet.py, exclude the retired model IDs and regenerate/validate the complete CP2/CP4 packet.",
   "paths": [
     "TODO.md",
     "config/model-registry.json",
@@ -17,17 +37,24 @@
     "src/veronica_core/qualification.py",
     "tests/test_qualification.py"
   ],
-  "repo_commit_after": null,
+  "repo_commit_after": "10d28ee375455253b5924c5e71f0ce9ba6dd46ef",
   "repo_commit_before": "8537b277e6b08f74536a29ae8ef1d05ef7ec4f1c",
-  "ruled_out": [],
+  "ruled_out": [
+    "No paid compute, model download, inference, or foundation-weight changes."
+  ],
   "schema_version": 1,
   "session_id": null,
   "started_at": "2026-10-07T13:12:30Z",
-  "status": "active",
+  "status": "blocked",
   "summary": "Update frozen T2 validation and run matrix for the owner-selected registry while keeping foundation qualification pending",
   "supersedes": [],
   "surface": "copilot-cloud",
   "task_id": "qualification-owner-selected-retired-b-20261007",
-  "tests": [],
+  "tests": [
+    "PYTHONPATH=src python -m pytest tests/test_qualification.py tests/test_contracts.py -q",
+    "PYTHONPATH=src python scripts/verify_t2_qualification.py protocol",
+    "PYTHONPATH=src python scripts/validate_contracts.py",
+    "git diff --check and JSON syntax checks"
+  ],
   "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
 }
