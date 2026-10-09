@@ -50,7 +50,11 @@ Applications must call Veronica's API alias, never a hard-coded Hugging Face rep
 
 ## 4. Current model decision
 
-No final foundation has been selected. Selection status is `benchmark_required`.
+The owner selected Candidate A as Veronica's operational foundation on
+2026-09-29. Registry status is `owner_selected`; this is an owner choice, not
+evidence that T2 qualification passed. Capability qualification, signed T2
+adjudication, and CORE acceptance remain incomplete. Candidate B and its
+official control are retired and must not be downloaded or compared.
 
 **Live checkpoint (2026-08-30):** Candidate A now has verified artifacts and real API/UI chat evidence. Its supervised A100 run ended with confirmed Pod termination and retained storage. The first evaluation exposed contradictory math and an unsupported code-execution claim, so it is not yet a qualified capable core. See `runs/2026-08-30-supervised-first-chat/decision.md` and `manual-review.md`.
 
@@ -60,17 +64,23 @@ No final foundation has been selected. Selection status is `benchmark_required`.
 - Reason: owner reported a prior Hugging Face bucket copy; the pinned candidate has now been downloaded and hash-verified on the existing RunPod volume. The first supervised A100 run used a verified $1.59/hour rate; final billing is separate from measured inference performance.
 - Known concern: this Instruct variant is non-thinking-only according to its official base card. It can perform reasoning tasks, but a prompt preset cannot turn it into a native thinking-mode model. It is not the automatic final choice for the requested core.
 
-### Candidate B - capability challenger
+### Candidate B - retired
 
 - Repository: `huihui-ai/Huihui-Qwen3.8-27B-abliterated`
-- Reason: newer dense multimodal reasoning model with image/video understanding and stronger agent-oriented base capabilities.
-- Known concern: newer community ablation and denser inference cost require careful validation.
+- Status: retired by owner decision; exclude Candidate B and its official control
+  from qualification comparison inputs.
 
 ### Control models
 
-The official unmodified base corresponding to each candidate is a control, not the uncensored production choice. It reveals whether ablation or quantization damaged capability.
+The official unmodified Candidate A base remains an active control, not the
+production choice. It reveals whether ablation or quantization damaged
+capability. Candidate B's control is retired with Candidate B.
 
-The selection suite must test quality, sarcasm and implied meaning, personality adaptability, writing, coding, reasoning, long context, structured JSON, tool calling, lawful adult prompt following, latency, and VRAM.
+The active Candidate A/control suite must test quality, sarcasm and implied
+meaning, personality adaptability, writing, coding, reasoning, long context,
+structured JSON, tool calling, lawful adult prompt following, latency, and VRAM.
+The frozen T2 protocol remains an offline readiness gate and does not convert
+the owner selection into a qualification result.
 
 ## 5. First deliverable
 

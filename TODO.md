@@ -101,7 +101,7 @@ its gates. CORE targets October 23, 2026; recurring improvement continues afterw
 
 **Current checkpoint:** first real API/UI conversation achieved; Pod explicitly terminated and absent from inventory. Network volume retained. See `runs/2026-08-30-supervised-first-chat/decision.md`. The supervised run's approval is consumed; future/replacement Pods need fresh authorization. Capability qualification is not passed.
 
-**Single-model reality (2026-09-09):** Only Candidate A (`huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated` rev e2f73ec...) is currently wired into wrapper, config, launcher, and profile. Candidate B and controls are not yet downloaded/integrated. See `runs/2026-09-09-single-model-reality/decision.md`. Expand only after current model stabilization.
+**Single-model reality (updated 2026-10-07):** Candidate A (`huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated` rev e2f73ec...) is owner-selected and remains unqualified pending T2. Candidate B and its control are retired and excluded. See `runs/2026-10-07-owner-selected-registry/decision.md`.
 
 - [x] Create a reusable, secret-free RunPod profile, shared Codex/Copilot skill, preflight, scoped supervised controller and on-Pod preparation script; validate offline safety checks. Proof: `runs/2026-08-30-supervised-first-chat/decision.md` (27 tests).
 - [x] Add the "Start Veronica" trigger, one duration question with a one-hour default, saved $1.75/hour/one-A100 limits, and a checked multi-step launcher. Offline proof: `runs/2026-08-30-start-command/decision.md`.
@@ -115,7 +115,7 @@ its gates. CORE targets October 23, 2026; recurring improvement continues afterw
 - [x] Start Candidate A with a documented OpenAI-compatible command. Proof: `runs/2026-08-30-supervised-first-chat/server-command.json`.
 - [x] Verify `/v1/models`, one completion, model identity, and clean shutdown. Proof: `runs/2026-08-30-supervised-first-chat/decision.md` and linked raw evidence.
 - [x] Record load time, VRAM, first-content latency, observed throughput, and configured context limit. Proof: `runs/2026-08-30-supervised-first-chat/verification-summary.json`; full context stress testing remains open.
-- [ ] Repeat for Candidate B and official controls where affordable. (Current focus: stabilize and qualify single wired Candidate A first per 2026-09-09 reality check.)
+- [x] Retire Candidate B and its official control from qualification runs. Proof: `config/model-registry.json` and `runs/2026-10-07-owner-selected-registry/decision.md`; neither model is qualified or required.
 - [ ] Confirm native reasoning controls and the correct tool-call parser.
 - [x] Confirm the Pod is terminated after evidence is transferred. Proof: `runs/2026-08-30-supervised-first-chat/termination.json`.
 
@@ -144,11 +144,11 @@ its gates. CORE targets October 23, 2026; recurring improvement continues afterw
 ## T2 - Test: untouched model baseline
 
 - [x] Build an offline-validated evaluation runner, transcript intake/reporting, draft dataset linter, and reusable `veronica-evals` skill. Proof: `runs/2026-08-31-evaluation-foundation/decision.md`.
-- [x] Freeze a matched four-model T2 protocol and add a strict offline evidence verifier. Proof: `config/t2-qualification.json` and `runs/2026-09-01-t2-qualification/decision.md`; no live comparison is claimed.
+- [x] Freeze a matched T2 protocol for owner-selected Candidate A and its active official control, and add a strict offline evidence verifier. Proof: `config/t2-qualification.json` and `runs/2026-10-07-owner-selected-registry/decision.md`; no live comparison or qualification is claimed.
 - [x] Preserve and import the retained first conversation for evaluation, with assistant findings labeled advisory and training consent absent. Proof: `runs/2026-08-31-recorded-conversation-eval/report.md`.
 - [x] Adjudicate the transcript's advisory findings and approve the next bounded evaluation selection. Proof: `runs/2026-08-31-recorded-conversation-eval/reviews-owner.jsonl` and regenerated `report.json` (human_reviewed=3, human_critical_failures=2, gate `blocked_on_observed_failures`). Next bounded live selection (CC-01, CC-02, MB-01, MB-02) approved per the run's `owner-adjudication-packet.md` section 4; not yet executed — needs a fresh authorized Pod start.
 - [ ] Extend short context probes into long-context stress tests and add complete schema/executable-code qualification environments; the current runner never executes tools or generated code.
-- [ ] Run the frozen evaluation pack against each candidate and control.
+- [ ] Run the frozen evaluation pack against Candidate A and its active official control; Candidate B and its control are retired.
 - [ ] Save every raw response and machine-readable score.
 - [ ] Manually review sarcasm, personality fit, prose, and conversational intuition.
 - [ ] Measure coding correctness with executable tests.
@@ -160,7 +160,7 @@ its gates. CORE targets October 23, 2026; recurring improvement continues afterw
 - [ ] Reject candidates that require the wrapper to simulate missing native capability.
 - [ ] Record a signed model-selection decision.
 
-**Gate T2:** the selected model wins on capability and acceptable cost, not familiarity or download completion.
+**Gate T2:** owner selection alone is not qualification; Candidate A must pass the capability and acceptable-cost gates before any qualification claim.
 
 **ACK:** `Mind Proven` - pending.
 

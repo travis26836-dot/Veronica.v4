@@ -1,0 +1,39 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/fix-qualification-gate-issue",
+  "ended_at": "2026-10-07T13:20:19Z",
+  "evidence": [
+    "runs/2026-10-07-owner-selected-registry/decision.md"
+  ],
+  "files_changed": [
+    "config/schemas/run-record.schema.json",
+    "docs/evals/README.md",
+    "src/veronica_core/contracts.py",
+    "tests/test_contracts.py"
+  ],
+  "limitations": [],
+  "model": "GitHub Copilot Coding Agent",
+  "next_action": "No follow-up for the run record contract; CP2 integration remains tracked by the primary task.",
+  "paths": [
+    "config/schemas/run-record.schema.json",
+    "docs/evals/README.md",
+    "src/veronica_core/contracts.py",
+    "tests/test_contracts.py"
+  ],
+  "repo_commit_after": "10d28ee375455253b5924c5e71f0ce9ba6dd46ef",
+  "repo_commit_before": "10d28ee375455253b5924c5e71f0ce9ba6dd46ef",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:17:10Z",
+  "status": "completed",
+  "summary": "Keep newly initialized run records and T2 instructions aligned with owner-selected status",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "owner-selected-run-record-contract-20261007",
+  "tests": [
+    "PYTHONPATH=src python -m pytest tests/test_contracts.py -q",
+    "PYTHONPATH=src python scripts/validate_contracts.py"
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}

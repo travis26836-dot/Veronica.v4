@@ -1,14 +1,16 @@
 {
   "schemaVersion": 1,
   "publicAlias": "Veronica",
-  "selectionStatus": "benchmark_required",
+  "selectionStatus": "owner_selected",
   "defaultDevelopmentCandidate": "qwen3-30b-a3b-2507-abliterated",
   "qualificationProtocol": "config/t2-qualification.json",
+  "ownerDecisionDate": "2026-09-29",
+  "ownerDecision": "Candidate A is owner-selected as Veronica's foundation. Candidate B and its official control are retired and must not be used or compared.",
   "candidates": [
     {
       "id": "qwen3-30b-a3b-2507-abliterated",
       "repository": "huihui-ai/Huihui-Qwen3-30B-A3B-Instruct-2507-abliterated",
-      "role": "available_first_run_candidate",
+      "role": "selected_foundation",
       "licenseDeclared": "Apache-2.0",
       "uncensoredMethod": "abliteration",
       "revision": "e2f73ec7e99ee316beb8069ca90e4c3cbef8aa0f",
@@ -21,7 +23,7 @@
     {
       "id": "qwen3.8-27b-abliterated",
       "repository": "huihui-ai/Huihui-Qwen3.8-27B-abliterated",
-      "role": "capability_challenger",
+      "role": "retired_not_selected",
       "licenseDeclared": "Apache-2.0",
       "uncensoredMethod": "abliteration",
       "revision": "739e3c5b89849f6c238ce1e5b70008612ae42cdd",
@@ -29,7 +31,7 @@
       "provenanceSnapshot": "runs/2026-09-01-t2-qualification/provenance/candidate-b",
       "runpodProfile": "config/runpod-t2-candidate-b.json",
       "qualification": "pending",
-      "notes": "Newer dense multimodal candidate. Must be compared for capability retention, native tools, latency, VRAM, and cost."
+      "notes": "Retired by owner decision; do not download or compare."
     }
   ],
   "controls": [
@@ -48,15 +50,15 @@
     {
       "id": "qwen3.8-27b-control",
       "repository": "Qwen/Qwen3.8-27B",
-      "role": "official_control",
+      "role": "retired_not_selected",
       "licenseDeclared": "Apache-2.0",
       "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
       "controlsCandidateId": "qwen3.8-27b-abliterated",
       "provenanceSnapshot": "runs/2026-09-01-t2-qualification/provenance/candidate-b-control",
       "runpodProfile": "config/runpod-t2-candidate-b-control.json",
       "qualification": "pending",
-      "notes": "Official untouched control for Candidate B. The pinned card declares native multimodal and flexible-thinking behavior."
+      "notes": "Retired with Candidate B; do not download or compare."
     }
   ],
-  "selectionRule": "The selected foundation must pass integrity, license, capability, tool-call, and cost gates. Download completion alone cannot select a model."
+  "selectionRule": "Owner selection does not establish qualification; the selected foundation must pass integrity, license, capability, tool-call, and cost gates."
 }

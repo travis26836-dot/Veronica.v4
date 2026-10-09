@@ -20,10 +20,12 @@
     "publicAlias": { "const": "Veronica" },
     "selectionStatus": {
       "type": "string",
-      "enum": ["benchmark_required", "hold", "qualified", "selected", "rejected", "superseded"]
+      "enum": ["benchmark_required", "owner_selected", "hold", "qualified", "selected", "rejected", "superseded"]
     },
     "defaultDevelopmentCandidate": { "type": "string", "minLength": 1 },
     "qualificationProtocol": { "type": "string", "minLength": 1 },
+    "ownerDecisionDate": { "type": "string", "format": "date" },
+    "ownerDecision": { "type": "string", "minLength": 1 },
     "candidates": {
       "type": "array",
       "minItems": 1,
