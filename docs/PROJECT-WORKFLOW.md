@@ -32,7 +32,8 @@ Each packet has one responsible writer, paths, dependencies, acceptance proof,
 effort estimate, spending/approval needs and a recovery action. Follow the
 collaboration preflight and claim protocol. Default WIP: one implementation
 packet and one independent read-only review. Parallel writers require disjoint
-claims and verified coordination across worktrees; local claims are not global locks.
+claims; linked worktrees share claims through Git's common directory, while
+separate clones still require verified external coordination.
 
 Statuses: backlog -> ready -> active -> review -> accepted. Use blocked only with
 a named dependency and unblock condition; superseded records retain their history.

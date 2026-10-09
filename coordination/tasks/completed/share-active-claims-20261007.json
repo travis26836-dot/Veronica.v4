@@ -1,0 +1,49 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/share-active-claims-across-worktrees",
+  "ended_at": "2026-10-07T13:16:28Z",
+  "evidence": [
+    "command:linked worktree CLI regression test rejects overlapping path claims",
+    "command:python -m pytest tests/test_collaboration.py -q",
+    "command:python -m pytest tests -q"
+  ],
+  "files_changed": [
+    "coordination/README.md",
+    "docs/AGENT-COLLABORATION.md",
+    "docs/PROJECT-WORKFLOW.md",
+    "scripts/collaboration.py",
+    "tests/test_collaboration.py"
+  ],
+  "limitations": [
+    "collaboration.py validate continues to report pre-existing historical records with missing evidence; no new record error was reported.",
+    "Claims are shared only by linked worktrees using the same Git common directory; separate clones need external coordination."
+  ],
+  "model": null,
+  "next_action": "Review the completed change and merge the PR; handle historical evidence gaps separately if requested.",
+  "paths": [
+    "coordination/README.md",
+    "docs/AGENT-COLLABORATION.md",
+    "docs/PROJECT-WORKFLOW.md",
+    "scripts/collaboration.py",
+    "tests/test_collaboration.py"
+  ],
+  "repo_commit_after": "5912958ebf4467cc363e08fc2fef81b44c1295bb",
+  "repo_commit_before": "5912958ebf4467cc363e08fc2fef81b44c1295bb",
+  "ruled_out": [
+    "Keep active claim state in each checkout, because linked worktrees can then claim overlapping paths independently."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:11:45Z",
+  "status": "completed",
+  "summary": "Share active collaboration claims across linked Git worktrees",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "share-active-claims-20261007",
+  "tests": [
+    "python -m pytest tests/test_collaboration.py -q (9 passed)",
+    "python -m pytest tests -q (passed, 1 skipped)",
+    "python -m py_compile scripts/collaboration.py tests/test_collaboration.py"
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
