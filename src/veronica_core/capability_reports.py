@@ -26,7 +26,12 @@ LONG_CONTEXT_TARGETS = (8192, 16384, 32768)
 LONG_CONTEXT_POSITIONS = ("begin", "mid", "end")
 JSON_CHECK_KINDS = {"json_equals", "json_keys"}
 TOOL_CHECK_KINDS = {"tool_call", "no_tool_calls"}
-FENCE_RE = re.compile(r"```(?:python|py)?[ \t]*\r?\n(.*?)```", re.IGNORECASE | re.DOTALL)
+FENCE_BLOCK_RE = re.compile(r"```(?P<language>[^\r\n`]*)[ \t]*\r?\n(?P<code>.*?)```", re.DOTALL)
+FUNCTION_RE = re.compile(r"^(?:async[ \t]+)?def[ \t]+([A-Za-z_]\w*)[ \t]*\(")
+STATEMENT_RE = re.compile(
+    r"^(?:async[ \t]+def\b|def\b|class\b|import\b|from\b|assert\b|return\b|"
+    r"[A-Za-z_]\w*[ \t]*\(|[A-Za-z_]\w*(?:[ \t]*,[ \t]*[A-Za-z_]\w*)*[ \t]*[:=])"
+)
 KEEP_NODES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Import, ast.ImportFrom, ast.Assign, ast.AnnAssign)
 FILLER = (
     "Cedar archive padding note. Juniper lantern review remains unrelated. "
@@ -404,27 +409,152 @@ def collect(records: list[dict], suite: dict | None = None) -> dict:
     }
 
 
-def _definitions_only(source: str) -> str:
-    tree = ast.parse(textwrap.dedent(source))
-    tree.body = [node for node in tree.body if isinstance(node, KEEP_NODES)]
-    return ast.unparse(tree)
+def _line_offsets(source: str) -> list[int]:
+    offsets = [0]
+    for line in source.splitlines(keepends=True):
+        offsets.append(offsets[-1] + len(line))
+    return offsets
+
+
+def _candidate_function(source: str, function_name: str) -> list[dict]:
+    normalized = textwrap.dedent(source)
+    lines = normalized.splitlines()
+    offsets = _line_offsets(source)
+    candidates = []
+    for index, line in enumerate(lines):
+        match = FUNCTION_RE.match(line)
+        if not match or match.group(1) != function_name:
+            continue
+        start = index
+        while start and lines[start - 1].lstrip().startswith("@"):
+            start -= 1
+        end = index + 1
+        while end < len(lines):
+            if lines[end].strip() and not lines[end][0].isspace():
+                break
+            end += 1
+        while end > index and not lines[end - 1].strip():
+            end -= 1
+        candidate = "\n".join(lines[start:end]).strip()
+        try:
+            tree = ast.parse(candidate)
+        except (SyntaxError, ValueError):
+            tree = None
+        function_nodes = [
+            node for node in (tree.body if tree else [])
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == function_name
+        ]
+        candidates.append({
+            "source": candidate if len(function_nodes) == 1 else None,
+            "start_line": start,
+            "end_line": end,
+            "start_offset": offsets[start],
+            "end_offset": offsets[end] if end < len(offsets) else len(source),
+        })
+    return candidates
+
+
+def _segment_statements(segment: str) -> list[tuple[int, int, ast.AST]]:
+    normalized = textwrap.dedent(segment)
+    lines = normalized.splitlines()
+    offsets = _line_offsets(segment)
+    starts = [index for index, line in enumerate(lines) if STATEMENT_RE.match(line)]
+    statements = []
+    for position, start in enumerate(starts):
+        end = starts[position + 1] if position + 1 < len(starts) else len(lines)
+        while end > start and not lines[end - 1].strip():
+            end -= 1
+        statement = "\n".join(lines[start:end]).strip()
+        try:
+            tree = ast.parse(statement)
+        except (SyntaxError, ValueError):
+            continue
+        if len(tree.body) == 1 and isinstance(tree.body[0], KEEP_NODES):
+            statements.append((offsets[start], offsets[end] if end < len(offsets) else len(segment), tree.body[0]))
+    return statements
+
+
+def _extract_function_source(content: str, function_name: str) -> dict | None:
+    blocks = list(FENCE_BLOCK_RE.finditer(content))
+    segments = []
+    cursor = 0
+    for block in blocks:
+        if cursor < block.start():
+            segments.append((content[cursor:block.start()], cursor))
+        language = block.group("language").strip().lower()
+        if language in ("", "python", "py"):
+            segments.append((block.group("code"), block.start("code")))
+        cursor = block.end()
+    if cursor < len(content):
+        segments.append((content[cursor:], cursor))
+
+    candidates = []
+    for segment, base_offset in segments:
+        for candidate in _candidate_function(segment, function_name):
+            candidate["base_offset"] = base_offset
+            candidate["segment"] = segment
+            candidates.append(candidate)
+    if len(candidates) != 1 or candidates[0]["source"] is None:
+        return None
+
+    selected = candidates[0]
+    segment = selected["segment"]
+    function_start = selected["start_offset"]
+    function_end = selected["end_offset"]
+    statements = _segment_statements(segment)
+    supporting = []
+    for start, end, node in statements:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == function_name:
+            continue
+        if start < function_end and end > function_start:
+            continue
+        raw = segment[start:end]
+        supporting.append((start, end, textwrap.dedent(raw).strip()))
+    source_parts = [text for _, _, text in supporting if text]
+    source_parts.append(selected["source"])
+    extracted = "\n\n".join(source_parts)
+    try:
+        tree = ast.parse(extracted)
+    except (SyntaxError, ValueError):
+        return None
+    names = [
+        node.name for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    ]
+    if names.count(function_name) != 1:
+        return None
+
+    spans = []
+    for start, end, _ in supporting:
+        spans.append({
+            "start_offset": selected["base_offset"] + start,
+            "end_offset": selected["base_offset"] + end,
+            "kind": "supporting_definition",
+        })
+    spans.append({
+        "start_offset": selected["base_offset"] + function_start,
+        "end_offset": selected["base_offset"] + function_end,
+        "kind": "function",
+    })
+    return {"source": extracted, "selected_spans": spans}
 
 
 def extract_python(message: dict | None, function_name: str) -> str | None:
     content = (message or {}).get("content") or ""
-    chunks = [textwrap.dedent(chunk).strip() for chunk in FENCE_RE.findall(content) if chunk.strip()]
-    merged = "\n\n".join(chunks) if chunks else textwrap.dedent(content).strip()
-    if f"def {function_name}" not in merged:
-        return None
-    try:
-        isolated = _definitions_only(merged)
-        tree = ast.parse(isolated)
-    except (SyntaxError, ValueError):
-        return None
-    names = {node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
-    if function_name not in names or not isolated.strip():
-        return None
-    return isolated
+    extracted = _extract_function_source(content, function_name)
+    return extracted["source"] if extracted else None
+
+
+def _truncation_status(record: dict) -> str:
+    if "truncation_status" in record:
+        return str(record["truncation_status"])
+    if "truncated" in record:
+        return "truncated" if record["truncated"] else "not_truncated"
+    response = record.get("response")
+    choices = response.get("choices") if isinstance(response, dict) else None
+    if choices and isinstance(choices[0], dict) and choices[0].get("finish_reason") is not None:
+        return "truncated" if choices[0]["finish_reason"] == "length" else "not_truncated"
+    return "unknown"
 
 
 def _minimal_env(workdir: Path) -> dict[str, str]:
@@ -580,26 +710,48 @@ def executable_code_report(
         case_fail = False
         for record in samples:
             row: dict[str, Any] = {"sample_id": record.get("sample_id"), "status": record.get("status")}
+            message = record.get("message") or {}
+            response_content = message.get("content")
+            if isinstance(response_content, str):
+                row["response_sha256"] = hashlib.sha256(response_content.encode("utf-8")).hexdigest()
+            row["truncation_status"] = _truncation_status(record)
             if record.get("status") != "response":
                 row.update(passed=False, error="sample_error")
                 case_fail = True
                 sample_rows.append(row)
                 continue
-            source = extract_python(record.get("message"), fixture["function"])
-            if not source:
-                row.update(passed=False, error="extraction_failed", vectors_passed=0, vectors_failed=len(fixture["vectors"]))
+            extracted = _extract_function_source(response_content or "", fixture["function"])
+            if not extracted:
+                row.update(
+                    passed=False,
+                    error="extraction_failed",
+                    failure_stage="extraction",
+                    extraction_status="failed",
+                    vectors_passed=0,
+                    vectors_failed=len(fixture["vectors"]),
+                )
                 case_fail = True
                 sample_rows.append(row)
                 continue
+            source = extracted["source"]
+            row.update(
+                extraction_status="complete",
+                source_sha256=hashlib.sha256(source.encode("utf-8")).hexdigest(),
+                selected_spans=extracted["selected_spans"],
+            )
             executed = True
             outcome = _run_isolated_sample(source, fixture, prefix, timeout_seconds)
             vectors = outcome.get("vectors") or []
             passed_n = sum(bool(item.get("passed")) for item in vectors)
             failed_n = len(fixture["vectors"]) - passed_n
             ok = bool(outcome.get("ok")) and failed_n == 0 and passed_n == len(fixture["vectors"])
+            failure_stage = None
+            if not ok:
+                failure_stage = "execution" if not outcome.get("ok") else "algorithm"
             row.update(
                 passed=ok,
                 error=None if ok else outcome.get("error") or "vector_failure",
+                failure_stage=failure_stage,
                 vectors_passed=passed_n,
                 vectors_failed=failed_n,
                 vectors=vectors,
