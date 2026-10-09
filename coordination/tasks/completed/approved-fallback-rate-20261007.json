@@ -1,0 +1,43 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/bound-fallback-selection-approved-rate",
+  "ended_at": "2026-10-07T13:13:50Z",
+  "evidence": [
+    "command:python -m pytest tests/test_runpod_safety.py tests/test_runpod_core.py -q",
+    "command:git -c core.whitespace=cr-at-eol diff --check"
+  ],
+  "files_changed": [
+    "coordination/handoffs/approved-fallback-rate-20261007.md",
+    "coordination/tasks/completed/approved-fallback-rate-20261007.json",
+    "scripts/runpod_core.py",
+    "tests/test_runpod_safety.py"
+  ],
+  "limitations": [
+    "The full repository test suite was not run; no live RunPod resource was queried or created."
+  ],
+  "model": null,
+  "next_action": "Review CI and merge the bounded fix; no paid RunPod run is needed.",
+  "paths": [
+    "coordination/handoffs/approved-fallback-rate-20261007.md",
+    "scripts/runpod_core.py",
+    "tests/test_runpod_safety.py"
+  ],
+  "repo_commit_after": "5912958ebf4467cc363e08fc2fef81b44c1295bb",
+  "repo_commit_before": "5912958ebf4467cc363e08fc2fef81b44c1295bb",
+  "ruled_out": [
+    "No change was needed to the supervised controller post-create price check; preflight now prevents above-approval fallback selection."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:11:20Z",
+  "status": "completed",
+  "summary": "Bound RunPod fallback selection by per-run approved hourly rate",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "approved-fallback-rate-20261007",
+  "tests": [
+    "python -m pytest tests/test_runpod_safety.py tests/test_runpod_core.py -q (64 passed)",
+    "git -c core.whitespace=cr-at-eol diff --check (passed)"
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
