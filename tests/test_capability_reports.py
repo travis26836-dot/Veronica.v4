@@ -306,3 +306,55 @@ def test_report_run_writes_four_json_files_without_executing_code(tmp_path):
     assert executable["status"] == "skipped"
     assert result["schema"]["status"] == "incomplete"
     assert result["long_context"]["status"] == "not_collected"
+
+
+def test_extract_python_mixed_fences_explanatory_plus_target():
+    """Regression for CD-02 style: explanatory fence + target def in separate fence."""
+    content = """example calculation:
+```python
+def page_count(0, 5):
+    return 1
+```
+standalone:
+```python
+return x
+```
+the function:
+```python
+def page_count(total, size):
+    if total < 0 or size <= 0:
+        raise ValueError("invalid")
+    return (total + size - 1) // size
+```
+"""
+    src = cap.extract_python({"content": content}, "page_count")
+    assert src is not None
+    assert "def page_count(total, size):" in src
+    assert "raise ValueError" in src
+    import ast
+    ast.parse(src)  # must be valid
+
+
+def test_extract_python_unfenced_def_plus_prose_plus_other_fence():
+    """Regression for CD-03 style: complete def at start, followed by prose + non-python fence."""
+    content = """def find_user(conn, display_name):
+    return conn.execute('SELECT id, display_name FROM users WHERE display_name = ?', (display_name,)).fetchall()
+
+**Explanation:** uses safe param.
+
+```sql
+SELECT * FROM users;
+```
+"""
+    src = cap.extract_python({"content": content}, "find_user")
+    assert src is not None
+    assert src.startswith("def find_user(conn, display_name):")
+    import ast
+    ast.parse(src)
+
+
+def test_extract_python_none_for_missing_or_bad():
+    assert cap.extract_python({"content": "no function here"}, "page_count") is None
+    assert cap.extract_python(None, "foo") is None
+    assert cap.extract_python({"content": "def foo(): pass"}, "bar") is None
+
