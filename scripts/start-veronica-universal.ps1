@@ -38,6 +38,10 @@ $profile = Get-Content -Raw -LiteralPath $profilePath | ConvertFrom-Json
 if ($DurationMinutes -gt $profile.safety.maximumCustomDurationMinutes) {
     throw 'Requested duration exceeds the configured Veronica maximum.'
 }
+$hourly = [double]$profile.safety.maximumHourlyUsd
+if ($profile.safety.PSObject.Properties.Name -contains 'defaultHourlyUsd' -and $null -ne $profile.safety.defaultHourlyUsd) {
+    $hourly = [double]$profile.safety.defaultHourlyUsd
+}
 if ($profile.pod.gpuCount -ne 1) {
     throw 'The universal controller requires exactly one configured GPU.'
 }
@@ -52,7 +56,7 @@ New-Item -ItemType Directory -Path $runDir -Force | Out-Null
 $approval = [ordered]@{
     runId = $runName
     authorizedAtUtc = [DateTimeOffset]::UtcNow.ToString('o')
-    maxHourlyUsd = [double]$profile.safety.maximumHourlyUsd
+    maxHourlyUsd = $hourly
     durationMinutes = $DurationMinutes
     resourceCount = 1
     gpuTypeId = $profile.pod.gpuTypeId
@@ -87,7 +91,7 @@ $authorizationRecord | Set-Content -LiteralPath (Join-Path $runDir 'authorizatio
 
 & (Join-Path $PSScriptRoot 'start-veronica.ps1') `
     -DurationMinutes $DurationMinutes `
-    -MaxHourlyUsd ([double]$profile.safety.maximumHourlyUsd) `
+    -MaxHourlyUsd $hourly `
     -RunDir $runDir `
     -ApprovalFile $approvalPath
 if ($LASTEXITCODE -ne 0) {

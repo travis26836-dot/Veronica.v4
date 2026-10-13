@@ -47,6 +47,23 @@ def test_invalid_approval_cannot_reach_cloud(field, value, tmp_path):
             controller.validate_approval(grant, profile, tmp_path)
 
 
+def test_stale_approval_is_rejected_before_supervised_state_is_written(tmp_path):
+    profile = core.profile_at(core.DEFAULT_PROFILE)
+    run = tmp_path / "fresh-run"
+    approval_file = tmp_path / "approval.json"
+    grant = approval(profile, run)
+    grant["maxHourlyUsd"] = profile["safety"]["maximumHourlyUsd"]
+    grant["authorizedAtUtc"] = (datetime.now(timezone.utc) - timedelta(hours=3)).isoformat()
+    controller.write(approval_file, grant)
+
+    with patch.object(core, "preflight", side_effect=AssertionError("Preflight must not run")):
+        with pytest.raises(ValueError, match="Authorization is not current"):
+            controller._start_locked(profile, run, approval_file, tmp_path / "missing-key")
+
+    assert not (run / "supervised-state.json").exists()
+    assert not (run / "preflight.json").exists()
+
+
 def setup_ready(run):
     instant = datetime.now(timezone.utc)
     controller.write(run / "supervised-state.json", {
