@@ -57,6 +57,22 @@ def parse_count(text):
     return value['count']
 """
 
+BAD_CD05 = """
+import json
+
+def parse_count(text):
+    try:
+        value = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError('invalid') from exc
+    if type(value) is not dict or set(value) != {'count'}:
+        raise ValueError('invalid')
+    count = value['count']
+    if not isinstance(count, int) or count < 0:
+        raise ValueError('invalid')
+    return count
+"""
+
 
 def so_record(case_id, content, checks, status="response"):
     message = {"role": "assistant", "content": content}
@@ -190,8 +206,19 @@ def test_executable_fixtures_match_case_notes():
     cd04 = by_id["CD-04"]["vectors"][0]
     assert [row["name"] for row in cd04["expect"]["equals"]] == ["B", "A", "C"]
     cd05 = {row["id"]: row for row in by_id["CD-05"]["vectors"]}
-    assert cd05["valid-zero"]["expect"]["equals"] == 0
-    assert cd05["boolean-count"]["expect"]["raises"] == "ValueError"
+    assert {
+        key: (row["args"], row["expect"])
+        for key, row in cd05.items()
+    } == {
+        "valid-zero": (['{"count":0}'], {"equals": 0}),
+        "malformed": (["{"], {"raises": "ValueError"}),
+        "boolean-count": (['{"count":true}'], {"raises": "ValueError"}),
+        "negative": (['{"count":-1}'], {"raises": "ValueError"}),
+        "extra-key": (['{"count":1,"other":2}'], {"raises": "ValueError"}),
+        "null": (["null"], {"raises": "ValueError"}),
+        "list": (["[1]"], {"raises": "ValueError"}),
+        "float-count": (['{"count":1.0}'], {"raises": "ValueError"}),
+    }
 
 
 def test_execute_code_uses_fixtures_not_model_written_tests():
@@ -207,10 +234,35 @@ def test_execute_code_uses_fixtures_not_model_written_tests():
     assert report["generated_code_executed"] is True
     assert report["missing_case_ids"] == []
     assert all(report["cases"][case_id]["passed"] for case_id in report["expected_case_ids"])
+    cd05 = report["cases"]["CD-05"]["samples"][0]
+    assert cd05["vectors_passed"] == 8
+    assert cd05["vectors_failed"] == 0
+    assert {vector["id"] for vector in cd05["vectors"]} == {
+        "valid-zero", "malformed", "boolean-count", "negative",
+        "extra-key", "null", "list", "float-count",
+    }
     if report["isolation"]["verified"]:
         assert report["status"] == "collected_pass"
     else:
         assert report["status"] == "isolation_unverified"
+
+
+def test_execute_code_reproduces_boolean_as_integer_regression():
+    report = cap.executable_code_report([cd_record("CD-05", BAD_CD05)])
+    assert report["generated_code_executed"] is True
+    assert report["foundation_qualified"] is False
+    cd05 = report["cases"]["CD-05"]["samples"][0]
+    assert cd05["passed"] is False
+    assert cd05["vectors_passed"] == 7
+    assert cd05["vectors_failed"] == 1
+    vectors = {vector["id"]: vector for vector in cd05["vectors"]}
+    assert vectors["boolean-count"]["passed"] is False
+    assert vectors["boolean-count"]["error"] == "expected_exception"
+    assert all(
+        vector["passed"]
+        for vector in cd05["vectors"]
+        if vector["id"] != "boolean-count"
+    )
 
 
 def test_execute_code_status_is_isolation_unverified_when_probe_fails(monkeypatch):
