@@ -1,0 +1,39 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/release-or-transfer-claims-on-handoff",
+  "ended_at": "2026-10-13T01:43:37Z",
+  "evidence": [
+    "tests/test_collaboration.py"
+  ],
+  "files_changed": [
+    "scripts/collaboration.py",
+    "tests/test_collaboration.py"
+  ],
+  "limitations": [
+    "None recorded."
+  ],
+  "model": null,
+  "next_action": "Run CI verify pipeline and merge the pull request.",
+  "paths": [
+    "scripts/collaboration.py",
+    "tests/test_collaboration.py"
+  ],
+  "repo_commit_after": "4479a4c1517a9bb92d4e1ca84ea6fe4c9a8893dd",
+  "repo_commit_before": "4479a4c1517a9bb92d4e1ca84ea6fe4c9a8893dd",
+  "ruled_out": [
+    "Ignoring checkout-local legacy active records in claim and status."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-13T01:40:02Z",
+  "status": "completed",
+  "summary": "Fix active legacy claims checking and status reporting in collaboration script",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "fix-legacy-claim-in-collaboration",
+  "tests": [
+    "uv run --frozen pytest tests/test_collaboration.py (13 passed)",
+    "uv run --frozen pytest (225 passed)"
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
