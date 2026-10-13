@@ -1,27 +1,34 @@
 {
   "agent": "copilot",
   "branch": "fix/evaluator-extract-python-issue-6",
-  "ended_at": null,
-  "evidence": [],
-  "files_changed": [],
+  "ended_at": "2026-10-13T01:24:59Z",
+  "evidence": [
+    "Actions job 109493376563 on PR #27 identified CD-05 extraction failure; local locked-pipeline reproduction now passes."
+  ],
+  "files_changed": [
+    "src/veronica_core/capability_reports.py"
+  ],
   "limitations": [],
   "model": null,
-  "next_action": null,
+  "next_action": "Confirm the PR's next GitHub Actions CI run succeeds.",
   "paths": [
     "src/veronica_core/capability_reports.py",
     "tests/test_capability_reports.py"
   ],
-  "repo_commit_after": null,
+  "repo_commit_after": "c0028cc3bb90878373300bc48868c0741d589bb4",
   "repo_commit_before": "b3446c3d8f23a86969c11a5f34f7b8ba8329d9f8",
   "ruled_out": [],
   "schema_version": 1,
   "session_id": null,
   "started_at": "2026-10-13T01:21:55Z",
-  "status": "active",
+  "status": "completed",
   "summary": "Preserve imports needed by extracted coding fixtures in CI",
   "supersedes": [],
   "surface": "copilot-cloud",
   "task_id": "fix-ci-verify-job-109493376563",
-  "tests": [],
+  "tests": [
+    "uv run --frozen pytest tests/test_capability_reports.py (19 passed)",
+    "pwsh -NoProfile -File ./scripts/verify-local.ps1 (217 passed, 1 skipped; app smoke passed)"
+  ],
   "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
 }
