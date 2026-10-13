@@ -1,0 +1,27 @@
+{
+  "agent": "copilot",
+  "branch": "fix/evaluator-extract-python-issue-6",
+  "ended_at": null,
+  "evidence": [],
+  "files_changed": [],
+  "limitations": [],
+  "model": null,
+  "next_action": null,
+  "paths": [
+    "src/veronica_core/capability_reports.py",
+    "tests/test_capability_reports.py"
+  ],
+  "repo_commit_after": null,
+  "repo_commit_before": "b3446c3d8f23a86969c11a5f34f7b8ba8329d9f8",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-13T01:21:55Z",
+  "status": "active",
+  "summary": "Preserve imports needed by extracted coding fixtures in CI",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "fix-ci-verify-job-109493376563",
+  "tests": [],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
