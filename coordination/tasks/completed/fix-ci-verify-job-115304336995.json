@@ -1,0 +1,42 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/extract-complete-python-functions",
+  "ended_at": "2026-10-13T12:55:31Z",
+  "evidence": [
+    "GitHub Actions job 115304336995: 14 failures in capability report tests due to merge-inconsistent extraction helpers and missing truncation helper",
+    "Local targeted and full test suites passed using exact locked dependencies installed under /tmp"
+  ],
+  "files_changed": [
+    "src/veronica_core/capability_reports.py"
+  ],
+  "limitations": [
+    "Local uv and PowerShell commands unavailable; equivalent Python validations were run directly with locked dependencies"
+  ],
+  "model": "GitHub Copilot Coding Agent",
+  "next_action": "Review the focused source fix and verify the next GitHub Actions CI run passes.",
+  "paths": [
+    "src/veronica_core/capability_reports.py"
+  ],
+  "repo_commit_after": "695e5c50dc52e42d54bf6869310b74a6042921ed",
+  "repo_commit_before": "695e5c50dc52e42d54bf6869310b74a6042921ed",
+  "ruled_out": [
+    "No workflow configuration change: failure was in merged Python module behavior"
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-13T12:51:46Z",
+  "status": "completed",
+  "summary": "Restore merged evaluator extraction and truncation helpers causing CI test failures",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "fix-ci-verify-job-115304336995",
+  "tests": [
+    "PYTHONPATH=/tmp/veronica-locked-deps:src python -m pytest tests/test_capability_reports.py -q (27 passed)",
+    "PYTHONPATH=/tmp/veronica-locked-deps:src python -m pytest -q (all passed, one skipped)",
+    "scripts/validate_contracts.py (ok: true)",
+    "scripts/check_license_provenance.py (ok: true)",
+    "app construction smoke test passed",
+    "python -m compileall and git diff --check passed"
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
