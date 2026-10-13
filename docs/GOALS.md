@@ -9,7 +9,7 @@ CORE-1 is open; the date is a planning target, not a qualification claim.
 | --- | --- | --- | --- | --- |
 | G0 Establish trustworthy baseline | ready | none | G0.1 compare main/milestone work and map evidence; G0.2 classify dirty changes and reconcile conflicting launch policy; G0.3 capture complete test exits and review integration. Accept when baseline and exact next packet are reproducible. | E, T1, E1 |
 | G1 Trustworthy evaluator and routing | backlog | G0 | G1.1 reproduce/fix extraction and redaction findings (#6/#7; recheck GitHub); G1.2 finish schema, code isolation, context and native-call graders; G1.3 implement score-to-intervention report with invalid/missing evidence holds and human adjudication; G1.4 freeze protocol/holdouts. Accept with positive and negative tests and versioned rubric. | R, T2 prep |
-| G2 Qualify and select foundation | backlog | G1 | G2.1 reconcile matched runtime and bounded run packet; G2.2 candidate/control runs, precision and latency/cost evidence; G2.3 independent scores, human review and signed selection. Requires fresh compute authorization. | R, A2, T2 |
+| G2 Qualify owner-selected foundation | backlog | G1 | G2.1 reconcile matched runtime and bounded run packet; G2.2 Candidate A/control runs, precision and latency/cost evidence; G2.3 independent scores, human review and signed T2 qualification/hold. Requires fresh compute authorization. | R, A2, T2 |
 | G3 Stable chat and persona | backlog | G2 | G3.1 remaining A1 controls/access/context display; G3.2 prompt persona and blind preference; G3.3 capability regression. Adapter only if justified; document not-applicable training steps if prompt meets gate. | A1, E2 |
 | G4 Native tool execution | backlog | G2 | G4.1 schemas/registry; G4.2 permissioned bounded execution loop and audit; G4.3 real tool results, errors, no invented success, chat when disabled. | E3 |
 | G5 Scoped memory | backlog | G2 | G5.1 attributed scoped storage/retrieval; G5.2 inspect/correct/export/delete/disable; G5.3 leakage, stale-source and relevance tests. | E4 |
@@ -20,25 +20,28 @@ CORE-1 is open; the date is a planning target, not a qualification claim.
 | O2 Continuous model improvement | recurring | G1; training G2 | Capture/adjudicate failures; create independent experiments with dataset rights/splits, comparison and rollback. Each experiment has a terminal decision. | E2, T2 |
 | O3 Workflow improvement | recurring | demonstrated repeated need | Weekly identify one friction point; validate manual workflow, then skill/plugin/automation with a measurable time/error benefit. | Workflow |
 
-## Owner priority, 2026-09-27
+## Owner priority, updated 2026-10-07 (decision dated 2026-09-29)
 
-The four-model candidate/control comparison is deferred as later foundation
-research. It remains required before final foundation selection and CORE
-acceptance, but it is not the active prerequisite for using and improving the
-currently wired Veronica model.
+Candidate A is owner-selected for operational use; this does not pass T2 or
+establish CORE acceptance. Candidate B and its control are retired, so the
+remaining qualification comparison is Candidate A against its active official
+control only. No additional model shopping or Candidate B download is part of
+this goal.
 
-The active packet is **LV1 — single-model live Core verification**:
+The active packet is **LV1 — single-model live Core verification**, with an
+offline CP4 protocol repair required before the T2 packet can be built:
 
 1. review the clean offline integration branch;
 2. start the existing Candidate A behind the Veronica alias in one fresh,
    bounded Pod session;
 3. verify real chat responses in Chat, Deep Reasoning, Creative, and Coding
    modes and record failures honestly; and
-4. use those results to fix the actual Core behavior before returning to
-   comparative foundation research.
+4. use those results to fix the actual Core behavior. Do not re-open retired
+   Candidate B comparison work.
 
-LV1 does not select a foundation, pass T2, or complete Veronica Core. It is
-the immediate evidence path requested by the owner.
+LV1 does not pass T2 or complete Veronica Core. Owner selection is distinct
+from qualification; the active Candidate A/control evidence and signed T2
+adjudication remain open.
 
 No product goal is newly marked complete by this restructuring. Initial history:
 the September 13 decision proves chat smoke and shutdown, not full qualification;
@@ -63,6 +66,6 @@ requirements cannot be deferred while still claiming complete CORE.
 
 ## Next packet
 
-LV1: review the clean integration branch and run the single wired Candidate A
-through Veronica in a fresh bounded session. Preserve actual replies and
-failures; do not turn the deferred four-model comparison into a launch blocker.
+Repair and validate offline CP4 for the owner-selected Candidate A and active
+control, without starting compute. LV1 remains the next live behavior packet
+only after its separate fresh bounded authorization; Candidate B stays retired.
