@@ -416,145 +416,74 @@ def _line_offsets(source: str) -> list[int]:
     return offsets
 
 
-def _candidate_function(source: str, function_name: str) -> list[dict]:
-    normalized = textwrap.dedent(source)
-    lines = normalized.splitlines()
-    offsets = _line_offsets(source)
-    candidates = []
-    for index, line in enumerate(lines):
-        match = FUNCTION_RE.match(line)
-        if not match or match.group(1) != function_name:
-            continue
-        start = index
-        while start and lines[start - 1].lstrip().startswith("@"):
-            start -= 1
-        end = index + 1
-        while end < len(lines):
-            if lines[end].strip() and not lines[end][0].isspace():
-                break
-            end += 1
-        while end > index and not lines[end - 1].strip():
-            end -= 1
-        candidate = "\n".join(lines[start:end]).strip()
-        try:
-            tree = ast.parse(candidate)
-        except (SyntaxError, ValueError):
-            tree = None
-        function_nodes = [
-            node for node in (tree.body if tree else [])
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == function_name
-        ]
-        candidates.append({
-            "source": candidate if len(function_nodes) == 1 else None,
-            "start_line": start,
-            "end_line": end,
-            "start_offset": offsets[start],
-            "end_offset": offsets[end] if end < len(offsets) else len(source),
-        })
-    return candidates
-
-
-def _segment_statements(segment: str) -> list[tuple[int, int, ast.AST]]:
-    normalized = textwrap.dedent(segment)
-    lines = normalized.splitlines()
-    offsets = _line_offsets(segment)
-    starts = [index for index, line in enumerate(lines) if STATEMENT_RE.match(line)]
-    statements = []
-    for position, start in enumerate(starts):
-        end = starts[position + 1] if position + 1 < len(starts) else len(lines)
-        while end > start and not lines[end - 1].strip():
-            end -= 1
-        statement = "\n".join(lines[start:end]).strip()
-        try:
-            tree = ast.parse(statement)
-        except (SyntaxError, ValueError):
-            continue
-        if len(tree.body) == 1 and isinstance(tree.body[0], KEEP_NODES):
-            statements.append((offsets[start], offsets[end] if end < len(offsets) else len(segment), tree.body[0]))
-    return statements
-
-
-def _extract_function_source(content: str, function_name: str) -> dict | None:
-    blocks = list(FENCE_BLOCK_RE.finditer(content))
-    segments = []
-    cursor = 0
-    for block in blocks:
-        if cursor < block.start():
-            segments.append((content[cursor:block.start()], cursor))
-        language = block.group("language").strip().lower()
-        if language in ("", "python", "py"):
-            segments.append((block.group("code"), block.start("code")))
-        cursor = block.end()
-    if cursor < len(content):
-        segments.append((content[cursor:], cursor))
-
-    candidates = []
-    for segment, base_offset in segments:
-        for candidate in _candidate_function(segment, function_name):
-            candidate["base_offset"] = base_offset
-            candidate["segment"] = segment
-            candidates.append(candidate)
-    if len(candidates) != 1 or candidates[0]["source"] is None:
-        return None
-
-    selected = candidates[0]
-    segment = selected["segment"]
-    function_start = selected["start_offset"]
-    function_end = selected["end_offset"]
-    statements = _segment_statements(segment)
-    supporting = []
-    for start, end, node in statements:
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == function_name:
-            continue
-        if start < function_end and end > function_start:
-            continue
-        raw = segment[start:end]
-        supporting.append((start, end, textwrap.dedent(raw).strip()))
-    source_parts = [text for _, _, text in supporting if text]
-    source_parts.append(selected["source"])
-    extracted = "\n\n".join(source_parts)
+def _definitions_with_imports(source: str, function_name: str) -> str | None:
     try:
-        tree = ast.parse(extracted)
-    except (SyntaxError, ValueError):
+        tree = ast.parse(textwrap.dedent(source))
+    except SyntaxError:
         return None
-    names = [
-        node.name for node in tree.body
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
-    ]
-    if names.count(function_name) != 1:
+    body = []
+    found_function = False
+    for node in tree.body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == function_name:
+            if not found_function:
+                body.append(node)
+                found_function = True
+        elif isinstance(node, (ast.Import, ast.ImportFrom)):
+            body.append(node)
+    if not found_function:
         return None
+    return ast.unparse(ast.Module(body=body, type_ignores=[]))
 
-    spans = []
-    for start, end, _ in supporting:
-        spans.append({
-            "start_offset": selected["base_offset"] + start,
-            "end_offset": selected["base_offset"] + end,
-            "kind": "supporting_definition",
-        })
-    spans.append({
-        "start_offset": selected["base_offset"] + function_start,
-        "end_offset": selected["base_offset"] + function_end,
-        "kind": "function",
-    })
-    return {"source": extracted, "selected_spans": spans}
+
+def _extract_function_source(text: str, function_name: str) -> str | None:
+    """Return dedented source for first top-level matching def, tolerating prose/other blocks."""
+    if not text or not function_name:
+        return None
+    lines = text.splitlines(keepends=True)
+    for i, line in enumerate(lines):
+        s = line.strip()
+        if s.startswith(f"def {function_name}(") or s.startswith(f"async def {function_name}("):
+            block = [line]
+            base = len(line) - len(line.lstrip())
+            for j in range(i + 1, len(lines)):
+                l = lines[j]
+                if l.strip():
+                    ind = len(l) - len(l.lstrip())
+                    if ind <= base:
+                        break
+                block.append(l)
+            return textwrap.dedent("".join(block)).strip()
+    return None
 
 
 def extract_python(message: dict | None, function_name: str) -> str | None:
     content = (message or {}).get("content") or ""
-    extracted = _extract_function_source(content, function_name)
-    return extracted["source"] if extracted else None
-
-
-def _truncation_status(record: dict) -> str:
-    if "truncation_status" in record:
-        return str(record["truncation_status"])
-    if "truncated" in record:
-        return "truncated" if record["truncated"] else "not_truncated"
-    response = record.get("response")
-    choices = response.get("choices") if isinstance(response, dict) else None
-    if choices and isinstance(choices[0], dict) and choices[0].get("finish_reason") is not None:
-        return "truncated" if choices[0]["finish_reason"] == "length" else "not_truncated"
-    return "unknown"
+    # Process fenced chunks separately to avoid merging explanatory code with target
+    for chunk in FENCE_RE.findall(content):
+        chunk = textwrap.dedent(chunk).strip()
+        if f"def {function_name}" in chunk or f"async def {function_name}" in chunk:
+            src = _extract_function_source(chunk, function_name)
+            if src:
+                try:
+                    isolated = _definitions_with_imports(chunk, function_name) or _definitions_only(src)
+                    tree = ast.parse(isolated)
+                    names = {node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
+                    if function_name in names and isolated.strip():
+                        return isolated
+                except (SyntaxError, ValueError):
+                    continue
+    # Unfenced fallback: extract target def from whole content (handles prose after)
+    src = _extract_function_source(content, function_name)
+    if src:
+        try:
+            isolated = _definitions_with_imports(content, function_name) or _definitions_only(src)
+            tree = ast.parse(isolated)
+            names = {node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
+            if function_name in names and isolated.strip():
+                return isolated
+        except (SyntaxError, ValueError):
+            pass
+    return None
 
 
 def _minimal_env(workdir: Path) -> dict[str, str]:

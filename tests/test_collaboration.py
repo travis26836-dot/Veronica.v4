@@ -15,6 +15,7 @@ CoordinationError = MODULE.CoordinationError
 claim = MODULE.claim
 claims_overlap = MODULE.claims_overlap
 layout = MODULE.layout
+main = MODULE.main
 update_task = MODULE.update_task
 validate_repository = MODULE.validate_repository
 
@@ -26,6 +27,7 @@ def git(root: Path, *args: str) -> None:
 
 
 def project(tmp_path: Path) -> Path:
+    tmp_path.mkdir(parents=True, exist_ok=True)
     for name in (
         "AGENTS.md",
         "docs/AGENT-COLLABORATION.md",
@@ -57,12 +59,13 @@ def claim_args(task_id: str, paths: list[str]) -> argparse.Namespace:
     )
 
 
-def finish_args(task_id: str, evidence: str) -> argparse.Namespace:
+def finish_args(task_id: str, evidence: str, status: str = "handoff") -> argparse.Namespace:
     return argparse.Namespace(
         task_id=task_id,
+        status=status,
         files=["docs/example.md"],
         tests=["pytest tests/test_collaboration.py"],
-        evidence=[evidence],
+        evidence=[evidence] if evidence else [],
         limitations=[],
         ruled_out=["A single shared mutable ledger because concurrent writers conflict."],
         next_action="Owner reviews the completed task.",
@@ -88,6 +91,42 @@ def test_claim_rejects_overlapping_active_path(tmp_path: Path) -> None:
         claim(root, claim_args("second-task", ["src/veronica_core/app.py"]))
 
 
+def test_claim_rejects_overlapping_path_across_worktrees(tmp_path: Path, capsys) -> None:
+    root = project(tmp_path / "primary")
+    linked = tmp_path / "linked"
+    git(root, "worktree", "add", "--detach", str(linked), "HEAD")
+
+    assert layout(root)["active"] == layout(linked)["active"]
+    assert layout(root)["lock"] == layout(linked)["lock"]
+    common_args = [
+        "claim", "--agent", "codex", "--surface", "test",
+        "--summary", "Cross-worktree claim test",
+    ]
+    assert main([
+        "--root", str(root), *common_args,
+        "--task-id", "first-task", "--path", "src/veronica_core",
+    ]) == 0
+    assert "CREATED shared claim first-task" in capsys.readouterr().out
+    assert main([
+        "--root", str(linked), *common_args,
+        "--task-id", "second-task", "--path", "src/veronica_core/app.py",
+    ]) == 2
+    assert "Path ownership conflict with: first-task" in capsys.readouterr().err
+
+
+def test_claim_respects_checkout_local_legacy_claim(tmp_path: Path) -> None:
+    root = project(tmp_path)
+    legacy_active = layout(root)["legacy_active"] / "legacy-task.json"
+    legacy_active.parent.mkdir(parents=True)
+    legacy_active.write_text(
+        json.dumps({"task_id": "legacy-task", "paths": ["src/veronica_core"]}),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(CoordinationError, match="legacy-task"):
+        claim(root, claim_args("new-task", ["src/veronica_core/app.py"]))
+
+
 def test_claim_allows_separate_paths(tmp_path: Path) -> None:
     root = project(tmp_path)
     claim(root, claim_args("docs-task", ["docs/example.md"]))
@@ -108,6 +147,35 @@ def test_complete_moves_record_and_writes_handoff(tmp_path: Path) -> None:
     validate_repository(root)
 
 
+def test_handoff_releases_paths_and_preserves_original_claim(tmp_path: Path) -> None:
+    root = project(tmp_path)
+    claim(root, claim_args("first-task", ["src/example.py"]))
+    released = update_task(root, finish_args("first-task", ""), False)
+    record = json.loads(released.read_text(encoding="utf-8"))
+
+    assert record["status"] == "handoff"
+    assert record["agent"] == "codex"
+    assert record["surface"] == "test"
+    assert record["paths"] == ["src/example.py"]
+    assert record["ended_at"]
+    assert not (layout(root)["active"] / "first-task.json").exists()
+    assert (layout(root)["handoffs"] / "first-task.md").is_file()
+
+    MODULE.preflight(root, ["src/example.py"])
+    second = claim(root, claim_args("second-task", ["src/example.py"]))
+    assert second.is_file()
+    validate_repository(root)
+
+
+def test_blocked_task_keeps_its_path_claim(tmp_path: Path) -> None:
+    root = project(tmp_path)
+    claim(root, claim_args("blocked-task", ["src/example.py"]))
+    update_task(root, finish_args("blocked-task", "", status="blocked"), False)
+
+    with pytest.raises(CoordinationError, match="blocked-task"):
+        claim(root, claim_args("second-task", ["src/example.py"]))
+
+
 def test_validate_rejects_missing_evidence(tmp_path: Path) -> None:
     root = project(tmp_path)
     claim(root, claim_args("missing-proof", ["docs/example.md"]))
@@ -115,3 +183,24 @@ def test_validate_rejects_missing_evidence(tmp_path: Path) -> None:
     assert completed.exists()
     with pytest.raises(CoordinationError, match="missing evidence"):
         validate_repository(root)
+
+
+def test_claim_rejects_duplicate_task_id(tmp_path: Path) -> None:
+    root = project(tmp_path)
+    claim(root, claim_args("same-task", ["docs/first.md"]))
+    with pytest.raises(CoordinationError, match="same-task"):
+        claim(root, claim_args("same-task", ["docs/second.md"]))
+
+
+def test_status_includes_legacy_active_claims(tmp_path: Path, capsys) -> None:
+    root = project(tmp_path)
+    legacy_active = layout(root)["legacy_active"] / "legacy-task.json"
+    legacy_active.parent.mkdir(parents=True)
+    legacy_active.write_text(
+        json.dumps({"task_id": "legacy-task", "paths": ["src/veronica_core"]}),
+        encoding="utf-8",
+    )
+    assert main(["--root", str(root), "status"]) == 0
+    out = capsys.readouterr().out
+    assert "legacy-task" in out
+

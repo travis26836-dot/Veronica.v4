@@ -56,13 +56,13 @@ Assistant-produced reviews must say `reviewer_type: "assistant"`; they are advis
 
 The runner does not provision, start, extend or terminate compute. Start Veronica through its existing skill only under a fresh request/duration approval. Open the UI early. Run evals as a separate workload, not by injecting messages into the owner's chat. The A100 runtime currently allows one sequence, so evaluation requests can delay interactive replies; keep concurrency at one and agree on the short test window.
 
-For T2 foundation qualification, first validate the frozen four-model protocol offline:
+For T2 foundation qualification, first validate the frozen Candidate A/control protocol offline:
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/verify_t2_qualification.py protocol
 ```
 
-The protocol is `config/t2-qualification.json`. It pins both candidates and both official controls, matched runtime requirements, selected cases, sampling settings and evidence gates. Its verifier never starts compute or selects a model. The prior Candidate A smoke run cannot be substituted because it used an older runtime and did not include the other three models.
+The protocol is `config/t2-qualification.json`. It pins the owner-selected Candidate A and its active official control, matched runtime requirements, selected cases, sampling settings and evidence gates. Candidate B and its control are retired and excluded. The verifier never starts compute, qualifies a foundation, or makes an owner selection.
 
 After all live runs and human reviews exist, copy `config/t2-comparison-inputs.template.json`, replace every placeholder with the actual evidence paths, and audit the complete matrix:
 
@@ -87,6 +87,8 @@ Use the active UI port if different; the earlier session used 8011. The runner r
 Each case/repetition begins with a fresh conversation. Within a multi-turn case, subsequent questions receive the model's actual previous replies. `initial_messages` are explicit supplied fixtures, not proof a new model generated those messages. Targets, graders and rubrics are never included in the request. Unknown/unsupported tools may produce API errors: record and diagnose them, never turn them into a success. Native calls are saved but **never executed**. A call before a follow-up ends that case incomplete because no tool result is fabricated.
 
 Only loopback endpoints are allowed by default. `--allow-remote` is required for another destination, but a flag is not user permission to disclose private transcripts. No redirects or proxy environment settings are followed. No retries are automatic. Errors and partial runs remain visible. Raw prompt/response artifacts are private local evidence by default; review/redact before committing or sharing.
+
+Live response records redact credentials in nested fields and strings before saving. The only token-named usage values preserved are nonnegative integer counters at `usage.prompt_tokens`, `usage.completion_tokens`, `usage.total_tokens`, `usage.prompt_tokens_details.cached_tokens` / `audio_tokens`, and `usage.completion_tokens_details.reasoning_tokens` / `audio_tokens` / `accepted_prediction_tokens` / `rejected_prediction_tokens`. Other token-named fields and malformed counters are redacted; a nonnegative request `max_tokens` limit is retained as configuration, not usage. The parsed `response` and serialized `raw_response` contain the same redacted content; `raw_response` is canonical JSON, not the original wire body. `response_body_sha256` and `response_body_bytes` describe the complete original body before redaction, while `response_body_truncated: false` records that it was fully read. The hash therefore cannot be recomputed from the saved redacted representations.
 
 ## Compare configurations fairly
 

@@ -379,6 +379,12 @@ def init_run_folder(
             record = generate_fingerprint(root=root)
             digest = record["digest"]
             write_json(destination / "configuration-fingerprint.json", record)
+        registry_path = root / "config" / "model-registry.json"
+        model_selection_status = (
+            read_json(registry_path).get("selectionStatus", "benchmark_required")
+            if registry_path.is_file()
+            else "benchmark_required"
+        )
         run_record = {
             "schemaVersion": 1,
             "runId": run_id,
@@ -390,7 +396,7 @@ def init_run_folder(
             "modelInferencePerformed": False,
             "paidGpuStarted": False,
             "weightsModified": False,
-            "modelSelectionStatus": "benchmark_required",
+            "modelSelectionStatus": model_selection_status,
             "modelRevision": None,
             "runtimeVersion": None,
             "gpu": None,

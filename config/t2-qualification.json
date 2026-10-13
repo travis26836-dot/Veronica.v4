@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "protocolId": "t2-untouched-foundation-v2",
+  "protocolId": "t2-untouched-foundation-v3",
   "status": "frozen_before_live_runs",
-  "objective": "Determine whether Candidate A is capable enough to remain Veronica's foundation and compare Candidate A and Candidate B fairly with their official untouched controls.",
+  "objective": "Evaluate the owner-selected Candidate A against its official untouched control. Candidate B and its control are retired and excluded; owner selection does not establish T2 qualification.",
   "modelRegistry": "config/model-registry.json",
   "suite": {
     "path": "data/evals/veronica-core-v1.json",
@@ -19,12 +19,6 @@
       "controlId": "qwen3-30b-a3b-2507-control",
       "family": "qwen3-30b-a3b-instruct-2507",
       "serverArguments": ["--enable-auto-tool-choice", "--tool-call-parser", "hermes"]
-    },
-    {
-      "candidateId": "qwen3.8-27b-abliterated",
-      "controlId": "qwen3.8-27b-control",
-      "family": "qwen3.8-27b",
-      "serverArguments": ["--enable-auto-tool-choice", "--tool-call-parser", "qwen3_coder", "--reasoning-parser", "qwen3"]
     }
   ],
   "matchedRuntime": {
@@ -34,7 +28,7 @@
     "freshAuthorizationRequiredPerPod": true,
     "vllmVersion": "0.28.0",
     "transformersVersion": "5.8.0",
-    "minimumReason": "Qwen3.8-27B requires vLLM 0.17.0+ and Transformers 5.8.0+ according to the pinned model card and official vLLM recipe.",
+    "minimumReason": "The same pinned runtime must be used for Candidate A and its official control.",
     "dtype": "bfloat16",
     "maxModelLen": 32768,
     "maxNumSeqs": 1,
@@ -44,12 +38,15 @@
     "wrapperPersona": false,
     "weightsModified": false,
     "quantization": "none",
-    "runtimeRule": "Use the same image digest, package lock, GPU type, dtype, context limit and server flags for all four models except a documented model-family parser or thinking switch."
+    "runtimeRule": "Use the same image digest, package lock, GPU type, dtype, context limit and server flags for the active candidate and its control."
   },
   "tracks": [
     {
       "id": "neutral-deterministic",
-      "requiredModels": "all",
+      "requiredModels": [
+        "qwen3-30b-a3b-2507-abliterated",
+        "qwen3-30b-a3b-2507-control"
+      ],
       "mode": "chat",
       "enableThinking": false,
       "caseIds": "all",
@@ -63,7 +60,10 @@
     },
     {
       "id": "neutral-sampled",
-      "requiredModels": "all",
+      "requiredModels": [
+        "qwen3-30b-a3b-2507-abliterated",
+        "qwen3-30b-a3b-2507-control"
+      ],
       "mode": "chat",
       "enableThinking": false,
       "caseIds": [
@@ -100,44 +100,6 @@
       "seed": 43001,
       "maxTokens": 384,
       "purpose": "Two recorded-seed repetitions to expose instability under matched chat sampling."
-    },
-    {
-      "id": "native-thinking",
-      "requiredModels": [
-        "qwen3.8-27b-abliterated",
-        "qwen3.8-27b-control"
-      ],
-      "mode": "deep-reasoning",
-      "enableThinking": true,
-      "caseIds": [
-        "RC-01",
-        "RC-02",
-        "RC-03",
-        "RC-04",
-        "RC-05",
-        "CD-01",
-        "CD-02",
-        "CD-03",
-        "CD-04",
-        "CD-05",
-        "SO-01",
-        "SO-02",
-        "SO-03",
-        "SO-04",
-        "SO-05",
-        "TS-01",
-        "TS-02",
-        "TS-03",
-        "TS-04",
-        "TS-05"
-      ],
-      "completionCallsPerRepeat": 21,
-      "repeats": 1,
-      "temperature": 1.0,
-      "topP": 0.95,
-      "seed": 44001,
-      "maxTokens": 1024,
-      "purpose": "Capability-specific within-family comparison; Candidate A is non-thinking and is not penalized by pretending this track is matched."
     }
   ],
   "requiredEvidence": [
@@ -168,7 +130,8 @@
     "The existing Candidate A smoke conversation is not a T2 pass.",
     "HTTP success, a model listing, nonempty text or self-reported execution is not capability evidence.",
     "Published development cases are not sealed holdouts.",
-    "Native-thinking results are not directly comparable to Candidate A's non-thinking-only architecture.",
+    "Owner selection is not evidence of foundation qualification.",
+    "Candidate B and its official control are retired and excluded from this protocol.",
     "This protocol does not authorize paid compute, model downloads, transcript upload, training or foundation-weight changes."
   ]
 }

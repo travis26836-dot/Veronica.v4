@@ -22,6 +22,73 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SUITE = ROOT / "data/evals/veronica-core-v1.json"
 TIERS = {"smoke": 0, "core": 1, "extended": 2}
 CHECKS = {"exact", "contains", "excludes", "max_words", "json_equals", "json_keys", "no_tool_calls", "tool_call"}
+SECRET_FIELD_RE = re.compile(
+    r"password|passwd|secret|credential|authorization|bearer|token|api[_-]?(?:key|token)|access[_-]?key|private[_-]?key",
+    re.I,
+)
+BEARER_VALUE_RE = re.compile(r"\bBearer\s+[A-Za-z0-9._~+/=-]+", re.I)
+API_KEY_VALUE_RE = re.compile(
+    r"\b(?:sk-[A-Za-z0-9_-]{12,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]{10,})\b",
+    re.I,
+)
+LABELED_SECRET_RE = re.compile(
+    r"(?P<label>\b(?:api[\s_-]*key|access[\s_-]*token|refresh[\s_-]*token)\b\s*(?:(?:[:=]\s*)|(?:is\s+)))(?P<quote>['\"]?)(?P<value>[^\s,;\"'}]+)",
+    re.I,
+)
+USAGE_COUNTERS = {"prompttokens", "completiontokens", "totaltokens"}
+USAGE_DETAILS = {
+    "prompttokensdetails": {"cachedtokens", "audiotokens"},
+    "completiontokensdetails": {
+        "reasoningtokens", "audiotokens", "acceptedpredictiontokens", "rejectedpredictiontokens",
+    },
+}
+REDACTED = "[REDACTED]"
+
+
+def _redact_evidence(value: Any, secret_values=(), *, _usage_level: str | None = None, _parse_json_strings: bool = True) -> Any:
+    """Redact credentials while preserving only known numeric usage counters."""
+    if isinstance(secret_values, str):
+        secret_values = (secret_values,)
+    secrets = tuple(sorted({secret for secret in secret_values if isinstance(secret, str) and secret}, key=len, reverse=True))
+    if isinstance(value, dict):
+        cleaned = {}
+        for key, item in value.items():
+            name = str(key)
+            normalized = re.sub(r"[^a-z0-9]", "", name.casefold())
+            if _usage_level == "root" and normalized in USAGE_COUNTERS:
+                cleaned[key] = item if type(item) is int and item >= 0 else REDACTED
+            elif _usage_level == "root" and normalized in USAGE_DETAILS and isinstance(item, dict):
+                cleaned[key] = _redact_evidence(item, secrets, _usage_level=normalized, _parse_json_strings=False)
+            elif _usage_level in USAGE_DETAILS and normalized in USAGE_DETAILS[_usage_level]:
+                cleaned[key] = item if type(item) is int and item >= 0 else REDACTED
+            elif normalized == "maxtokens" and type(item) is int and item >= 0:
+                cleaned[key] = item
+            elif "token" in normalized or SECRET_FIELD_RE.search(name):
+                cleaned[key] = REDACTED
+            else:
+                child_usage_level = "root" if normalized == "usage" and isinstance(item, dict) else None
+                cleaned[key] = _redact_evidence(item, secrets, _usage_level=child_usage_level, _parse_json_strings=_parse_json_strings)
+        return cleaned
+    if isinstance(value, list):
+        return [_redact_evidence(item, secrets, _parse_json_strings=_parse_json_strings) for item in value]
+    if isinstance(value, str):
+        cleaned = value
+        for secret in secrets:
+            cleaned = cleaned.replace(secret, REDACTED)
+        cleaned = BEARER_VALUE_RE.sub(lambda _: REDACTED, cleaned)
+        cleaned = API_KEY_VALUE_RE.sub(lambda _: REDACTED, cleaned)
+        cleaned = LABELED_SECRET_RE.sub(lambda match: f"{match.group('label')}{match.group('quote')}{REDACTED}", cleaned)
+        if _parse_json_strings:
+            try:
+                parsed = json.loads(cleaned)
+            except (json.JSONDecodeError, TypeError):
+                pass
+            else:
+                if isinstance(parsed, (dict, list)):
+                    redacted = _redact_evidence(parsed, secrets, _parse_json_strings=False)
+                    return json.dumps(redacted, ensure_ascii=False, separators=(",", ":"))
+        return cleaned
+    return value
 
 
 def utcnow() -> str:
@@ -330,6 +397,7 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
     key = os.environ.get(args.api_key_env, "") if args.api_key_env else ""
     if args.api_key_env and not key:
         raise ValueError("Requested API key environment variable is not set")
+    secret_values = (key,) if key else ()
     run = new_run(args.run_dir)
     manifest = {"schema_version": 1, "suite_id": suite["suite_id"], "suite_sha256": fingerprint(args.suite),
                 "source_kind": "live_endpoint", "started_at": utcnow(), "surface": args.surface,
@@ -383,13 +451,19 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
                         try:
                             response = client.post(endpoint + "/chat/completions", json=payload, timeout=min(args.timeout_seconds, remaining))
                             response.raise_for_status()
+                            response_body = response.content
                             raw = response.json()
                             message = raw["choices"][0]["message"]
                             if not isinstance(message, dict) or message.get("role") != "assistant" or (message.get("content") is not None and not isinstance(message["content"], str)):
                                 raise ValueError("Malformed assistant response")
                             if not message.get("content") and not message.get("tool_calls"):
                                 raise ValueError("Empty assistant response")
-                            record.update(status="response", response=raw, message=message,
+                            safe_response = _redact_evidence(raw, secret_values)
+                            record.update(status="response", response=safe_response,
+                                          raw_response=json.dumps(safe_response, ensure_ascii=False, separators=(",", ":")),
+                                          response_body_sha256=hashlib.sha256(response_body).hexdigest(),
+                                          response_body_bytes=len(response_body), response_body_truncated=False,
+                                          message=safe_response["choices"][0]["message"],
                                           automatic_checks=automatic_checks(message, turn["checks"]))
                             consecutive_errors = 0
                             history.append({k: message[k] for k in ("role", "content", "tool_calls") if k in message})
@@ -397,6 +471,7 @@ def collect(args, suite: dict, cases: list[dict], execution_plan: dict) -> dict:
                             record.update(status="error", error_type=type(exc).__name__,
                                           http_status=exc.response.status_code if isinstance(exc, httpx.HTTPStatusError) else None)
                         record["elapsed_seconds"] = round(time.monotonic() - call_start, 3)
+                        record = _redact_evidence(record, secret_values)
                         records.append(record)
                         with (run / "results.jsonl").open("a", encoding="utf-8") as output:
                             output.write(json.dumps(record, ensure_ascii=False) + "\n")

@@ -1,0 +1,32 @@
+{
+  "agent": "copilot",
+  "branch": "copilot/fix-qualification-gate-issue",
+  "ended_at": "2026-10-07T13:20:15Z",
+  "evidence": [
+    "runs/2026-10-07-owner-selected-registry/decision.md"
+  ],
+  "files_changed": [
+    "config/schemas/model-record.schema.json"
+  ],
+  "limitations": [],
+  "model": "GitHub Copilot Coding Agent",
+  "next_action": "No follow-up for this schema claim; CP2 integration remains tracked by the primary task.",
+  "paths": [
+    "config/schemas/model-record.schema.json"
+  ],
+  "repo_commit_after": "10d28ee375455253b5924c5e71f0ce9ba6dd46ef",
+  "repo_commit_before": "10d28ee375455253b5924c5e71f0ce9ba6dd46ef",
+  "ruled_out": [],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-07T13:17:49Z",
+  "status": "completed",
+  "summary": "Extend model registry schema for owner selection metadata",
+  "supersedes": [],
+  "surface": "copilot-cloud",
+  "task_id": "owner-selected-model-schema-20261007",
+  "tests": [
+    "PYTHONPATH=src python scripts/validate_contracts.py"
+  ],
+  "worktree": "/home/runner/work/Veronica.v4/Veronica.v4"
+}
