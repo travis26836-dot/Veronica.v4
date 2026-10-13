@@ -88,6 +88,8 @@ Each case/repetition begins with a fresh conversation. Within a multi-turn case,
 
 Only loopback endpoints are allowed by default. `--allow-remote` is required for another destination, but a flag is not user permission to disclose private transcripts. No redirects or proxy environment settings are followed. No retries are automatic. Errors and partial runs remain visible. Raw prompt/response artifacts are private local evidence by default; review/redact before committing or sharing.
 
+Live response records redact credentials in nested fields and strings before saving. The only token-named usage values preserved are nonnegative integer counters at `usage.prompt_tokens`, `usage.completion_tokens`, `usage.total_tokens`, `usage.prompt_tokens_details.cached_tokens` / `audio_tokens`, and `usage.completion_tokens_details.reasoning_tokens` / `audio_tokens` / `accepted_prediction_tokens` / `rejected_prediction_tokens`. Other token-named fields and malformed counters are redacted; a nonnegative request `max_tokens` limit is retained as configuration, not usage. The parsed `response` and serialized `raw_response` contain the same redacted content; `raw_response` is canonical JSON, not the original wire body. `response_body_sha256` and `response_body_bytes` describe the complete original body before redaction, while `response_body_truncated: false` records that it was fully read. The hash therefore cannot be recomputed from the saved redacted representations.
+
 ## Compare configurations fairly
 
 1. Freeze public-suite hash, cases, fixtures, runtime, model revision, context limit, decoding, seeds and mode. Verify supplied runtime metadata against the serving-run provenance; advertised alias alone does not prove model identity. Keep raw failure outputs.
