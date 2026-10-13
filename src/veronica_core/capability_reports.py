@@ -410,6 +410,25 @@ def _definitions_only(source: str) -> str:
     return ast.unparse(tree)
 
 
+def _definitions_with_imports(source: str, function_name: str) -> str | None:
+    try:
+        tree = ast.parse(textwrap.dedent(source))
+    except SyntaxError:
+        return None
+    body = []
+    found_function = False
+    for node in tree.body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == function_name:
+            if not found_function:
+                body.append(node)
+                found_function = True
+        elif isinstance(node, (ast.Import, ast.ImportFrom)):
+            body.append(node)
+    if not found_function:
+        return None
+    return ast.unparse(ast.Module(body=body, type_ignores=[]))
+
+
 def _extract_function_source(text: str, function_name: str) -> str | None:
     """Return dedented source for first top-level matching def, tolerating prose/other blocks."""
     if not text or not function_name:
@@ -440,7 +459,7 @@ def extract_python(message: dict | None, function_name: str) -> str | None:
             src = _extract_function_source(chunk, function_name)
             if src:
                 try:
-                    isolated = _definitions_only(src)
+                    isolated = _definitions_with_imports(chunk, function_name) or _definitions_only(src)
                     tree = ast.parse(isolated)
                     names = {node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
                     if function_name in names and isolated.strip():
@@ -451,7 +470,7 @@ def extract_python(message: dict | None, function_name: str) -> str | None:
     src = _extract_function_source(content, function_name)
     if src:
         try:
-            isolated = _definitions_only(src)
+            isolated = _definitions_with_imports(content, function_name) or _definitions_only(src)
             tree = ast.parse(isolated)
             names = {node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))}
             if function_name in names and isolated.strip():
