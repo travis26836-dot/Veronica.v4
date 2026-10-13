@@ -261,7 +261,8 @@ def preflight(profile, hourly, minutes, *, supervised=False):
         blockers.append("Persistent-volume allowance changed; review the profile before downloading")
     # Try the primary GPU first, then ordered fallbacks, each within its own price cap.
     candidates = [{"gpuTypeId": pod["gpuTypeId"], "cloudType": pod["cloudType"], "maxHourlyUsd": hourly, "isPrimary": True}]
-    candidates += [{**fallback, "isPrimary": False} for fallback in pod.get("gpuFallbacks", [])]
+    candidates += [{**fallback, "maxHourlyUsd": min(hourly, fallback["maxHourlyUsd"]), "isPrimary": False}
+                   for fallback in pod.get("gpuFallbacks", [])]
     considered = []
     selected = None
     for candidate in candidates:
