@@ -36,7 +36,7 @@ Do not choose a "latest" run by modification time. Update `docs/CURRENT-STATE.md
 
 Every claim records the agent family, specific model when known, surface, worktree, branch, base commit, scope, intended paths, start time, and status. Agent family and surface are separate: changing the model inside Copilot does not change the surface's obligations.
 
-Only one active task may own a file, feature, test suite, operational procedure, or overlapping path at a time. The claim lock makes creation atomic, but agents must still re-run preflight after switching branches or worktrees. Unclaimed trivial reads are allowed; edits are not.
+Only one active task may own a file, feature, test suite, operational procedure, or overlapping path at a time. Active claims and their atomic lock are stored under Git's common directory, so linked worktrees of the same repository share them. Separate clones do not share claims; agents must still re-run preflight after switching branches or worktrees. Unclaimed trivial reads are allowed; edits are not.
 
 Never overwrite, reset, discard, stash, clean, reformat, relocate, or "fix" another task's changes without explicit owner approval. Existing dirty changes belong to their prior author until established otherwise.
 

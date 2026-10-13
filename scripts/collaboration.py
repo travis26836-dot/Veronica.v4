@@ -56,6 +56,11 @@ def repo_root(start: Path | None = None) -> Path:
     return Path(result.stdout.strip()).resolve()
 
 
+def git_common_dir(root: Path) -> Path:
+    common_dir = Path(run_git(root, "rev-parse", "--git-common-dir"))
+    return (common_dir if common_dir.is_absolute() else root / common_dir).resolve()
+
+
 def normalize_claim(path: str) -> str:
     value = path.strip().replace("\\", "/").strip("/")
     if not value or value.startswith("../") or "/../" in value:
@@ -83,14 +88,16 @@ def paths_overlap(left: Iterable[str], right: Iterable[str]) -> bool:
 
 def layout(root: Path) -> dict[str, Path]:
     base = root / "coordination"
+    shared = git_common_dir(root) / "veronica-collaboration"
     return {
         "base": base,
-        "active": base / "tasks" / "active",
+        "active": shared / "tasks" / "active",
+        "legacy_active": base / "tasks" / "active",
         "completed": base / "tasks" / "completed",
         "released": base / "tasks" / "released",
         "handoffs": base / "handoffs",
         "sessions": base / "sessions",
-        "lock": base / ".claim-lock",
+        "lock": shared / ".claim-lock",
     }
 
 
@@ -101,6 +108,14 @@ def ensure_layout(root: Path) -> dict[str, Path]:
     return paths
 
 
+def load_active_records(paths: dict[str, Path]) -> list[dict]:
+    records = {}
+    for directory in ("legacy_active", "active"):
+        for record in load_records(paths[directory]):
+            records[record["task_id"]] = record
+    return [records[task_id] for task_id in sorted(records)]
+
+
 @contextmanager
 def claim_lock(root: Path):
     paths = ensure_layout(root)
@@ -108,7 +123,7 @@ def claim_lock(root: Path):
         paths["lock"].mkdir()
     except FileExistsError as exc:
         raise CoordinationError(
-            "Another claim operation is active, or coordination/.claim-lock is stale. "
+            "Another claim operation is active, or the shared Git common-directory claim lock is stale. "
             "Inspect it before retrying; do not delete it while another agent is working."
         ) from exc
     try:
@@ -193,7 +208,7 @@ def preflight(root: Path, intended_paths: list[str] | None = None) -> list[str]:
         raise CoordinationError("Detached HEAD: create or switch to a named branch before editing.")
     commit = run_git(root, "rev-parse", "--short", "HEAD")
     dirty = run_git(root, "status", "--short")
-    active = load_records(layout(root)["active"])
+    active = load_active_records(layout(root))
     if intended_paths:
         normalized = [normalize_claim(item) for item in intended_paths]
         conflicts = [
@@ -259,10 +274,12 @@ def claim(root: Path, args: argparse.Namespace) -> Path:
 
 
 def find_active(root: Path, task_id: str) -> tuple[Path, dict]:
-    path = layout(root)["active"] / f"{task_id}.json"
-    if not path.is_file():
-        raise CoordinationError(f"No active task named {task_id}")
-    return path, json.loads(path.read_text(encoding="utf-8"))
+    paths = layout(root)
+    for directory in ("active", "legacy_active"):
+        path = paths[directory] / f"{task_id}.json"
+        if path.is_file():
+            return path, json.loads(path.read_text(encoding="utf-8"))
+    raise CoordinationError(f"No active task named {task_id}")
 
 
 def update_task(root: Path, args: argparse.Namespace, complete: bool) -> Path:
@@ -326,7 +343,7 @@ def validate_repository(root: Path) -> list[str]:
     messages = preflight(root)
     paths = layout(root)
     errors = []
-    active = load_records(paths["active"])
+    active = load_active_records(paths)
     completed = load_records(paths["completed"])
     released = load_records(paths["released"])
     for record in active:
@@ -419,7 +436,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "preflight":
             output = preflight(root, args.paths)
         elif args.command == "claim":
-            output = [f"CREATED {claim(root, args).relative_to(root)}"]
+            claim(root, args)
+            output = [f"CREATED shared claim {args.task_id}"]
         elif args.command == "status":
             records = [
                 record

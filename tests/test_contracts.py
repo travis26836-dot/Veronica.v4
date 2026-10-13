@@ -111,6 +111,7 @@ def test_default_fingerprint_identity_matches_wrapper_defaults(monkeypatch):
 def test_init_run_folder_creates_stubs_and_refuses_overwrite(tmp_path):
     runs = tmp_path / "runs"
     runs.mkdir()
+    write_json(tmp_path / "config/model-registry.json", {"selectionStatus": "owner_selected"})
     created = c.init_run_folder(
         "2026-09-04-contract-test",
         stage="establish",
@@ -122,6 +123,7 @@ def test_init_run_folder_creates_stubs_and_refuses_overwrite(tmp_path):
     record = c.read_json(created / "run.json")
     c.validate_instance("run-record", record)
     assert record["runId"] == "2026-09-04-contract-test"
+    assert record["modelSelectionStatus"] == "owner_selected"
     assert record["paidGpuStarted"] is False
     assert (created / "decision.md").is_file()
     for name in c.REQUIRED_RUN_DIRS:
