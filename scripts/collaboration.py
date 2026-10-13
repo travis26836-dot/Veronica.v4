@@ -214,7 +214,7 @@ def preflight(root: Path, intended_paths: list[str] | None = None) -> list[str]:
         conflicts = [
             r["task_id"]
             for r in active
-            if r.get("status") in ("active", "blocked")
+            if r.get("status", "active") in ("active", "blocked")
             and paths_overlap(normalized, r.get("paths", []))
         ]
         if conflicts:
@@ -222,7 +222,7 @@ def preflight(root: Path, intended_paths: list[str] | None = None) -> list[str]:
     messages.append(f"PASS repository={root}")
     messages.append(f"PASS branch={branch} commit={commit}")
     messages.append(
-        f"INFO active_tasks={sum(r.get('status') in ('active', 'blocked') for r in active)}"
+        f"INFO active_tasks={sum(r.get('status', 'active') in ('active', 'blocked') for r in active)}"
     )
     messages.append(f"INFO dirty={'yes' if dirty else 'no'}")
     if dirty:
@@ -235,12 +235,15 @@ def claim(root: Path, args: argparse.Namespace) -> Path:
         raise CoordinationError("task-id must use 3-80 lowercase letters, digits, dots, dashes, or underscores")
     claimed_paths = sorted({normalize_claim(item) for item in args.paths})
     with claim_lock(root) as paths:
-        existing = load_records(paths["active"])
+        existing = load_active_records(paths)
         conflicts = [
             r["task_id"]
             for r in existing
-            if r.get("status") in ("active", "blocked")
-            and paths_overlap(claimed_paths, r.get("paths", []))
+            if r["task_id"] == args.task_id
+            or (
+                r.get("status", "active") in ("active", "blocked")
+                and paths_overlap(claimed_paths, r.get("paths", []))
+            )
         ]
         if conflicts:
             raise CoordinationError("Path ownership conflict with: " + ", ".join(conflicts))
@@ -316,8 +319,8 @@ def update_task(root: Path, args: argparse.Namespace, complete: bool) -> Path:
                 raise CoordinationError(f"Released record already exists: {destination}")
             if handoff.exists():
                 raise CoordinationError(f"Handoff already exists: {handoff}")
-            write_json_replace(active_path, record)
-            os.replace(active_path, destination)
+            write_json_exclusive(destination, record)
+            active_path.unlink()
         else:
             write_json_replace(active_path, record)
             return active_path
@@ -378,15 +381,15 @@ def validate_repository(root: Path) -> list[str]:
     for index, left in enumerate(active):
         for right in active[index + 1 :]:
             if (
-                left.get("status") in ("active", "blocked")
-                and right.get("status") in ("active", "blocked")
+                left.get("status", "active") in ("active", "blocked")
+                and right.get("status", "active") in ("active", "blocked")
                 and paths_overlap(left.get("paths", []), right.get("paths", []))
             ):
                 errors.append(f"active overlap: {left.get('task_id')} and {right.get('task_id')}")
     if errors:
         raise CoordinationError("\n".join(errors))
     messages.append(
-        f"PASS records active={sum(r.get('status') in ('active', 'blocked') for r in active)} "
+        f"PASS records active={sum(r.get('status', 'active') in ('active', 'blocked') for r in active)} "
         f"completed={len(completed)} released={len(released)}"
     )
     return messages
@@ -441,8 +444,8 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "status":
             records = [
                 record
-                for record in load_records(layout(root)["active"])
-                if record.get("status") in ("active", "blocked")
+                for record in load_active_records(layout(root))
+                if record.get("status", "active") in ("active", "blocked")
             ]
             output = [json.dumps(record, sort_keys=True) for record in records] or ["No active tasks."]
         elif args.command == "validate":

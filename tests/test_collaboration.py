@@ -183,3 +183,24 @@ def test_validate_rejects_missing_evidence(tmp_path: Path) -> None:
     assert completed.exists()
     with pytest.raises(CoordinationError, match="missing evidence"):
         validate_repository(root)
+
+
+def test_claim_rejects_duplicate_task_id(tmp_path: Path) -> None:
+    root = project(tmp_path)
+    claim(root, claim_args("same-task", ["docs/first.md"]))
+    with pytest.raises(CoordinationError, match="same-task"):
+        claim(root, claim_args("same-task", ["docs/second.md"]))
+
+
+def test_status_includes_legacy_active_claims(tmp_path: Path, capsys) -> None:
+    root = project(tmp_path)
+    legacy_active = layout(root)["legacy_active"] / "legacy-task.json"
+    legacy_active.parent.mkdir(parents=True)
+    legacy_active.write_text(
+        json.dumps({"task_id": "legacy-task", "paths": ["src/veronica_core"]}),
+        encoding="utf-8",
+    )
+    assert main(["--root", str(root), "status"]) == 0
+    out = capsys.readouterr().out
+    assert "legacy-task" in out
+
