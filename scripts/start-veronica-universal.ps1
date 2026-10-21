@@ -19,7 +19,9 @@ param(
     [string]$RequestedBy,
     [Parameter(Mandatory = $true)]
     [ValidateLength(1, 500)]
-    [string]$AuthorizationContext
+    [string]$AuthorizationContext,
+    [string]$ProfilePath,
+    [Nullable[double]]$MaxHourlyUsd
 )
 
 $ErrorActionPreference = 'Stop'
@@ -33,7 +35,12 @@ if ($RequestedBy.IndexOf([char]0) -ge 0 -or $AuthorizationContext.IndexOf([char]
 }
 
 $projectRoot = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
-$profilePath = Join-Path $projectRoot 'config\runpod-core.json'
+$profilePath = if ($ProfilePath) { [IO.Path]::GetFullPath($ProfilePath) } else { Join-Path $projectRoot 'config\runpod-core.json' }
+if ([IO.Path]::GetDirectoryName($profilePath) -ne (Join-Path $projectRoot 'config') -or
+    [IO.Path]::GetFileName($profilePath) -notmatch '^runpod-(core|t2-[a-z0-9-]+)\.json$' -or
+    ((Get-Item -LiteralPath $profilePath).Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+    throw 'Explicit profile must be a regular checked profile in project config/.'
+}
 $profile = Get-Content -Raw -LiteralPath $profilePath | ConvertFrom-Json
 if ($DurationMinutes -gt $profile.safety.maximumCustomDurationMinutes) {
     throw 'Requested duration exceeds the configured Veronica maximum.'
@@ -41,6 +48,16 @@ if ($DurationMinutes -gt $profile.safety.maximumCustomDurationMinutes) {
 $hourly = [double]$profile.safety.maximumHourlyUsd
 if ($profile.safety.PSObject.Properties.Name -contains 'defaultHourlyUsd' -and $null -ne $profile.safety.defaultHourlyUsd) {
     $hourly = [double]$profile.safety.defaultHourlyUsd
+}
+if ($null -ne $MaxHourlyUsd) {
+    if (-not [double]::IsFinite($MaxHourlyUsd) -or $MaxHourlyUsd -le 0 -or $MaxHourlyUsd -gt $profile.safety.maximumHourlyUsd) {
+        throw 'Current run ceiling must be finite, positive and within the saved ceiling.'
+    }
+    $hourly = [double]$MaxHourlyUsd
+}
+if ($profile.pod.PSObject.Properties.Name -contains 'storageType' -and $profile.pod.storageType -eq 'global') {
+    $env:VERONICA_RUNPOD_WINDOWS_CLI = $profile.pod.windowsCliPath
+    $env:WSLENV = (($env:WSLENV, 'VERONICA_RUNPOD_WINDOWS_CLI') | Where-Object { $_ }) -join ':'
 }
 if ($profile.pod.gpuCount -ne 1) {
     throw 'The universal controller requires exactly one configured GPU.'
@@ -93,6 +110,7 @@ $authorizationRecord | Set-Content -LiteralPath (Join-Path $runDir 'authorizatio
     -DurationMinutes $DurationMinutes `
     -MaxHourlyUsd $hourly `
     -RunDir $runDir `
+    -ProfilePath $profilePath `
     -ApprovalFile $approvalPath
 if ($LASTEXITCODE -ne 0) {
     throw "The checked Veronica launcher failed with exit code $LASTEXITCODE."

@@ -231,7 +231,8 @@ def _start_locked(profile, run, approval_file, ssh_key):
     public_key = ssh_key.with_suffix(ssh_key.suffix + ".pub").read_text().strip()
     args = ["pod", "create", "--name", state["podName"], "--image", pod["image"],
             "--gpu-id", result["gpuTypeId"], "--gpu-count", "1", "--cloud-type", result["cloudType"],
-            "--data-center-ids", pod["dataCenterId"], "--network-volume-id", pod["networkVolumeId"],
+            "--data-center-ids", result['dataCenterId'],
+            '--global-volume-id' if pod.get('storageType') == 'global' else '--network-volume-id', pod["networkVolumeId"],
             "--container-disk-in-gb", str(pod["containerDiskInGb"]), "--volume-mount-path", pod["volumeMountPath"],
             "--ports", ",".join(pod["ports"]), "--min-cuda-version", "12.8", "--ssh", "--env", json.dumps({"PUBLIC_KEY": public_key})]
     if (run / "startup-cancelled.json").exists():
@@ -262,6 +263,9 @@ def _start_locked(profile, run, approval_file, ssh_key):
         # the request server-side. Only the former can safely mark absence as
         # confirmed once live checks below find nothing under our unique name.
         creation_call_failed_definitively = state.get("podId") is None and not isinstance(error, subprocess.TimeoutExpired)
+        if pod.get('storageType') == 'global':
+            from runpod_windows_bridge import RejectedRequest
+            creation_call_failed_definitively = state.get('podId') is None and isinstance(error, RejectedRequest)
         for _ in range(3):
             matches = owned_pods(state)
             if matches:
@@ -286,9 +290,13 @@ def connection(run):
     ip, port = info.get("ip"), info.get("port")
     if not ip or not port:
         raise RuntimeError("Pod SSH endpoint not ready")
-    return ["ssh", "-i", state["sshKey"], "-p", str(port), "-o", "BatchMode=yes", "-o", "ConnectTimeout=15",
+    command = ["ssh", "-i", state["sshKey"], "-p", str(port), "-o", "BatchMode=yes", "-o", "ConnectTimeout=15",
             "-o", "StrictHostKeyChecking=accept-new", "-o", "UserKnownHostsFile=" + str(Path.home() / ".ssh/known_hosts_veronica_runpod"),
             f"root@{ip}"]
+    if os.environ.get('VERONICA_RUNPOD_WINDOWS_CLI'):
+        from runpod_windows_bridge import ssh_command
+        return ssh_command(command)
+    return command
 
 
 def ssh(run, command, data=None, timeout=60):
@@ -301,7 +309,9 @@ def ssh(run, command, data=None, timeout=60):
 def remote_dir(run):
     if not re.fullmatch(r"[a-zA-Z0-9_-]+", run.name):
         raise ValueError("Unsafe remote run name")
-    return "/workspace/veronica-core/runs/" + run.name
+    profile = core.read_json(run / 'profile.json')
+    base = '/tmp/veronica-core/runs/' if profile['pod'].get('storageType') == 'global' else '/workspace/veronica-core/runs/'
+    return base + run.name
 
 
 def bootstrap(run):
@@ -338,7 +348,30 @@ def bootstrap(run):
         cmd.extend(["--runtime-constraints", dest + "/runtime-constraints.txt"])
     output = ssh(run, f"setsid {shlex.join(cmd)} >{shlex.quote(dest + '/bootstrap.log')} 2>&1 </dev/null & echo $!")
     write(run / "bootstrap-start.json", {"atUtc": now().isoformat(), "remotePid": output.decode().strip(), "remoteDirectory": dest, "privateKeyFile": str(private_file)})
-    print("Detached model bootstrap started. Logs and validated artifacts remain on the persistent volume.")
+    print("Detached model bootstrap started. Capture runtime evidence before terminating the Pod.")
+
+
+def loading_progress(run):
+    """Allow-listed progress only: never expose raw runtime logs to the UI."""
+    directory = remote_dir(run)
+    text = ssh(run, 'test ! -f ' + shlex.quote(directory + '/validated-model-manifest.json')
+               + ' || echo VERONICA_MODEL_HASHES_VERIFIED; tail -c 8000 '
+               + shlex.quote(directory + '/bootstrap.log'), timeout=15).decode(errors='replace')
+    shards = set(re.findall(r'^VERIFIED (model-\d+-of-\d+\.safetensors)$', text, re.MULTILINE))
+    loading = re.findall(r'Loading safetensors checkpoint shards:\s+(\d+)% Completed \| (\d+)/(\d+) \[([^<\]]+)<([^,\]]+)', text)
+    if loading:
+        percent, count, total, elapsed, remaining = loading[-1]
+        return f'Loading verified Global Storage weights onto GPU: {count}/{total} shards ({percent}%). Elapsed {elapsed}; runtime ETA {remaining}.'
+    if 'Loading safetensors checkpoint shards' in text:
+        return 'Loading verified model weights from Global Storage onto the GPU.'
+    if 'Starting vLLM' in text or 'Starting a vLLM' in text or 'vLLM API server version' in text:
+        return 'Starting the model server with verified weights from Global Storage.'
+    if 'VERONICA_MODEL_HASHES_VERIFIED' in text or (run / 'validated-model-manifest.json').exists():
+        return 'Model hashes verified; preparing the pinned runtime and loading weights.'
+    if shards:
+        total = int(next(iter(shards)).split('-of-')[1].split('.')[0])
+        return f'Verifying copied model on Global Storage: {len(shards)}/{total} weight shards passed SHA-256.'
+    return 'Checking copied model files on Global Storage.'
 
 
 def ready(run):
@@ -375,6 +408,11 @@ def ready(run):
             raise RuntimeError("Model server did not advertise the Veronica alias")
         result["ready"] = True
         result["publicAlias"] = profile["publicAlias"]
+    if not result['ready'] and profile['pod'].get('storageType') == 'global':
+        try:
+            result['waitingReason'] = loading_progress(run)
+        except (OSError, RuntimeError, subprocess.TimeoutExpired):
+            pass  # Preserve the authenticated readiness result if log polling fails.
     write(run / "provider-ready.json", result)
     print(json.dumps(result, indent=2), flush=True)
     return result["ready"]
@@ -409,13 +447,45 @@ def benchmark(run):
     print(json.dumps({k: v for k, v in result.items() if k not in {"request", "responseText"}}, indent=2))
 
 
+def tunnel(run, hold=False):
+    state = state_at(run)
+    if (run / 'termination.json').exists() or now() >= datetime.fromisoformat(state['deadlineUtc']):
+        raise RuntimeError('No remaining authorized tunnel window')
+    if os.environ.get('VERONICA_RUNPOD_WINDOWS_CLI') and not hold:
+        from runpod_windows_bridge import launch_tunnel_anchor
+        launch_tunnel_anchor(run)
+        print('Owned tunnel anchor ready; same Pod and fixed deadline.')
+        return
+    profile = core.read_json(run / 'profile.json')
+    forwarding = f"127.0.0.1:{profile['runtime']['localTunnelPort']}:127.0.0.1:{profile['runtime']['port']}"
+    conn = connection(run)
+    command = conn[:-1] + ['-o', 'ExitOnForwardFailure=yes', '-o', 'ServerAliveInterval=30', '-N', '-L', forwarding, conn[-1]]
+    with (run / 'tunnel.log').open('ab') as log:
+        child = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=log, stderr=log, start_new_session=True)
+    time.sleep(2)
+    if child.poll() is not None:
+        raise RuntimeError('SSH tunnel failed; inspect tunnel.log')
+    write(run / 'tunnel.json', {'pid': child.pid, 'forwarding': forwarding, 'atUtc': now().isoformat(), 'heldOpen': hold})
+    print('SSH tunnel ready on loopback port ' + str(profile['runtime']['localTunnelPort']), flush=True)
+    if hold:
+        try:
+            while child.poll() is None and now() < datetime.fromisoformat(state['deadlineUtc']) and not (run / 'termination.json').exists():
+                time.sleep(2)
+        finally:
+            if child.poll() is None:
+                child.terminate()
+                child.wait(timeout=10)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["watchdog", "status", "inspect", "bootstrap", "logs", "tunnel", "ready", "evidence", "verify", "benchmark", "terminate"])
+    parser.add_argument("command", choices=["watchdog", "status", "inspect", "bootstrap", "logs", "tunnel", "tunnel-anchor", "ready", "evidence", "verify", "benchmark", "terminate"])
     parser.add_argument("--run-dir", required=True)
     parser.add_argument("--wrapper", action="store_true")
     args = parser.parse_args()
     run = core.evidence_directory(args.run_dir)
+    if (run / 'profile.json').exists():
+        core.profile_at(run / 'profile.json')
     state = state_at(run)
     if args.command == "watchdog":
         watchdog(run)
@@ -440,18 +510,8 @@ def main():
     elif args.command == "logs":
         result = ssh(run, "tail -60 " + shlex.quote(remote_dir(run) + "/bootstrap.log"))
         print(result.decode(errors="replace"))
-    elif args.command == "tunnel":
-        profile = core.read_json(run / "profile.json")
-        forwarding = f"127.0.0.1:{profile['runtime']['localTunnelPort']}:127.0.0.1:{profile['runtime']['port']}"
-        conn = connection(run)
-        command = conn[:-1] + ["-o", "ExitOnForwardFailure=yes", "-o", "ServerAliveInterval=30", "-N", "-L", forwarding, conn[-1]]
-        with (run / "tunnel.log").open("ab") as log:
-            child = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=log, stderr=log, start_new_session=True)
-        time.sleep(2)
-        if child.poll() is not None:
-            raise RuntimeError("SSH tunnel failed; inspect tunnel.log")
-        write(run / "tunnel.json", {"pid": child.pid, "forwarding": forwarding, "atUtc": now().isoformat()})
-        print("SSH tunnel ready on loopback port " + str(profile["runtime"]["localTunnelPort"]))
+    elif args.command in ('tunnel', 'tunnel-anchor'):
+        tunnel(run, hold=args.command == 'tunnel-anchor')
     elif args.command == "evidence":
         for name in ("validated-model-manifest.json", "runtime-packages.txt", "gpu.txt", "server-command.json"):
             (run / name).write_bytes(ssh(run, "cat " + shlex.quote(remote_dir(run) + "/" + name)))

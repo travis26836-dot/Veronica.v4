@@ -36,6 +36,9 @@ def save_json(path, data):
 
 
 def fetch(url, payload=None, key=None):
+    if os.name != 'nt' and os.environ.get('VERONICA_RUNPOD_WINDOWS_CLI'):
+        from runpod_windows_bridge import request
+        return request(url, payload, key)
     headers = {"User-Agent": "VeronicaCore/0.1", "Content-Type": "application/json"}
     if key:
         headers["Authorization"] = f"Bearer {key}"
@@ -71,6 +74,16 @@ def fetch_with_retries(url, payload=None, key=None, attempts=3, backoff_seconds=
 
 
 def cli(*args):
+    if os.environ.get('VERONICA_RUNPOD_WINDOWS_CLI'):
+        if os.name != 'nt':
+            from runpod_windows_bridge import cli as windows_cli
+            return windows_cli(args)
+        helper = ROOT / 'scripts/runpod_windows_bridge.py'
+        linux_helper = subprocess.check_output(['wsl.exe', '-e', 'wslpath', '-u', str(helper)], text=True).strip()
+        result = subprocess.run(['wsl.exe', '-e', 'python3', linux_helper, *args], capture_output=True, text=True, timeout=75)
+        if result.returncode:
+            raise RuntimeError('WSL Windows-network bridge failed; no automatic retry')
+        return result.stdout
     executable = shutil.which("runpodctl") or str(Path.home() / ".local/bin/runpodctl")
     command = [executable, *args]
     if os.name == "nt":
@@ -100,6 +113,9 @@ def profile_at(path):
     validate_profile_safety(profile)
     if pod["ports"] != ["22/tcp"] or profile["runtime"]["host"] != "127.0.0.1":
         raise ValueError("This development runtime must expose SSH only and serve on Pod loopback")
+    if pod.get('storageType') == 'global':
+        from runpod_windows_bridge import configure
+        configure(profile)
     return profile
 
 
@@ -250,12 +266,15 @@ def preflight(profile, hourly, minutes, *, supervised=False):
                     maximum_hourly_usd=safety["maximumHourlyUsd"])
     pod = profile["pod"]
     # Successful inventory calls establish authentication without printing account info.
-    volumes = json.loads(cli("network-volume", "get", pod["networkVolumeId"]))
+    is_global = pod.get('storageType') == 'global'
+    volumes = json.loads(cli('global-volume' if is_global else 'network-volume', 'get', pod['networkVolumeId']))
     gpus = json.loads(cli("gpu", "list", "--include-unavailable"))
     pods = json.loads(cli("pod", "list", "--all"))
     keys = json.loads(cli("ssh", "list-keys"))
     blockers = []
-    if volumes.get("dataCenterId") != pod["dataCenterId"]:
+    if volumes.get('id') != pod['networkVolumeId']:
+        blockers.append('Persistent volume identity does not match the authorized profile')
+    if not is_global and volumes.get("dataCenterId") != pod["dataCenterId"]:
         blockers.append("Network volume and requested GPU data center do not match")
     if pod.get("networkVolumeSizeGb") and volumes.get("size") != pod["networkVolumeSizeGb"]:
         blockers.append("Persistent-volume allowance changed; review the profile before downloading")
@@ -267,7 +286,15 @@ def preflight(profile, hourly, minutes, *, supervised=False):
     selected = None
     for candidate in candidates:
         gpu = next((g for g in gpus if g.get("gpuId") == candidate["gpuTypeId"]), {})
-        dc = next((d for d in gpu.get("dataCenterAvailability", []) if d.get("dataCenterId") == pod["dataCenterId"]), {})
+        availability = gpu.get('dataCenterAvailability', [])
+        if is_global:
+            preferred = pod.get('preferredDataCenterIds', [])
+            availability = sorted(availability, key=lambda d: (
+                preferred.index(d.get('dataCenterId')) if d.get('dataCenterId') in preferred else len(preferred),
+                d.get('dataCenterId', '')))
+        dc = next((d for d in availability
+                   if (is_global and str(d.get('stockStatus', 'none')).lower() != 'none')
+                   or (not is_global and d.get('dataCenterId') == pod['dataCenterId'])), {})
         price_field = "securePricePerHr" if candidate["cloudType"] == "SECURE" else "communityPricePerHr"
         price = gpu.get(price_field)
         stock = str(dc.get("stockStatus", "none")).lower()
@@ -280,13 +307,14 @@ def preflight(profile, hourly, minutes, *, supervised=False):
             entry["reliabilityNote"] = candidate["reliabilityNote"]
         if selected is None and has_stock and price_ok:
             entry["selected"] = True
-            selected = {**candidate, "listedHourlyUsd": price, "stock": dc.get("stockStatus")}
+            selected = {**candidate, "listedHourlyUsd": price, "stock": dc.get("stockStatus"), 'dataCenterId': dc.get('dataCenterId')}
         considered.append(entry)
     # A fallback selection is informational (surfaced via usedFallbackGpu/reliabilityNote
     # below), not a blocker: it still satisfies stock and its own approved price cap.
     if selected is None:
         blockers.append("Requested GPU is unavailable in the volume data center, and no configured fallback GPU has stock within its price cap")
-    if any(p.get("name", "").startswith(VERONICA_POD_PREFIXES) for p in pods):
+    if any(p.get("name", "").startswith(VERONICA_POD_PREFIXES)
+           or (is_global and p.get('name', '').startswith('veronica-')) for p in pods):
         blockers.append("A Veronica Pod already exists; inspect it instead of creating another")
     if not keys.get("keys"):
         blockers.append("No registered SSH key")
@@ -298,7 +326,7 @@ def preflight(profile, hourly, minutes, *, supervised=False):
         "checkedAtUtc": datetime.now(timezone.utc).isoformat(),
         "cliVersion": cli("version").strip(), "volumeId": volumes["id"],
         "volumeSizeGb": volumes.get("size"),
-        "dataCenterId": pod["dataCenterId"], "requestedGpuTypeId": pod["gpuTypeId"],
+        "dataCenterId": selected['dataCenterId'] if is_global and selected else pod["dataCenterId"], "requestedGpuTypeId": pod["gpuTypeId"],
         "gpu": selected["gpuTypeId"] if selected else pod["gpuTypeId"],
         "gpuTypeId": selected["gpuTypeId"] if selected else pod["gpuTypeId"],
         "cloudType": selected["cloudType"] if selected else pod["cloudType"],

@@ -1,0 +1,32 @@
+{
+  "baseCommit": "3010c0b36c59cd440052455a1873d6ac0f3ad0ff",
+  "method": "HEAD archive plus only the listed publication source changes",
+  "changedFiles": [
+    "config/runpod-t2-global.json",
+    "scripts/prepare_runpod_model.py",
+    "scripts/runpod_core.py",
+    "scripts/runpod_windows_bridge.py",
+    "scripts/start-veronica-universal.ps1",
+    "scripts/supervised_runpod.py",
+    "src/veronica_core/universal_start.py",
+    "src/veronica_core/static/app.js",
+    "tests/test_global_storage_launch.py"
+  ],
+  "suites": [
+    "tests/test_global_storage_launch.py",
+    "tests/test_runpod_core.py",
+    "tests/test_runpod_safety.py",
+    "tests/test_supervised_start.py",
+    "tests/test_universal_start.py",
+    "tests/test_start_veronica.py"
+  ],
+  "exitCode": 0,
+  "counts": {
+    "tests": 151,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2,
+    "passed": 149
+  },
+  "paidResourceCreated": false
+}
