@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-21",
+  "scope": "Reviewed Global Storage launch implementation and sanitized operational diagnostics",
+  "foundationQualified": false,
+  "browserReview": {
+    "reviewerType": "assistant_advisory",
+    "scoredCases": 13,
+    "metTarget": 5,
+    "belowTarget": 8,
+    "criticalFailures": 4
+  },
+  "apiCollection": {
+    "complete": false,
+    "samples": 15,
+    "planned": 16,
+    "nativeToolDemonstrated": false
+  },
+  "modelIntegrity": {
+    "files": 27,
+    "bytes": 61084222203,
+    "fullHashesPassed": true
+  },
+  "migration": {
+    "copyCompleted": true,
+    "regularFiles": 79118,
+    "bytes": 233626027354,
+    "fullVolumeChecksumAuditComplete": false
+  },
+  "finalRunTermination": {
+    "confirmedAtUtc": "2026-10-21T11:09:50.726533+00:00",
+    "podId": "fh6leg1vi949s8",
+    "podName": "veronica-core-20261021-102036-e8ca36fc",
+    "confirmedAbsent": true,
+    "networkVolumeRetained": true
+  },
+  "retainedVolumes": [
+    {
+      "kind": "global-volume",
+      "id": "cmvho8b59000107jydvwqclkx",
+      "name": "veronica-global.1",
+      "present": true
+    },
+    {
+      "kind": "network-volume",
+      "id": "v53gj9flzs",
+      "name": "Veronica.v4_volume",
+      "present": true
+    }
+  ],
+  "eagerLoadingLiveMeasured": false,
+  "connectionReliability": "unresolved local forwarding interruptions",
+  "publication": "Curated summary only; raw conversations, logs, approvals and binaries remain local"
+}

@@ -23,6 +23,7 @@ def validated_server_arguments(runtime):
     valued = {
         "--tool-call-parser": {"hermes", "qwen3_coder"},
         "--reasoning-parser": {"qwen3"},
+        "--safetensors-load-strategy": {"lazy", "eager"},
     }
     switches = {"--enable-auto-tool-choice", "--trust-remote-code"}
     while index < len(arguments):
@@ -110,7 +111,9 @@ def main():
         raise ValueError("Set VERONICA_UPSTREAM_API_KEY in the Pod shell before --serve")
     args.evidence_dir.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
-    env.update({"HF_HOME": "/workspace/veronica-core/hf-cache", "UV_CACHE_DIR": "/workspace/veronica-core/uv-cache", "HF_HUB_DOWNLOAD_TIMEOUT": "120"})
+    is_global = profile['pod'].get('storageType') == 'global'
+    runtime_root = '/tmp/veronica-core' if is_global else '/workspace/veronica-core'
+    env.update({"HF_HOME": runtime_root + '/hf-cache', "UV_CACHE_DIR": runtime_root + '/uv-cache', "HF_HUB_DOWNLOAD_TIMEOUT": "120"})
     candidates = [canonical, Path(model["existingCopyDirectory"])]
     existing = next((p for p in candidates if p.exists()), None)
     if existing is not None:
@@ -118,6 +121,8 @@ def main():
         records = verify_files(existing, manifest)
         selected = existing
     else:
+        if is_global:
+            raise ValueError('Migrated Global Volume model is missing; no implicit model download or promotion')
         canonical.parent.mkdir(parents=True, exist_ok=True)
         staging = canonical.with_name(".uploading-" + model["revision"])
         staging.mkdir(exist_ok=True)
@@ -147,7 +152,7 @@ def main():
     if not args.serve:
         print(f"MODEL VERIFIED: {selected}")
         return
-    runtime_env = Path("/workspace/veronica-core/runtime-vllm-" + runtime["vllmVersion"])
+    runtime_env = Path(runtime_root + '/runtime-vllm-' + runtime['vllmVersion'])
     if not (runtime_env / "bin/python").exists():
         command(*runtime_environment_arguments(runtime, runtime_env), env=env)
     if runtime.get("isolatedEnvironment", False):

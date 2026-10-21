@@ -184,7 +184,8 @@ def is_local_controller(*, run=subprocess.run) -> bool:
     return result.returncode == 0
 
 
-def run_on_local_controller(*, duration_minutes: int, requested_by: str, authorization_context: str, run=subprocess.run) -> None:
+def run_on_local_controller(*, duration_minutes: int, requested_by: str, authorization_context: str, run=subprocess.run,
+                            profile_path: Path | None = None, max_hourly_usd: float | None = None) -> None:
     """Invoke the checked PowerShell adapter only on a Windows controller host."""
     if not is_local_controller(run=run):
         raise UniversalStartError(
@@ -201,6 +202,10 @@ def run_on_local_controller(*, duration_minutes: int, requested_by: str, authori
         "-RequestedBy", requested_by,
         "-AuthorizationContext", authorization_context,
     ]
+    if profile_path is not None:
+        command.extend(['-ProfilePath', str(profile_path.resolve())])
+    if max_hourly_usd is not None:
+        command.extend(['-MaxHourlyUsd', str(max_hourly_usd)])
     try:
         result = run(command, cwd=ROOT, check=False, capture_output=True, text=True, timeout=1800)
     except subprocess.TimeoutExpired as error:
@@ -218,6 +223,8 @@ def build_parser() -> argparse.ArgumentParser:
         description="Route a fresh Veronica start authorization to the approved supervised controller.",
     )
     parser.add_argument("--duration-minutes", type=int, default=None, help="Approved run window (default: profile default).")
+    parser.add_argument('--profile', type=Path, help='Explicit local checked launch profile; dispatch remains default-profile only.')
+    parser.add_argument('--max-hourly-usd', type=float, help='Current run ceiling, bounded by the saved profile ceiling.')
     parser.add_argument("--authorize-start", action="store_true", help="Confirm this invocation represents a current owner start request.")
     parser.add_argument("--requested-by", default="trusted-agent", help="Agent or owner identity for the run evidence.")
     parser.add_argument("--authorization-context", default=DEFAULT_CONTEXT, help="Short non-secret explanation saved with the one-use approval.")
@@ -232,7 +239,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def execute(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    profile = _read_profile()
+    profile = _read_profile(args.profile)
     duration = args.duration_minutes if args.duration_minutes is not None else profile["safety"]["defaultDurationMinutes"]
     if args.local:
         execution_mode = "local"
@@ -243,7 +250,11 @@ def execute(argv: Sequence[str] | None = None) -> int:
     else:
         execution_mode = "local" if is_local_controller() else "dispatch"
     _validate_request(duration, args.requested_by, args.authorization_context, profile)
-    plan = build_plan(duration, execution_mode=execution_mode)
+    if args.max_hourly_usd is not None and not 0 < args.max_hourly_usd <= profile['safety']['maximumHourlyUsd']:
+        raise UniversalStartError('Run ceiling must be positive and within the saved ceiling')
+    if execution_mode != 'local' and (args.profile is not None or args.max_hourly_usd is not None):
+        raise UniversalStartError('Explicit profile/ceiling requires the local checked controller')
+    plan = build_plan(duration, execution_mode=execution_mode, profile_path=args.profile)
     if args.plan:
         print(json.dumps(asdict(plan), indent=2))
         return 0
@@ -253,9 +264,15 @@ def execute(argv: Sequence[str] | None = None) -> int:
             "Use --plan for a non-mutating preview."
         )
     if execution_mode == "local":
+        overrides = {}
+        if args.profile is not None:
+            overrides['profile_path'] = args.profile
+        if args.max_hourly_usd is not None:
+            overrides['max_hourly_usd'] = args.max_hourly_usd
         run_on_local_controller(
             duration_minutes=duration, requested_by=args.requested_by,
             authorization_context=args.authorization_context,
+            **overrides,
         )
         return 0
     repository = args.repo or _repository_from_origin()
