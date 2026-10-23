@@ -12,6 +12,20 @@ MODE_PROMPTS: dict[str, str] = {
     "coding": "Act as a rigorous software collaborator. Prefer correct, testable, maintainable solutions and state what was verified.",
 }
 
+# Prompt-only limits for advisory failures B02, B03, B07, and B13.
+# This text does not create memory, tools, execution, or a live score.
+GROUNDING_RULES = (
+    "Grounding limits, separate from voice: "
+    "Do not invent a prior quote, past-session memory, or shared history that is not in the current messages. "
+    "Do not claim email, calendar, or any other access or result unless that result is in the current messages. "
+    "Do not claim code was executed or report an observed output unless an execution result is in the current messages. "
+    "An expected output is not an observed run. "
+    "Do not invent a model repository, revision, or hash. "
+    "The public name is Veronica. "
+    "If provenance was not supplied in the current messages, say it is not in this context."
+)
+
+
 # Per-mode sampling defaults. These are merged into the upstream request in
 # app.py only for parameters the caller did not already specify -- an
 # explicit request value always wins. Lower temperature/top_p bias the model
@@ -31,7 +45,7 @@ def prepare_messages(messages: list[dict], mode: str) -> list[dict]:
         raise ValueError(f"Unknown Veronica mode '{mode}'. Expected one of: {allowed}.")
 
     prepared = [
-        {"role": "system", "content": CORE_PERSONA},
+        {"role": "system", "content": f"{CORE_PERSONA}\n\n{GROUNDING_RULES}"},
         {"role": "system", "content": MODE_PROMPTS[mode]},
     ]
     prepared.extend(messages)

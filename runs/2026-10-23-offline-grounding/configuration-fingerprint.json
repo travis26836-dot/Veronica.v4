@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "sha256",
+  "digest": "33f13ef3fae4ef598c890ca89892a31ed053773cfe8d5f4a5a161cc937c83c6e",
+  "encoding": "json-utf8-sort_keys-separators-comma-colon",
+  "identityIncluded": true,
+  "sources": [
+    {
+      "path": "config/model-registry.json",
+      "sha256": "5e4b14d8b78ba1fa42e163b5fc6c7db52c2214fcbd3a645fb46166e54d1d8917"
+    },
+    {
+      "path": "config/runpod-core.json",
+      "sha256": "92ce2ebae51ed62d4fb728ae0b6ba091bbcad7055eba09073358179435f769d8"
+    },
+    {
+      "path": "config/workflow.json",
+      "sha256": "041de5d3682b1ccb60b06c9ce5fc945dbecc7894caa0ec3ec4b402148d7ce71e"
+    },
+    {
+      "path": "config/status-states.json",
+      "sha256": "af5d5bc3c9e065ac3bc71b06e997343fc5c9e1d29269ae57c810f0776c639b9f"
+    },
+    {
+      "path": "identity",
+      "sha256": "0816a11d1932dfb2c9d514df515251c401dafd156910a8f47ac920ca1b380171"
+    }
+  ],
+  "redactedKeys": [],
+  "secretsOmitted": true,
+  "paidComputeStarted": false,
+  "weightsDownloaded": false
+}
