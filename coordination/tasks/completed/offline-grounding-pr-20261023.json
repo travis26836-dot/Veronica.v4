@@ -1,0 +1,43 @@
+{
+  "agent": "hermes",
+  "branch": "Core-next-milestone",
+  "ended_at": "2026-10-23T08:04:32Z",
+  "evidence": [
+    "runs/2026-10-23-offline-grounding/decision.md",
+    "https://github.com/travis26836-dot/Veronica.v4/pull/42"
+  ],
+  "files_changed": [
+    "runs/2026-10-23-offline-grounding/decision.md",
+    "src/veronica_core/persona.py",
+    "tests/test_persona_grounding.py"
+  ],
+  "limitations": [
+    "CI was pending at publication. This PR does not claim T2, CORE, or a live score."
+  ],
+  "model": "grok-4.7",
+  "next_action": "Wait for PR 42 checks. Do not merge as qualification. Live rescore still needs human adjudication or a fresh bounded Pod authorization.",
+  "paths": [
+    "coordination/handoffs/offline-grounding-20261023.md",
+    "coordination/tasks/completed/offline-grounding-20261023.json",
+    "runs/2026-10-23-offline-grounding",
+    "src/veronica_core/persona.py",
+    "tests/test_persona_grounding.py"
+  ],
+  "repo_commit_after": "10b820c956dee4183f30c994b8da4a2a827cfa8d",
+  "repo_commit_before": "efcf3b98502625c1516aba061c94249160d72cb8",
+  "ruled_out": [
+    "No Pod, weight change, or merge."
+  ],
+  "schema_version": 1,
+  "session_id": null,
+  "started_at": "2026-10-23T07:59:49Z",
+  "status": "completed",
+  "summary": "Publish the reviewed offline grounding packet on Core-next-milestone.",
+  "supersedes": [],
+  "surface": "hermes-desktop",
+  "task_id": "offline-grounding-pr-20261023",
+  "tests": [
+    "uv run pytest tests/test_persona_grounding.py tests/test_app.py -q (18 passed, exit 0)"
+  ],
+  "worktree": "C:\\Users\\raine\\DEVELOPMENT\\Projects\\Veronica.v4\\.worktrees\\core-next-milestone"
+}
