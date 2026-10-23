@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "runId": "2026-10-23-offline-grounding",
+  "recordedAt": "2026-10-23T07:42:42Z",
+  "owner": "Raine",
+  "stage": "test",
+  "status": "hold",
+  "scope": "Offline prompt-only grounding for advisory cases B02, B03, B07, and B13. No inference and no paid compute.",
+  "modelInferencePerformed": false,
+  "paidGpuStarted": false,
+  "weightsModified": false,
+  "modelSelectionStatus": "owner_selected",
+  "modelRevision": null,
+  "runtimeVersion": null,
+  "gpu": null,
+  "configurationFingerprint": "33f13ef3fae4ef598c890ca89892a31ed053773cfe8d5f4a5a161cc937c83c6e",
+  "lastDurableHandoff": "Prompt grounding injected and locally tested. No Pod started and no live score claimed.",
+  "nextAction": "Stop. Human adjudication or a fresh bounded Pod authorization is required before any live rescore."
+}
